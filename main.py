@@ -1,5 +1,6 @@
 
 from config.args import get_arguments
+from config.config import input_label
 from dataloader.load_data import SimplexDataset,load_dataloader
 from utils.load_json import load_results
 from utils.check_data import checkResult

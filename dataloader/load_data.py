@@ -1,7 +1,7 @@
 import torchvision
 import torch
 import os
-from config.config import features,labels,img_extension,height,width,train_val_ratio,random_seed,batch_size
+from config.config import features,labels,img_extension,height,width,train_val_ratio,random_seed,batch_size,input_label
 import cv2
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader, random_split
@@ -26,9 +26,9 @@ class SimplexDataset(Dataset):
             pn = str(result['page_num'])
             while len(pn) <4:
                 pn = '0'+pn
-            data = {"input":read_input_image(transform,input,pdf_name,pn)}
+            data = {input_label:read_input_image(transform,input,pdf_name,pn)}
             for label in labels:
-                data[label] = trans2Tensor(Image.fromarray(cv2.imread(os.path.join(label_folder,pdf_name,result[label]))))
+                data[label] = transform(trans2Tensor(Image.fromarray(cv2.imread(os.path.join(label_folder,pdf_name,result[label])))))
             self.dataset.append(data)
             
     def __len__(self):
