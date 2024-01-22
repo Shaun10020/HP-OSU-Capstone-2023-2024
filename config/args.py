@@ -20,6 +20,12 @@ def get_arguments():
         help=("Folder to get label from."))
     
     parser.add_argument(
+        "--save_folder",
+        "-s",
+        default="./saved_weights",
+        help=("Folder to save weights"))
+    
+    parser.add_argument(
         "--mode",
         "-m",
         choices=["train","test"],
