@@ -33,6 +33,16 @@ def get_arguments():
         help=("Choice from 'train' or 'test'"))
     
     parser.add_argument(
+        "--epoch",
+        default=5,
+        help=("Epoch number, default is 5"))
+    
+    parser.add_argument(
+        "--batch",
+        default=10,
+        help=("Batch Size, default is 10"))
+    
+    parser.add_argument(
         "--method",
         choices=["seg","bb"],
         default="seg",

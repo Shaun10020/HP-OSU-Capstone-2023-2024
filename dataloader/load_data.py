@@ -5,7 +5,7 @@ import cv2
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader, random_split
 
-from config.config import features,labels,img_extension,input_height,input_width,output_height,output_width,train_val_ratio,random_seed,batch_size,input_label,pin_memory
+from config.config import features,labels,img_extension,input_height,input_width,output_height,output_width,train_val_ratio,random_seed,input_label,pin_memory
 from utils.check_data import checkInput, checkLabel
 
 def read_input_image(transform,input,pdf_name,pn):
@@ -44,7 +44,7 @@ class SimplexDataset(Dataset):
         return self.dataset[index]
     
 
-def load_dataloader(dataset):
+def load_dataloader(dataset,batch_size):
     train_set, val_set = random_split(dataset,train_val_ratio,torch.Generator().manual_seed(random_seed))
     loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=pin_memory)
     train_loader = DataLoader(train_set, shuffle=True, **loader_args)
