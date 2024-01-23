@@ -20,14 +20,3 @@ def checkLabel(page,label_folder,pdf_name):
                 return False
     return True
         
-def checkResult(input,label_folder,intermediate):
-    exist = []
-    for result in intermediate:
-        for page in result:
-            pdf_name = page['pdf_filename'].replace('.pdf','')
-            pn = str(page['page_num'])
-            while len(pn) <4:
-                pn = '0'+pn
-            if checkInput(input,pdf_name,pn) and checkLabel(page,label_folder,pdf_name):
-                exist.append(page)
-    return exist
