@@ -12,5 +12,5 @@ random_seed = 42
 batch_size = 10
 input_height = 300
 input_width = 300
-output_height = 300
-output_width = 300
+output_height = 165
+output_width = 165
