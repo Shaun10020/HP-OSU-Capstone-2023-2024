@@ -8,15 +8,6 @@ from torch.utils.data import Dataset, DataLoader, random_split
 from config.config import features,labels,img_extension,input_height,input_width,output_height,output_width,train_val_ratio,random_seed,input_label,pin_memory
 from utils.check_data import checkInput, checkLabel
 
-def read_input_image(transform,input,pdf_name,pn):
-    img = []
-    for feature in features:
-        filenamme = feature+"-"+str(pn)+"-grayscale"+img_extension
-        path = os.path.join(input,pdf_name,filenamme)
-        img.append(transform(torchvision.io.read_image(path)))
-    return torch.cat(img)
-        
-        
 class SimplexDataset(Dataset):
     def __init__(self, input,label_folder,intermediate, transform=None,transform_output=None):   
         if transform == None: 
@@ -32,7 +23,12 @@ class SimplexDataset(Dataset):
                 while len(pn) <4:
                     pn = '0'+pn
                 if checkInput(input,pdf_name,pn) and checkLabel(page,label_folder,pdf_name):
-                    data = {input_label:read_input_image(transform,input,pdf_name,pn)}
+                    img = []
+                    for feature in features:
+                        filenamme = feature+"-"+str(pn)+"-grayscale"+img_extension
+                        path = os.path.join(input,pdf_name,filenamme)
+                        img.append(transform(torchvision.io.read_image(path)))
+                    data = {input_label:torch.cat(img)}
                     for label in labels:
                         data[label] = transform_output(trans2Tensor(Image.fromarray(cv2.imread(os.path.join(label_folder,pdf_name,page[label])))))
                     self.dataset.append(data)
