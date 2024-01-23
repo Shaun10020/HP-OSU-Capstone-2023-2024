@@ -5,7 +5,7 @@ import cv2
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader, random_split
 
-from config.config import features,labels,img_extension,height,width,train_val_ratio,random_seed,batch_size,input_label,pin_memory
+from config.config import features,labels,img_extension,input_height,input_width,output_height,output_width,train_val_ratio,random_seed,batch_size,input_label,pin_memory
 from utils.check_data import checkInput, checkLabel
 
 def read_input_image(transform,input,pdf_name,pn):
@@ -18,9 +18,11 @@ def read_input_image(transform,input,pdf_name,pn):
         
         
 class SimplexDataset(Dataset):
-    def __init__(self, input,label_folder,intermediate, transform=None):   
+    def __init__(self, input,label_folder,intermediate, transform=None,transform_output=None):   
         if transform == None: 
-            transform = torchvision.transforms.Resize((height,width),antialias=True)
+            transform = torchvision.transforms.Resize((input_height,input_width,),antialias=True)
+        if transform_output == None: 
+            transform_output = torchvision.transforms.Resize((output_height,output_width,),antialias=True)
         trans2Tensor = torchvision.transforms.ToTensor()
         self.dataset = []
         for result in intermediate:
@@ -32,7 +34,7 @@ class SimplexDataset(Dataset):
                 if checkInput(input,pdf_name,pn) and checkLabel(page,label_folder,pdf_name):
                     data = {input_label:read_input_image(transform,input,pdf_name,pn)}
                     for label in labels:
-                        data[label] = transform(trans2Tensor(Image.fromarray(cv2.imread(os.path.join(label_folder,pdf_name,page[label])))))
+                        data[label] = transform_output(trans2Tensor(Image.fromarray(cv2.imread(os.path.join(label_folder,pdf_name,page[label])))))
                     self.dataset.append(data)
             
     def __len__(self):

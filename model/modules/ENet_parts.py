@@ -1,7 +1,7 @@
 import torch.nn as nn
 import torch
 
-class InitialBlock(nn.module):
+class InitialBlock(nn.Module):
     
     def __init__(self,
                  in_channels,
@@ -32,7 +32,7 @@ class InitialBlock(nn.module):
         out = self.batch_norm(out)
         return self.out_activation(out)
     
-class BottleNeck(nn.module):
+class BottleNeck(nn.Module):
     
     def __init__(self,
                  channels,
@@ -117,7 +117,7 @@ class BottleNeck(nn.module):
     def forward(self,x):
         return 
     
-class DownSamplingBottleNeck(nn.module):
+class DownSamplingBottleNeck(nn.Module):
     
     def __init__(self,
                  in_channels,
@@ -189,7 +189,7 @@ class DownSamplingBottleNeck(nn.module):
         out = main + ext
         return self.out_activation(out), max_indices
     
-class UpSamplingBottleNeck(nn.module):
+class UpSamplingBottleNeck(nn.Module):
     
     def __init__(self,
                  in_channels,

@@ -1,0 +1,2402 @@
+{
+  "pdf_filename": "doi_ira_elec_preapp_rev_20230804.pdf",
+  "runtime": 1.6987058259546757,
+  "document_results": [
+    {
+      "page_num": 1,
+      "runtime": 0.1230808210093528,
+      "characteristic": "HighMoistureSimplexPage",
+      "percentMeaning": "HighMoisturePixels",
+      "coordinates": "UpperLeftOrigin:Row,Column",
+      "boundingBoxResults": [
+        {
+          "corners": [
+            [
+              1649,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1274
+            ],
+            [
+              1649,
+              1274
+            ]
+          ],
+          "area": 2103750,
+          "percent": 0.48840166369578136
+        }
+      ]
+    },
+    {
+      "page_num": 1,
+      "runtime": 0.1230808210093528,
+      "characteristic": "HighMoistureSimplexVerticalBars",
+      "percentMeaning": "HighMoisturePixels",
+      "coordinates": "UpperLeftOrigin:Row,Column",
+      "boundingBoxResults": [
+        {
+          "corners": [
+            [
+              329,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              36
+            ],
+            [
+              329,
+              36
+            ]
+          ],
+          "area": 12540,
+          "percent": 0.48484848484848486
+        },
+        {
+          "corners": [
+            [
+              329,
+              37
+            ],
+            [
+              0,
+              37
+            ],
+            [
+              0,
+              74
+            ],
+            [
+              329,
+              74
+            ]
+          ],
+          "area": 12870,
+          "percent": 0.5606060606060606
+        },
+        {
+          "corners": [
+            [
+              329,
+              75
+            ],
+            [
+              0,
+              75
+            ],
+            [
+              0,
+              111
+            ],
+            [
+              329,
+              111
+            ]
+          ],
+          "area": 12540,
+          "percent": 0.48018018018018016
+        },
+        {
+          "corners": [
+            [
+              329,
+              112
+            ],
+            [
+              0,
+              112
+            ],
+            [
+              0,
+              149
+            ],
+            [
+              329,
+              149
+            ]
+          ],
+          "area": 12870,
+          "percent": 0.5055821371610846
+        },
+        {
+          "corners": [
+            [
+              329,
+              150
+            ],
+            [
+              0,
+              150
+            ],
+            [
+              0,
+              186
+            ],
+            [
+              329,
+              186
+            ]
+          ],
+          "area": 12540,
+          "percent": 0.5366912366912366
+        },
+        {
+          "corners": [
+            [
+              329,
+              187
+            ],
+            [
+              0,
+              187
+            ],
+            [
+              0,
+              224
+            ],
+            [
+              329,
+              224
+            ]
+          ],
+          "area": 12870,
+          "percent": 0.4603668261562998
+        },
+        {
+          "corners": [
+            [
+              329,
+              225
+            ],
+            [
+              0,
+              225
+            ],
+            [
+              0,
+              261
+            ],
+            [
+              329,
+              261
+            ]
+          ],
+          "area": 12540,
+          "percent": 0.3656565656565657
+        }
+      ]
+    },
+    {
+      "page_num": 1,
+      "runtime": 0.15306150703690946,
+      "characteristic": "HighMoistureDuplexPageDelta",
+      "percentMeaning": "HighMoistureDuplexDeltaPixels",
+      "coordinates": "UpperLeftOrigin:Row,Column",
+      "boundingBoxResults": [
+        {
+          "corners": [
+            [
+              329,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              254
+            ],
+            [
+              329,
+              254
+            ]
+          ],
+          "area": 84150,
+          "percent": 0.41295306001188353
+        }
+      ]
+    },
+    {
+      "page_num": 1,
+      "runtime": 0.17760132998228073,
+      "characteristic": "HighMoistureSimplexObject1.3cm",
+      "percentMeaning": "HighMoisturePixels",
+      "coordinates": "UpperLeftOrigin:Row,Column",
+      "boundingBoxResults": [
+        {
+          "corners: ": [
+            [
+              329,
+              254
+            ],
+            [
+              329,
+              0
+            ],
+            [
+              307,
+              0
+            ],
+            [
+              307,
+              254
+            ]
+          ],
+          "area": 5588,
+          "percent": 1.0
+        },
+        {
+          "corners: ": [
+            [
+              281,
+              241
+            ],
+            [
+              281,
+              13
+            ],
+            [
+              253,
+              13
+            ],
+            [
+              253,
+              241
+            ]
+          ],
+          "area": 6384,
+          "percent": 0.9992167919799498
+        },
+        {
+          "corners: ": [
+            [
+              225,
+              101
+            ],
+            [
+              225,
+              19
+            ],
+            [
+              195,
+              19
+            ],
+            [
+              195,
+              101
+            ]
+          ],
+          "area": 2460,
+          "percent": 0.2524390243902439
+        },
+        {
+          "corners: ": [
+            [
+              191,
+              135
+            ],
+            [
+              161,
+              135
+            ],
+            [
+              161,
+              226
+            ],
+            [
+              191,
+              226
+            ]
+          ],
+          "area": 2730,
+          "percent": 0.2304029304029304
+        },
+        {
+          "corners: ": [
+            [
+              191,
+              98
+            ],
+            [
+              191,
+              19
+            ],
+            [
+              161,
+              19
+            ],
+            [
+              161,
+              98
+            ]
+          ],
+          "area": 2370,
+          "percent": 0.2616033755274262
+        },
+        {
+          "corners: ": [
+            [
+              162,
+              145
+            ],
+            [
+              138,
+              129
+            ],
+            [
+              123,
+              152
+            ],
+            [
+              148,
+              168
+            ]
+          ],
+          "area": 783,
+          "percent": 0.7573435504469987
+        },
+        {
+          "corners: ": [
+            [
+              162,
+              27
+            ],
+            [
+              136,
+              13
+            ],
+            [
+              100,
+              80
+            ],
+            [
+              127,
+              95
+            ]
+          ],
+          "area": 2280,
+          "percent": 0.26842105263157895
+        },
+        {
+          "corners: ": [
+            [
+              111,
+              5
+            ],
+            [
+              106,
+              5
+            ],
+            [
+              106,
+              247
+            ],
+            [
+              111,
+              247
+            ]
+          ],
+          "area": 1215,
+          "percent": 0.4707818930041152
+        },
+        {
+          "corners: ": [
+            [
+              64,
+              247
+            ],
+            [
+              64,
+              5
+            ],
+            [
+              63,
+              5
+            ],
+            [
+              63,
+              247
+            ]
+          ],
+          "area": 243,
+          "percent": 0.9958847736625515
+        },
+        {
+          "corners: ": [
+            [
+              43,
+              254
+            ],
+            [
+              43,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              254
+            ]
+          ],
+          "area": 10922,
+          "percent": 1.0
+        }
+      ]
+    },
+    {
+      "page_num": 1,
+      "runtime": 0.1628580770920962,
+      "characteristic": "HighMoistureSimplexObject2.5cm",
+      "percentMeaning": "HighMoisturePixels",
+      "coordinates": "UpperLeftOrigin:Row,Column",
+      "boundingBoxResults": [
+        {
+          "corners: ": [
+            [
+              329,
+              254
+            ],
+            [
+              329,
+              0
+            ],
+            [
+              307,
+              0
+            ],
+            [
+              307,
+              254
+            ]
+          ],
+          "area": 5588,
+          "percent": 0.9953471725125268
+        },
+        {
+          "corners: ": [
+            [
+              281,
+              241
+            ],
+            [
+              281,
+              13
+            ],
+            [
+              253,
+              13
+            ],
+            [
+              253,
+              241
+            ]
+          ],
+          "area": 6384,
+          "percent": 0.9133771929824561
+        },
+        {
+          "corners: ": [
+            [
+              43,
+              254
+            ],
+            [
+              43,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              254
+            ]
+          ],
+          "area": 10922,
+          "percent": 0.9069767441860465
+        }
+      ]
+    },
+    {
+      "page_num": 1,
+      "runtime": 0.2955858058994636,
+      "characteristic": "HighMoistureDuplexObject2.2cm",
+      "percentMeaning": "HighMoisturePixels",
+      "coordinates": "UpperLeftOrigin:Row,Column",
+      "boundingBoxResults": [
+        {
+          "corners: ": [
+            [
+              329,
+              254
+            ],
+            [
+              329,
+              0
+            ],
+            [
+              306,
+              0
+            ],
+            [
+              306,
+              254
+            ]
+          ],
+          "area": 5842,
+          "percent": 1.0
+        },
+        {
+          "corners: ": [
+            [
+              280,
+              241
+            ],
+            [
+              280,
+              13
+            ],
+            [
+              254,
+              13
+            ],
+            [
+              254,
+              241
+            ]
+          ],
+          "area": 5928,
+          "percent": 0.7483130904183536
+        },
+        {
+          "corners: ": [
+            [
+              43,
+              254
+            ],
+            [
+              43,
+              0
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              254
+            ]
+          ],
+          "area": 10922,
+          "percent": 0.8762131477751327
+        }
+      ]
+    }
+  ],
+  "algorithm_results": [
+    {
+      "results": [
+        {
+          "page_num": 1,
+          "runtime": 0.1230808210093528,
+          "characteristic": "HighMoistureSimplexPage",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners": [
+                [
+                  1649,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1274
+                ],
+                [
+                  1649,
+                  1274
+                ]
+              ],
+              "area": 2103750,
+              "percent": 0.48840166369578136
+            }
+          ]
+        },
+        {
+          "page_num": 1,
+          "runtime": 0.1230808210093528,
+          "characteristic": "HighMoistureSimplexVerticalBars",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners": [
+                [
+                  329,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  36
+                ],
+                [
+                  329,
+                  36
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.48484848484848486
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  37
+                ],
+                [
+                  0,
+                  37
+                ],
+                [
+                  0,
+                  74
+                ],
+                [
+                  329,
+                  74
+                ]
+              ],
+              "area": 12870,
+              "percent": 0.5606060606060606
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  75
+                ],
+                [
+                  0,
+                  75
+                ],
+                [
+                  0,
+                  111
+                ],
+                [
+                  329,
+                  111
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.48018018018018016
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  112
+                ],
+                [
+                  0,
+                  112
+                ],
+                [
+                  0,
+                  149
+                ],
+                [
+                  329,
+                  149
+                ]
+              ],
+              "area": 12870,
+              "percent": 0.5055821371610846
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  150
+                ],
+                [
+                  0,
+                  150
+                ],
+                [
+                  0,
+                  186
+                ],
+                [
+                  329,
+                  186
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.5366912366912366
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  187
+                ],
+                [
+                  0,
+                  187
+                ],
+                [
+                  0,
+                  224
+                ],
+                [
+                  329,
+                  224
+                ]
+              ],
+              "area": 12870,
+              "percent": 0.4603668261562998
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  225
+                ],
+                [
+                  0,
+                  225
+                ],
+                [
+                  0,
+                  261
+                ],
+                [
+                  329,
+                  261
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.3656565656565657
+            }
+          ]
+        },
+        {
+          "page_num": 1,
+          "runtime": 0.17760132998228073,
+          "characteristic": "HighMoistureSimplexObject1.3cm",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners: ": [
+                [
+                  329,
+                  254
+                ],
+                [
+                  329,
+                  0
+                ],
+                [
+                  307,
+                  0
+                ],
+                [
+                  307,
+                  254
+                ]
+              ],
+              "area": 5588,
+              "percent": 1.0
+            },
+            {
+              "corners: ": [
+                [
+                  281,
+                  241
+                ],
+                [
+                  281,
+                  13
+                ],
+                [
+                  253,
+                  13
+                ],
+                [
+                  253,
+                  241
+                ]
+              ],
+              "area": 6384,
+              "percent": 0.9992167919799498
+            },
+            {
+              "corners: ": [
+                [
+                  225,
+                  101
+                ],
+                [
+                  225,
+                  19
+                ],
+                [
+                  195,
+                  19
+                ],
+                [
+                  195,
+                  101
+                ]
+              ],
+              "area": 2460,
+              "percent": 0.2524390243902439
+            },
+            {
+              "corners: ": [
+                [
+                  191,
+                  135
+                ],
+                [
+                  161,
+                  135
+                ],
+                [
+                  161,
+                  226
+                ],
+                [
+                  191,
+                  226
+                ]
+              ],
+              "area": 2730,
+              "percent": 0.2304029304029304
+            },
+            {
+              "corners: ": [
+                [
+                  191,
+                  98
+                ],
+                [
+                  191,
+                  19
+                ],
+                [
+                  161,
+                  19
+                ],
+                [
+                  161,
+                  98
+                ]
+              ],
+              "area": 2370,
+              "percent": 0.2616033755274262
+            },
+            {
+              "corners: ": [
+                [
+                  162,
+                  145
+                ],
+                [
+                  138,
+                  129
+                ],
+                [
+                  123,
+                  152
+                ],
+                [
+                  148,
+                  168
+                ]
+              ],
+              "area": 783,
+              "percent": 0.7573435504469987
+            },
+            {
+              "corners: ": [
+                [
+                  162,
+                  27
+                ],
+                [
+                  136,
+                  13
+                ],
+                [
+                  100,
+                  80
+                ],
+                [
+                  127,
+                  95
+                ]
+              ],
+              "area": 2280,
+              "percent": 0.26842105263157895
+            },
+            {
+              "corners: ": [
+                [
+                  111,
+                  5
+                ],
+                [
+                  106,
+                  5
+                ],
+                [
+                  106,
+                  247
+                ],
+                [
+                  111,
+                  247
+                ]
+              ],
+              "area": 1215,
+              "percent": 0.4707818930041152
+            },
+            {
+              "corners: ": [
+                [
+                  64,
+                  247
+                ],
+                [
+                  64,
+                  5
+                ],
+                [
+                  63,
+                  5
+                ],
+                [
+                  63,
+                  247
+                ]
+              ],
+              "area": 243,
+              "percent": 0.9958847736625515
+            },
+            {
+              "corners: ": [
+                [
+                  43,
+                  254
+                ],
+                [
+                  43,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  254
+                ]
+              ],
+              "area": 10922,
+              "percent": 1.0
+            }
+          ]
+        },
+        {
+          "page_num": 1,
+          "runtime": 0.1628580770920962,
+          "characteristic": "HighMoistureSimplexObject2.5cm",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners: ": [
+                [
+                  329,
+                  254
+                ],
+                [
+                  329,
+                  0
+                ],
+                [
+                  307,
+                  0
+                ],
+                [
+                  307,
+                  254
+                ]
+              ],
+              "area": 5588,
+              "percent": 0.9953471725125268
+            },
+            {
+              "corners: ": [
+                [
+                  281,
+                  241
+                ],
+                [
+                  281,
+                  13
+                ],
+                [
+                  253,
+                  13
+                ],
+                [
+                  253,
+                  241
+                ]
+              ],
+              "area": 6384,
+              "percent": 0.9133771929824561
+            },
+            {
+              "corners: ": [
+                [
+                  43,
+                  254
+                ],
+                [
+                  43,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  254
+                ]
+              ],
+              "area": 10922,
+              "percent": 0.9069767441860465
+            }
+          ]
+        },
+        {
+          "page_num": 1,
+          "runtime": 0.2955858058994636,
+          "characteristic": "HighMoistureDuplexObject2.2cm",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners: ": [
+                [
+                  329,
+                  254
+                ],
+                [
+                  329,
+                  0
+                ],
+                [
+                  306,
+                  0
+                ],
+                [
+                  306,
+                  254
+                ]
+              ],
+              "area": 5842,
+              "percent": 1.0
+            },
+            {
+              "corners: ": [
+                [
+                  280,
+                  241
+                ],
+                [
+                  280,
+                  13
+                ],
+                [
+                  254,
+                  13
+                ],
+                [
+                  254,
+                  241
+                ]
+              ],
+              "area": 5928,
+              "percent": 0.7483130904183536
+            },
+            {
+              "corners: ": [
+                [
+                  43,
+                  254
+                ],
+                [
+                  43,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  254
+                ]
+              ],
+              "area": 10922,
+              "percent": 0.8762131477751327
+            }
+          ]
+        },
+        {
+          "page_num": 1,
+          "runtime": 0.15306150703690946,
+          "characteristic": "HighMoistureDuplexPageDelta",
+          "percentMeaning": "HighMoistureDuplexDeltaPixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners": [
+                [
+                  329,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  254
+                ],
+                [
+                  329,
+                  254
+                ]
+              ],
+              "area": 84150,
+              "percent": 0.41295306001188353
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "results": [
+        {
+          "page_num": 2,
+          "runtime": 0.011213357909582555,
+          "characteristic": "HighMoistureSimplexPage",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners": [
+                [
+                  1649,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1274
+                ],
+                [
+                  1649,
+                  1274
+                ]
+              ],
+              "area": 2103750,
+              "percent": 0.08402852049910874
+            }
+          ]
+        },
+        {
+          "page_num": 2,
+          "runtime": 0.011213357909582555,
+          "characteristic": "HighMoistureSimplexVerticalBars",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners": [
+                [
+                  329,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  36
+                ],
+                [
+                  329,
+                  36
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.10843570843570843
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  37
+                ],
+                [
+                  0,
+                  37
+                ],
+                [
+                  0,
+                  74
+                ],
+                [
+                  329,
+                  74
+                ]
+              ],
+              "area": 12870,
+              "percent": 0.10015948963317384
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  75
+                ],
+                [
+                  0,
+                  75
+                ],
+                [
+                  0,
+                  111
+                ],
+                [
+                  329,
+                  111
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.07903357903357904
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  112
+                ],
+                [
+                  0,
+                  112
+                ],
+                [
+                  0,
+                  149
+                ],
+                [
+                  329,
+                  149
+                ]
+              ],
+              "area": 12870,
+              "percent": 0.07926634768740032
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  150
+                ],
+                [
+                  0,
+                  150
+                ],
+                [
+                  0,
+                  186
+                ],
+                [
+                  329,
+                  186
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.07886977886977888
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  187
+                ],
+                [
+                  0,
+                  187
+                ],
+                [
+                  0,
+                  224
+                ],
+                [
+                  329,
+                  224
+                ]
+              ],
+              "area": 12870,
+              "percent": 0.07001594896331738
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  225
+                ],
+                [
+                  0,
+                  225
+                ],
+                [
+                  0,
+                  261
+                ],
+                [
+                  329,
+                  261
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.0697979797979798
+            }
+          ]
+        },
+        {
+          "page_num": 2,
+          "runtime": 0.025643941946327686,
+          "characteristic": "HighMoistureSimplexObject1.3cm",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners: ": [
+                [
+                  329,
+                  254
+                ],
+                [
+                  329,
+                  0
+                ],
+                [
+                  307,
+                  0
+                ],
+                [
+                  307,
+                  254
+                ]
+              ],
+              "area": 5588,
+              "percent": 1.0
+            },
+            {
+              "corners: ": [
+                [
+                  15,
+                  63
+                ],
+                [
+                  15,
+                  33
+                ],
+                [
+                  6,
+                  33
+                ],
+                [
+                  6,
+                  63
+                ]
+              ],
+              "area": 270,
+              "percent": 0.8555555555555555
+            }
+          ]
+        },
+        {
+          "page_num": 2,
+          "runtime": 0.026042637997306883,
+          "characteristic": "HighMoistureSimplexObject2.5cm",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners: ": [
+                [
+                  329,
+                  254
+                ],
+                [
+                  329,
+                  0
+                ],
+                [
+                  307,
+                  0
+                ],
+                [
+                  307,
+                  254
+                ]
+              ],
+              "area": 5588,
+              "percent": 0.9960629921259843
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "results": [
+        {
+          "page_num": 3,
+          "runtime": 0.27387179201468825,
+          "characteristic": "HighMoistureSimplexPage",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners": [
+                [
+                  1649,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1274
+                ],
+                [
+                  1649,
+                  1274
+                ]
+              ],
+              "area": 2103750,
+              "percent": 0.07458110516934047
+            }
+          ]
+        },
+        {
+          "page_num": 3,
+          "runtime": 0.27387179201468825,
+          "characteristic": "HighMoistureSimplexVerticalBars",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners": [
+                [
+                  329,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  36
+                ],
+                [
+                  329,
+                  36
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.09754299754299754
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  37
+                ],
+                [
+                  0,
+                  37
+                ],
+                [
+                  0,
+                  74
+                ],
+                [
+                  329,
+                  74
+                ]
+              ],
+              "area": 12870,
+              "percent": 0.07185007974481658
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  75
+                ],
+                [
+                  0,
+                  75
+                ],
+                [
+                  0,
+                  111
+                ],
+                [
+                  329,
+                  111
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.07084357084357085
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  112
+                ],
+                [
+                  0,
+                  112
+                ],
+                [
+                  0,
+                  149
+                ],
+                [
+                  329,
+                  149
+                ]
+              ],
+              "area": 12870,
+              "percent": 0.07121212121212121
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  150
+                ],
+                [
+                  0,
+                  150
+                ],
+                [
+                  0,
+                  186
+                ],
+                [
+                  329,
+                  186
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.07027027027027027
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  187
+                ],
+                [
+                  0,
+                  187
+                ],
+                [
+                  0,
+                  224
+                ],
+                [
+                  329,
+                  224
+                ]
+              ],
+              "area": 12870,
+              "percent": 0.07001594896331738
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  225
+                ],
+                [
+                  0,
+                  225
+                ],
+                [
+                  0,
+                  261
+                ],
+                [
+                  329,
+                  261
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.0696969696969697
+            }
+          ]
+        },
+        {
+          "page_num": 3,
+          "runtime": 0.016638670931570232,
+          "characteristic": "HighMoistureSimplexObject1.3cm",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners: ": [
+                [
+                  329,
+                  254
+                ],
+                [
+                  329,
+                  0
+                ],
+                [
+                  307,
+                  0
+                ],
+                [
+                  307,
+                  254
+                ]
+              ],
+              "area": 5588,
+              "percent": 1.0
+            }
+          ]
+        },
+        {
+          "page_num": 3,
+          "runtime": 0.016259025898762047,
+          "characteristic": "HighMoistureSimplexObject2.5cm",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners: ": [
+                [
+                  329,
+                  254
+                ],
+                [
+                  329,
+                  0
+                ],
+                [
+                  307,
+                  0
+                ],
+                [
+                  307,
+                  254
+                ]
+              ],
+              "area": 5588,
+              "percent": 0.9953471725125268
+            }
+          ]
+        },
+        {
+          "page_num": 3,
+          "runtime": 0.02872659103013575,
+          "characteristic": "HighMoistureDuplexObject2.2cm",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners: ": [
+                [
+                  329,
+                  254
+                ],
+                [
+                  329,
+                  0
+                ],
+                [
+                  306,
+                  0
+                ],
+                [
+                  306,
+                  254
+                ]
+              ],
+              "area": 5842,
+              "percent": 1.0
+            }
+          ]
+        },
+        {
+          "page_num": 3,
+          "runtime": 0.14240182098001242,
+          "characteristic": "HighMoistureDuplexPageDelta",
+          "percentMeaning": "HighMoistureDuplexDeltaPixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners": [
+                [
+                  329,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  254
+                ],
+                [
+                  329,
+                  254
+                ]
+              ],
+              "area": 84150,
+              "percent": 0.009732620320855616
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "results": [
+        {
+          "page_num": 4,
+          "runtime": 0.010453898925334215,
+          "characteristic": "HighMoistureSimplexPage",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners": [
+                [
+                  1649,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1274
+                ],
+                [
+                  1649,
+                  1274
+                ]
+              ],
+              "area": 2103750,
+              "percent": 0.0744503862150921
+            }
+          ]
+        },
+        {
+          "page_num": 4,
+          "runtime": 0.010453898925334215,
+          "characteristic": "HighMoistureSimplexVerticalBars",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners": [
+                [
+                  329,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  36
+                ],
+                [
+                  329,
+                  36
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.095004095004095
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  37
+                ],
+                [
+                  0,
+                  37
+                ],
+                [
+                  0,
+                  74
+                ],
+                [
+                  329,
+                  74
+                ]
+              ],
+              "area": 12870,
+              "percent": 0.07208931419457736
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  75
+                ],
+                [
+                  0,
+                  75
+                ],
+                [
+                  0,
+                  111
+                ],
+                [
+                  329,
+                  111
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.07043407043407043
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  112
+                ],
+                [
+                  0,
+                  112
+                ],
+                [
+                  0,
+                  149
+                ],
+                [
+                  329,
+                  149
+                ]
+              ],
+              "area": 12870,
+              "percent": 0.07177033492822966
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  150
+                ],
+                [
+                  0,
+                  150
+                ],
+                [
+                  0,
+                  186
+                ],
+                [
+                  329,
+                  186
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.07158067158067158
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  187
+                ],
+                [
+                  0,
+                  187
+                ],
+                [
+                  0,
+                  224
+                ],
+                [
+                  329,
+                  224
+                ]
+              ],
+              "area": 12870,
+              "percent": 0.07001594896331738
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  225
+                ],
+                [
+                  0,
+                  225
+                ],
+                [
+                  0,
+                  261
+                ],
+                [
+                  329,
+                  261
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.0695959595959596
+            }
+          ]
+        },
+        {
+          "page_num": 4,
+          "runtime": 0.01861189806368202,
+          "characteristic": "HighMoistureSimplexObject1.3cm",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners: ": [
+                [
+                  329,
+                  254
+                ],
+                [
+                  329,
+                  0
+                ],
+                [
+                  307,
+                  0
+                ],
+                [
+                  307,
+                  254
+                ]
+              ],
+              "area": 5588,
+              "percent": 1.0
+            }
+          ]
+        },
+        {
+          "page_num": 4,
+          "runtime": 0.01889157108962536,
+          "characteristic": "HighMoistureSimplexObject2.5cm",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners: ": [
+                [
+                  329,
+                  254
+                ],
+                [
+                  329,
+                  0
+                ],
+                [
+                  307,
+                  0
+                ],
+                [
+                  307,
+                  254
+                ]
+              ],
+              "area": 5588,
+              "percent": 0.9942734430923408
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "results": [
+        {
+          "page_num": 5,
+          "runtime": 0.15407799801323563,
+          "characteristic": "HighMoistureSimplexPage",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners": [
+                [
+                  1649,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  1274
+                ],
+                [
+                  1649,
+                  1274
+                ]
+              ],
+              "area": 2103750,
+              "percent": 0.0738443256090315
+            }
+          ]
+        },
+        {
+          "page_num": 5,
+          "runtime": 0.15407799801323563,
+          "characteristic": "HighMoistureSimplexVerticalBars",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners": [
+                [
+                  329,
+                  0
+                ],
+                [
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  36
+                ],
+                [
+                  329,
+                  36
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.0914004914004914
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  37
+                ],
+                [
+                  0,
+                  37
+                ],
+                [
+                  0,
+                  74
+                ],
+                [
+                  329,
+                  74
+                ]
+              ],
+              "area": 12870,
+              "percent": 0.07105263157894737
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  75
+                ],
+                [
+                  0,
+                  75
+                ],
+                [
+                  0,
+                  111
+                ],
+                [
+                  329,
+                  111
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.07092547092547093
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  112
+                ],
+                [
+                  0,
+                  112
+                ],
+                [
+                  0,
+                  149
+                ],
+                [
+                  329,
+                  149
+                ]
+              ],
+              "area": 12870,
+              "percent": 0.07161084529505582
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  150
+                ],
+                [
+                  0,
+                  150
+                ],
+                [
+                  0,
+                  186
+                ],
+                [
+                  329,
+                  186
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.07067977067977067
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  187
+                ],
+                [
+                  0,
+                  187
+                ],
+                [
+                  0,
+                  224
+                ],
+                [
+                  329,
+                  224
+                ]
+              ],
+              "area": 12870,
+              "percent": 0.07025518341307815
+            },
+            {
+              "corners": [
+                [
+                  329,
+                  225
+                ],
+                [
+                  0,
+                  225
+                ],
+                [
+                  0,
+                  261
+                ],
+                [
+                  329,
+                  261
+                ]
+              ],
+              "area": 12540,
+              "percent": 0.0706060606060606
+            }
+          ]
+        },
+        {
+          "page_num": 5,
+          "runtime": 0.01698549895081669,
+          "characteristic": "HighMoistureSimplexObject1.3cm",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners: ": [
+                [
+                  329,
+                  254
+                ],
+                [
+                  329,
+                  0
+                ],
+                [
+                  307,
+                  0
+                ],
+                [
+                  307,
+                  254
+                ]
+              ],
+              "area": 5588,
+              "percent": 1.0
+            }
+          ]
+        },
+        {
+          "page_num": 5,
+          "runtime": 0.017422687029466033,
+          "characteristic": "HighMoistureSimplexObject2.5cm",
+          "percentMeaning": "HighMoisturePixels",
+          "coordinates": "UpperLeftOrigin:Row,Column",
+          "boundingBoxResults": [
+            {
+              "corners: ": [
+                [
+                  329,
+                  254
+                ],
+                [
+                  329,
+                  0
+                ],
+                [
+                  307,
+                  0
+                ],
+                [
+                  307,
+                  254
+                ]
+              ],
+              "area": 5588,
+              "percent": 0.9949892627057981
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "intermediate_results": [
+    {
+      "pdf_filename": "doi_ira_elec_preapp_rev_20230804.pdf",
+      "page_num": 1,
+      "intermediate_dir": "intermediate_results/0001",
+      "HighMoistureSimplexPage_bitmap": "intermediate_results/0001/wavy_curl/simplex_high_moisture_mask.bmp",
+      "HighMoistureSimplexObject1.3cm_bitmap": "intermediate_results/0001/flaking/risky_contours_mask.bmp",
+      "HighMoistureSimplexObject1.3cm_visualization": "intermediate_results/0001/flaking/risky_contours_visualization.png",
+      "HighMoistureSimplexObject2.5cm_bitmap": "intermediate_results/0001/streak_simplex/risky_contours_mask.bmp",
+      "HighMoistureSimplexObject2.5cm_visualization": "intermediate_results/0001/streak_simplex/risky_contours_visualization.png",
+      "HighMoistureDuplexObject2.2cm_bitmap": "intermediate_results/0001/streak_duplex/risky_contours_mask.bmp",
+      "HighMoistureDuplexObject2.2cm_visualization": "intermediate_results/0001/streak_duplex/risky_contours_visualization.bmp",
+      "HighMoistureDuplexPageDelta_bitmap": "intermediate_results/0001/wavy_curl/duplex_contrast_mask.bmp"
+    },
+    {
+      "pdf_filename": "doi_ira_elec_preapp_rev_20230804.pdf",
+      "page_num": 2,
+      "intermediate_dir": "intermediate_results/0002",
+      "HighMoistureSimplexPage_bitmap": "intermediate_results/0002/wavy_curl/simplex_high_moisture_mask.bmp",
+      "HighMoistureSimplexObject1.3cm_bitmap": "intermediate_results/0002/flaking/risky_contours_mask.bmp",
+      "HighMoistureSimplexObject1.3cm_visualization": "intermediate_results/0002/flaking/risky_contours_visualization.png",
+      "HighMoistureSimplexObject2.5cm_bitmap": "intermediate_results/0002/streak_simplex/risky_contours_mask.bmp",
+      "HighMoistureSimplexObject2.5cm_visualization": "intermediate_results/0002/streak_simplex/risky_contours_visualization.png"
+    },
+    {
+      "pdf_filename": "doi_ira_elec_preapp_rev_20230804.pdf",
+      "page_num": 3,
+      "intermediate_dir": "intermediate_results/0003",
+      "HighMoistureSimplexPage_bitmap": "intermediate_results/0003/wavy_curl/simplex_high_moisture_mask.bmp",
+      "HighMoistureSimplexObject1.3cm_bitmap": "intermediate_results/0003/flaking/risky_contours_mask.bmp",
+      "HighMoistureSimplexObject1.3cm_visualization": "intermediate_results/0003/flaking/risky_contours_visualization.png",
+      "HighMoistureSimplexObject2.5cm_bitmap": "intermediate_results/0003/streak_simplex/risky_contours_mask.bmp",
+      "HighMoistureSimplexObject2.5cm_visualization": "intermediate_results/0003/streak_simplex/risky_contours_visualization.png",
+      "HighMoistureDuplexObject2.2cm_bitmap": "intermediate_results/0003/streak_duplex/risky_contours_mask.bmp",
+      "HighMoistureDuplexObject2.2cm_visualization": "intermediate_results/0003/streak_duplex/risky_contours_visualization.bmp",
+      "HighMoistureDuplexPageDelta_bitmap": "intermediate_results/0003/wavy_curl/duplex_contrast_mask.bmp"
+    },
+    {
+      "pdf_filename": "doi_ira_elec_preapp_rev_20230804.pdf",
+      "page_num": 4,
+      "intermediate_dir": "intermediate_results/0004",
+      "HighMoistureSimplexPage_bitmap": "intermediate_results/0004/wavy_curl/simplex_high_moisture_mask.bmp",
+      "HighMoistureSimplexObject1.3cm_bitmap": "intermediate_results/0004/flaking/risky_contours_mask.bmp",
+      "HighMoistureSimplexObject1.3cm_visualization": "intermediate_results/0004/flaking/risky_contours_visualization.png",
+      "HighMoistureSimplexObject2.5cm_bitmap": "intermediate_results/0004/streak_simplex/risky_contours_mask.bmp",
+      "HighMoistureSimplexObject2.5cm_visualization": "intermediate_results/0004/streak_simplex/risky_contours_visualization.png"
+    },
+    {
+      "pdf_filename": "doi_ira_elec_preapp_rev_20230804.pdf",
+      "page_num": 5,
+      "intermediate_dir": "intermediate_results/0005",
+      "HighMoistureSimplexPage_bitmap": "intermediate_results/0005/wavy_curl/simplex_high_moisture_mask.bmp",
+      "HighMoistureSimplexObject1.3cm_bitmap": "intermediate_results/0005/flaking/risky_contours_mask.bmp",
+      "HighMoistureSimplexObject1.3cm_visualization": "intermediate_results/0005/flaking/risky_contours_visualization.png",
+      "HighMoistureSimplexObject2.5cm_bitmap": "intermediate_results/0005/streak_simplex/risky_contours_mask.bmp",
+      "HighMoistureSimplexObject2.5cm_visualization": "intermediate_results/0005/streak_simplex/risky_contours_visualization.png"
+    }
+  ]
+}

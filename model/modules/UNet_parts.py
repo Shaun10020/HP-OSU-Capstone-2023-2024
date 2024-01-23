@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch
 import torch.nn.functional as F
 
-class DoubleConv(nn.module):
+class DoubleConv(nn.Module):
     
     def __init__(self,
                  in_channels,
@@ -28,7 +28,7 @@ class DoubleConv(nn.module):
         return self.doubleConv(x)
     
     
-class DownSampling(nn.module):
+class DownSampling(nn.Module):
     
     def __init__(self,
                  in_channels,
@@ -43,7 +43,7 @@ class DownSampling(nn.module):
     def forward(self,x):
         return self.downSampling(x)
     
-class UpSampling(nn.module):
+class UpSampling(nn.Module):
     
     def __init__(self,
                  in_channels,
@@ -65,7 +65,7 @@ class UpSampling(nn.module):
         x = torch.cat([x2, x1], dim=1)
         return self.conv(x)
 
-class OutputConv(nn.module):
+class OutputConv(nn.Module):
     
     def __init__(self,
                  in_channels,
