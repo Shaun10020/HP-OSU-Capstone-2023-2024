@@ -9,101 +9,107 @@ from config.config import features,labels,img_extension,input_height,input_width
 from utils.check_data import checkInput, checkLabel
 
 class SimplexDataset(Dataset):
-    def __init__(self, input,label_folder,intermediate, transform=None,transform_output=None):   
+    def __init__(self, input_folder,label_folder,intermediate, transform=None,transform_output=None):   
         if transform == None: 
-            transform = torchvision.transforms.Resize((input_height,input_width,),antialias=True)
+            self.transform = torchvision.transforms.Resize((input_height,input_width,),antialias=True)
+        else:
+            self.transform = transform
         if transform_output == None: 
-            transform_output = torchvision.transforms.Resize((output_height,output_width,),antialias=True)
-        trans2Tensor = torchvision.transforms.ToTensor()
+            self.transform_output = torchvision.transforms.Resize((output_height,output_width,),antialias=True)
+        else:
+            self.transform_output = transform_output
+        self.trans2Tensor = torchvision.transforms.ToTensor()
+        self.label_folder = label_folder
+        self.input_folder = input_folder
         self.dataset = []
         for result in intermediate:
             for page in result:
                 pdf_name = page['pdf_filename'].replace('.pdf','')
                 pn = str(page['page_num'])
-                while len(pn) <4:
+                while len(pn) <4:   
                     pn = '0'+pn
-                if checkInput(input,pdf_name,pn) and checkLabel(page,label_folder,pdf_name):
-                    img = []
-                    for feature in features:
-                        filenamme = feature+"-"+str(pn)+"-grayscale"+img_extension
-                        path = os.path.join(input,pdf_name,filenamme)
-                        img.append(transform(torchvision.io.read_image(path)))
-                    data = {input_label:torch.cat(img)}
-                    for label in labels:
-                        data[label] = transform_output(trans2Tensor(Image.fromarray(cv2.imread(os.path.join(label_folder,pdf_name,page[label])))))
-                    self.dataset.append(data)
+                if checkInput(self.input_folder,pdf_name,pn) and checkLabel(page,self.label_folder,pdf_name):
+                    self.dataset.append({'page':page,'name':pdf_name})
             
     def __len__(self):
         return len(self.dataset)
     
     def __getitem__(self, index):
-        return self.dataset[index]
+        pn = str(self.dataset[index]['page']['page_num'])
+        pdf_name = self.dataset[index]['name']
+        page = self.dataset[index]['page']
+        while len(pn) <4:
+            pn = '0'+pn
+        img = []
+        for feature in features:
+            filenamme = feature+"-"+pn+"-grayscale"+img_extension
+            path = os.path.join(self.input_folder,pdf_name,filenamme)
+            img.append(self.transform(torchvision.io.read_image(path)))
+        data = {input_label:torch.cat(img)}
+        for label in labels:
+            data[label] = self.transform_output(self.trans2Tensor(Image.fromarray(cv2.imread(os.path.join(self.label_folder,pdf_name,page[label])))))
+        return data
     
 class DuplexDataset(Dataset):
-    def __init__(self, input,label_folder,intermediate, transform=None,transform_output=None):   
+    def __init__(self, input_folder,label_folder,intermediate, transform=None,transform_output=None):   
         if transform == None: 
-            transform = torchvision.transforms.Resize((input_height,input_width,),antialias=True)
+            self.transform = torchvision.transforms.Resize((input_height,input_width,),antialias=True)
+        else:
+            self.transform = transform
         if transform_output == None: 
-            transform_output = torchvision.transforms.Resize((output_height,output_width,),antialias=True)
-        trans2Tensor = torchvision.transforms.ToTensor()
+            self.transform_output = torchvision.transforms.Resize((output_height,output_width,),antialias=True)
+        else:
+            self.transform_output = transform_output
+        self.trans2Tensor = torchvision.transforms.ToTensor()
+        self.label_folder = label_folder
+        self.input_folder = input_folder
         self.dataset = []
+        duplex = False
         for result in intermediate:
-            duplex = False
             for page in result:
                 pdf_name = page['pdf_filename'].replace('.pdf','')
-                _pn = page['page_num']
-                pn = str(_pn)
-                while len(pn) <4:
+                pn = str(page['page_num'])
+                while len(pn) <4:   
                     pn = '0'+pn
-                if checkInput(input,pdf_name,pn) and checkLabel(page,label_folder,pdf_name):
-                    if duplex:
-                        duplex = False
-                        if next != _pn:
-                            continue
-                        for feature in features:
-                            filenamme = feature+"-"+str(pn)+"-grayscale"+img_extension
-                            path = os.path.join(input,pdf_name,filenamme)
-                            img.append(transform(torchvision.io.read_image(path)))
-                        data[input_label] = torch.cat(img)
-                        for label in labels:
-                            data[label+"_2"] = transform_output(trans2Tensor(Image.fromarray(cv2.imread(os.path.join(label_folder,pdf_name,page[label])))))
-                        self.dataset.append(data)
-                    elif duplex_labels[0] in page:
+                if checkInput(self.input_folder,pdf_name,pn) and checkLabel(page,self.label_folder,pdf_name):
+                    if page['page_num']%2 and duplex_labels[0] in page:
+                        data = {'page1':page,'name':pdf_name}
                         duplex = True
-                        next = _pn + 1
-                        img = []
-                        data = {}
-                        for feature in features:
-                            filenamme = feature+"-"+str(pn)+"-grayscale"+img_extension
-                            path = os.path.join(input,pdf_name,filenamme)
-                            img.append(transform(torchvision.io.read_image(path)))
-                        for label in labels:
-                            data[label+"_1"] = transform_output(trans2Tensor(Image.fromarray(cv2.imread(os.path.join(label_folder,pdf_name,page[label])))))
-                        for label in duplex_labels:
-                            data[label] = transform_output(trans2Tensor(Image.fromarray(cv2.imread(os.path.join(label_folder,pdf_name,page[label])))))
-                    # elif _pn%2:
-                    #     duplex = False
-                    #     img = []
-                    #     for feature in features:
-                    #         filenamme = feature+"-"+str(pn)+"-grayscale"+img_extension
-                    #         path = os.path.join(input,pdf_name,filenamme)
-                    #         img.append(transform(torchvision.io.read_image(path)))
-                    #     for _ in features:
-                    #         img.append(transform(torch.zeros(1)))
-                    #     data = {input_label:torch.cat(img)}
-                    #     for label in labels:
-                    #         data[label+"_1"] = transform_output(trans2Tensor(Image.fromarray(cv2.imread(os.path.join(label_folder,pdf_name,page[label])))))
-                    #     for label in labels:
-                    #         data[label+"_2"] = transform_output(torch.zeros(1))
-                    #     for label in duplex_labels:
-                    #         data[label] = transform_output(torch.zeros(1))
-                    #     self.dataset.append(data)
+                    elif duplex and data['page1']['page_num']+1 == page['page_num'] and data['name'] == pdf_name:
+                        duplex = False
+                        data['page2'] = page
+                        self.dataset.append(data)
             
     def __len__(self):
         return len(self.dataset)
     
     def __getitem__(self, index):
-        return self.dataset[index]
+        pn1 = str(self.dataset[index]['page1']['page_num'])
+        pn2 = str(self.dataset[index]['page2']['page_num'])
+        pdf_name = self.dataset[index]['name']
+        page1 = self.dataset[index]['page1']
+        page2 = self.dataset[index]['page2']
+        while len(pn1) <4:
+            pn1 = '0'+pn1
+        while len(pn2) <4:
+            pn2 = '0'+pn2
+        img = []
+        for feature in features:
+            filenamme = feature+"-"+pn1+"-grayscale"+img_extension
+            path = os.path.join(self.input_folder,pdf_name,filenamme)
+            img.append(self.transform(torchvision.io.read_image(path)))
+        for feature in features:
+            filenamme = feature+"-"+pn2+"-grayscale"+img_extension
+            path = os.path.join(self.input_folder,pdf_name,filenamme)
+            img.append(self.transform(torchvision.io.read_image(path)))
+        data = {input_label:torch.cat(img)}
+        for label in labels:
+            data[label+"1"] = self.transform_output(self.trans2Tensor(Image.fromarray(cv2.imread(os.path.join(self.label_folder,pdf_name,page1[label])))))
+        for label in duplex_labels:
+            data[label] = self.transform_output(self.trans2Tensor(Image.fromarray(cv2.imread(os.path.join(self.label_folder,pdf_name,page1[label])))))
+        for label in labels:
+            data[label+"2"] = self.transform_output(self.trans2Tensor(Image.fromarray(cv2.imread(os.path.join(self.label_folder,pdf_name,page2[label])))))
+        return data
     
 
 def load_dataloader(dataset,batch_size):
