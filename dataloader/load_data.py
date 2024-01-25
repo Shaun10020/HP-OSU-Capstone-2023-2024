@@ -1,11 +1,10 @@
 import torchvision
 import torch
 import os
-import cv2
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader, random_split
 
-from config.config import features,labels,img_extension,input_height,input_width,output_height,output_width,train_val_ratio,random_seed,input_label,pin_memory,duplex_labels
+from config.config import features,labels,img_extension,input_height,input_width,output_height,output_width,random_seed,input_label,pin_memory,duplex_labels
 from utils.check_data import checkInput, checkLabel
 
 class SimplexDataset(Dataset):
@@ -47,7 +46,7 @@ class SimplexDataset(Dataset):
             img.append(self.transform(torchvision.io.read_image(path)))
         data = {input_label:torch.cat(img)}
         for label in labels:
-            data[label] = self.transform_output(self.trans2Tensor(Image.fromarray(cv2.imread(os.path.join(self.label_folder,pdf_name,page[label])))))
+            data[label] = self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page[label]))))
         return data
     
 class DuplexDataset(Dataset):
@@ -104,16 +103,16 @@ class DuplexDataset(Dataset):
             img.append(self.transform(torchvision.io.read_image(path)))
         data = {input_label:torch.cat(img)}
         for label in labels:
-            data[label+"1"] = self.transform_output(self.trans2Tensor(Image.fromarray(cv2.imread(os.path.join(self.label_folder,pdf_name,page1[label])))))
+            data[label+"1"] = self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label]))))
         for label in duplex_labels:
-            data[label] = self.transform_output(self.trans2Tensor(Image.fromarray(cv2.imread(os.path.join(self.label_folder,pdf_name,page1[label])))))
+            data[label] = self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label]))))
         for label in labels:
-            data[label+"2"] = self.transform_output(self.trans2Tensor(Image.fromarray(cv2.imread(os.path.join(self.label_folder,pdf_name,page2[label])))))
+            data[label+"2"] = self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page2[label]))))
         return data
     
 
-def load_dataloader(dataset,batch_size):
-    train_set, val_set = random_split(dataset,train_val_ratio,torch.Generator().manual_seed(random_seed))
+def load_dataloader(dataset,batch_size,ratio):
+    train_set, val_set = random_split(dataset,ratio,torch.Generator().manual_seed(random_seed))
     loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=pin_memory)
     train_loader = DataLoader(train_set, shuffle=True, **loader_args)
     val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
