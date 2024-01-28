@@ -47,7 +47,7 @@ class SimplexDataset(Dataset):
         output = []
         for label in labels:
             output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page[label])))))
-        return tuple(torch.cat(img),torch.cat(output))
+        return tuple((torch.cat(img),torch.cat(output)))
     
 class DuplexDataset(Dataset):
     def __init__(self, input_folder,label_folder,intermediate, transform=None,transform_output=None):   

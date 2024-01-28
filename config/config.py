@@ -15,7 +15,7 @@ pin_memory = True
 
 input_height = 300
 input_width = 300
-output_height = 165
-output_width = 165
+output_height = 300
+output_width = 300
 
 lr = 1e-5
