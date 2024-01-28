@@ -111,9 +111,14 @@ class DuplexDataset(Dataset):
         return data
     
 
+def collate_fn(batch):
+    # Return a tuple instead of a dictionary
+    return tuple(torch.stack([x[key] for x in batch]) for key in ['input', 'HighMoistureSimplexPage_bitmap', 'HighMoistureSimplexObject1.3cm_bitmap', 'HighMoistureSimplexObject2.5cm_bitmap'])
+
+
 def load_dataloader(dataset,batch_size,ratio):
     train_set, val_set = random_split(dataset,ratio,torch.Generator().manual_seed(random_seed))
     loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=pin_memory)
-    train_loader = DataLoader(train_set, shuffle=True, **loader_args)
-    val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
+    train_loader = DataLoader(train_set, shuffle=True, **loader_args, collate_fn = collate_fn)
+    val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args, collate_fn = collate_fn)
     return train_loader,val_loader
