@@ -2,9 +2,8 @@ import logging
 from tqdm import tqdm
 from torch import optim
 from torch import nn
-import torch.optim.lr_scheduler as lr_scheduler
 
-from config.config import train_val_ratio, weight_decay,lr,lr_decay,lr_decay_epochs
+from config.config import train_val_ratio,lr
 from dataloader.load_data import load_dataloader
 
 class Train:
@@ -15,7 +14,6 @@ class Train:
                  dataset,
                  batch_size,
                  optimizer = None,
-                 lr_updater = None,
                  criterion = None):
         self.model = model
         self.device = device
@@ -23,11 +21,7 @@ class Train:
         if optimizer:
             self.optim = optimizer
         else:
-            self.optim = optim.Adam(model.parameters(), lr=lr,weight_decay=weight_decay)
-        if lr_updater:
-            self.lr_updater = lr_updater  
-        else:
-            self.lr_updater = lr_scheduler.StepLR(self.optim, lr_decay_epochs,lr_decay)
+            self.optim = optim.Adam(model.parameters(), lr=lr)
         if criterion:
             self.criterion = criterion
         else:
@@ -37,7 +31,7 @@ class Train:
     def run_epoch(self):
         self.model.train()
         epoch_loss = 0.0
-        for step, batch_data in enumerate(self.data_loader):
+        for step, batch_data in enumerate(self.train_dataloader):
             None
         
     def validate(self):

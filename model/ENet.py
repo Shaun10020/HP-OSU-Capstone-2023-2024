@@ -2,10 +2,10 @@ from .modules.ENet_parts import *
 
 class ENet(nn.Module):
     
-    def __init__(self, num_classes, encoder_relu=False, decoder_relu=True):
+    def __init__(self, number_features, num_classes, encoder_relu=False, decoder_relu=True):
         super().__init__()
 
-        self.initial_block = InitialBlock(3, 16, relu=encoder_relu)
+        self.initial_block = InitialBlock(number_features, 16, relu=encoder_relu)
 
         # Stage 1 - Encoder
         self.downsample1_0 = DownSamplingBottleNeck(

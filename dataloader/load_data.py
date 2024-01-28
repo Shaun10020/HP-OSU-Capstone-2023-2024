@@ -4,7 +4,7 @@ import os
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader, random_split
 
-from config.config import features,labels,img_extension,input_height,input_width,output_height,output_width,random_seed,input_label,pin_memory,duplex_labels
+from config.config import features,labels,img_extension,input_height,input_width,output_height,output_width,random_seed,input_label,output_label,pin_memory,duplex_labels
 from utils.check_data import checkInput, checkLabel
 
 class SimplexDataset(Dataset):
@@ -45,8 +45,10 @@ class SimplexDataset(Dataset):
             path = os.path.join(self.input_folder,pdf_name,filenamme)
             img.append(self.transform(torchvision.io.read_image(path)))
         data = {input_label:torch.cat(img)}
+        output = []
         for label in labels:
-            data[label] = self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page[label]))))
+            output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page[label])))))
+        data = {output_label:torch.cat(output)}
         return data
     
 class DuplexDataset(Dataset):
@@ -119,6 +121,6 @@ def collate_fn(batch):
 def load_dataloader(dataset,batch_size,ratio):
     train_set, val_set = random_split(dataset,ratio,torch.Generator().manual_seed(random_seed))
     loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=pin_memory)
-    train_loader = DataLoader(train_set, shuffle=True, **loader_args, collate_fn = collate_fn)
-    val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args, collate_fn = collate_fn)
+    train_loader = DataLoader(train_set, shuffle=True, **loader_args)
+    val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
     return train_loader,val_loader
