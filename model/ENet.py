@@ -151,10 +151,3 @@ class ENet(nn.Module):
         x = self.regular5_1(x)
         x = self.transposed_conv(x, output_size=input_size)
         return x
-
-    
-    def save(self):
-        return
-    
-    def load(self):
-        return

@@ -18,3 +18,8 @@ input_height = 300
 input_width = 300
 output_height = 165
 output_width = 165
+
+weight_decay = 2e-4
+lr = 1e-5
+lr_decay = 0.1
+lr_decay_epochs = 100

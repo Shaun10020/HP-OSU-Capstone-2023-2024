@@ -32,9 +32,3 @@ class UNet(nn.Module):
         x = self.upSampling4(x, x1)
         logits = self.outputConv(x)
         return logits
-    
-    def save(self):
-        return
-    
-    def load(self):
-        return
