@@ -32,7 +32,14 @@ class Train:
         self.model.train()
         epoch_loss = 0.0
         for step, batch_data in enumerate(self.train_dataloader):
-            None
+            self.optim.zero_grad()
+            inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
+            preds = self.model(inputs.float())
+            loss = self.criterion(labels,preds)
+            loss.backward()
+            self.optim.step()
+            
+            
         
     def validate(self):
         None
