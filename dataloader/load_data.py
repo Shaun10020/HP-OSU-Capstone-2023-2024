@@ -4,7 +4,7 @@ import os
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader, random_split
 
-from config.config import features,labels,img_extension,input_height,input_width,output_height,output_width,random_seed,input_label,output_label,pin_memory,duplex_labels
+from config.config import features,labels,img_extension,input_height,input_width,output_height,output_width,random_seed,pin_memory,duplex_labels
 from utils.check_data import checkInput, checkLabel
 
 class SimplexDataset(Dataset):
@@ -44,12 +44,10 @@ class SimplexDataset(Dataset):
             filenamme = feature+"-"+pn+"-grayscale"+img_extension
             path = os.path.join(self.input_folder,pdf_name,filenamme)
             img.append(self.transform(torchvision.io.read_image(path)))
-        data = {input_label:torch.cat(img)}
         output = []
         for label in labels:
             output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page[label])))))
-        data = {output_label:torch.cat(output)}
-        return data
+        return tuple(torch.cat(img),torch.cat(output))
     
 class DuplexDataset(Dataset):
     def __init__(self, input_folder,label_folder,intermediate, transform=None,transform_output=None):   
@@ -103,14 +101,7 @@ class DuplexDataset(Dataset):
             filenamme = feature+"-"+pn2+"-grayscale"+img_extension
             path = os.path.join(self.input_folder,pdf_name,filenamme)
             img.append(self.transform(torchvision.io.read_image(path)))
-        data = {input_label:torch.cat(img)}
-        for label in labels:
-            data[label+"1"] = self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label]))))
-        for label in duplex_labels:
-            data[label] = self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label]))))
-        for label in labels:
-            data[label+"2"] = self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page2[label]))))
-        return data
+        return
     
 
 def collate_fn(batch):
