@@ -17,8 +17,8 @@ class Train:
                  optimizer = None,
                  criterion = None):
         logging.info("Initializing training script...")
-        self.model = model
         self.device = device
+        self.model = model.to(self.device)
         self.epochs = epochs
         self.train_dataloader, self.val_dataloader = load_dataloader(dataset,batch_size,train_val_ratio)
         if optimizer:
