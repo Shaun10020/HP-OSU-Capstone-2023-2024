@@ -3,12 +3,14 @@ import torch
 import os
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader, random_split
+import logging
 
-from config.config import features,labels,img_extension,input_height,input_width,output_height,output_width,random_seed,pin_memory,duplex_labels
+from config.config import features,labels,duplex_labels,img_extension,input_height,input_width,output_height,output_width,pin_memory
 from utils.check_data import checkInput, checkLabel
 
 class SimplexDataset(Dataset):
     def __init__(self, input_folder,label_folder,intermediate, transform=None,transform_output=None):   
+        logging.info("Preparing SimplexDataset...")
         if transform == None: 
             self.transform = torchvision.transforms.Resize((input_height,input_width,),antialias=True)
         else:
@@ -29,6 +31,7 @@ class SimplexDataset(Dataset):
                     pn = '0'+pn
                 if checkInput(self.input_folder,pdf_name,pn) and checkLabel(page,self.label_folder,pdf_name):
                     self.dataset.append({'page':page,'name':pdf_name})
+        logging.info("Finished preparing SimplexDataset")
             
     def __len__(self):
         return len(self.dataset)
@@ -50,7 +53,8 @@ class SimplexDataset(Dataset):
         return tuple((torch.cat(img),torch.cat(output)))
     
 class DuplexDataset(Dataset):
-    def __init__(self, input_folder,label_folder,intermediate, transform=None,transform_output=None):   
+    def __init__(self, input_folder,label_folder,intermediate, transform=None,transform_output=None):  
+        logging.info("Preparing DuplexDataset...") 
         if transform == None: 
             self.transform = torchvision.transforms.Resize((input_height,input_width,),antialias=True)
         else:
@@ -78,6 +82,7 @@ class DuplexDataset(Dataset):
                         duplex = False
                         data['page2'] = page
                         self.dataset.append(data)
+        logging.info("Finished preparing DuplexDataset")
             
     def __len__(self):
         return len(self.dataset)
@@ -101,7 +106,14 @@ class DuplexDataset(Dataset):
             filenamme = feature+"-"+pn2+"-grayscale"+img_extension
             path = os.path.join(self.input_folder,pdf_name,filenamme)
             img.append(self.transform(torchvision.io.read_image(path)))
-        return
+        output = []
+        for label in labels:
+            output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label])))))
+        for label in duplex_labels:
+            output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label])))))
+        for label in labels:
+            output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page2[label])))))
+        return tuple((torch.cat(img),torch.cat(output)))
     
 
 def collate_fn(batch):
@@ -110,8 +122,10 @@ def collate_fn(batch):
 
 
 def load_dataloader(dataset,batch_size,ratio):
-    train_set, val_set = random_split(dataset,ratio,torch.Generator().manual_seed(random_seed))
+    logging.info("Preparing Dataloader...")
+    train_set, val_set = random_split(dataset,ratio,torch.Generator())
     loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=pin_memory)
     train_loader = DataLoader(train_set, shuffle=True, **loader_args)
     val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
+    logging.info("Done preparing Dataloader")
     return train_loader,val_loader

@@ -1,17 +1,38 @@
 import logging
 from tqdm import tqdm
+from torch import nn
+from torch.utils.data import DataLoader
+import os
 
-from dataloader.load_data import load_dataloader
-
+from config.config import pin_memory
 class Test:
     
-    def __init__(self,model,device,dataloader,batch_size):
-        self.model = model
+    def __init__(self,
+                 model,
+                 device,
+                 dataset,
+                 batch_size,
+                 criterion = None):
+        logging.info("Initializing testing script...")
         self.device = device
-        self.test_dataloader = dataloader
+        self.model = model.to(self.device)
+        loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=pin_memory)
+        self.test_dataloader = DataLoader(dataset, shuffle=True, **loader_args)
+        if criterion:
+            self.criterion = criterion
+        else:
+            self.criterion = nn.CrossEntropyLoss()
+        logging.info("Done initialize testing script")
+
         
-    def run_epoch(self):
-        None
-        
-    def validate(self):
-        None
+    def run(self):
+        logging.info("Running testing script...")
+        self.model.eval()
+        epoch_loss = 0.0
+        for batch_data in tqdm(self.test_dataloader):
+            inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
+            preds = self.model(inputs.float())
+            loss = self.criterion(labels,preds)
+            epoch_loss += loss.item()
+        logging.info(f'''Test Loss: {epoch_loss / len(self.test_dataloader):.4f}''')
+        logging.info("Done running testing script...")

@@ -1,8 +1,10 @@
 from .modules.UNet_parts import *
+import logging
 
 class UNet(nn.Module):
     
     def __init__(self,number_features,number_classes):
+        logging.info("Initializing UNet Model...")
         super().__init__()
         self.number_features = number_features
         self.number_classes = number_classes
@@ -19,6 +21,7 @@ class UNet(nn.Module):
         self.upSampling4 = UpSampling(128, 64)
         
         self.outputConv = DoubleConv(64,number_classes)
+        logging.info("Done initialize UNet Model")
         
     def forward(self,x):
         x1 = self.inputConv(x)

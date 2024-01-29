@@ -1,10 +1,10 @@
 from .modules.ENet_parts import *
-
+import logging
 class ENet(nn.Module):
     
     def __init__(self, number_features, num_classes, encoder_relu=False, decoder_relu=True):
+        logging.info("Initializing ENet Model...")
         super().__init__()
-
         self.initial_block = InitialBlock(number_features, 16, relu=encoder_relu)
 
         # Stage 1 - Encoder
@@ -105,6 +105,7 @@ class ENet(nn.Module):
             stride=2,
             padding=1,
             bias=False)
+        logging.info("Done initialize ENet Model")
 
     def forward(self, x):
         # Initial block
