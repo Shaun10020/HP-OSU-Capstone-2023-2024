@@ -5,7 +5,7 @@ from PIL import Image
 from torch.utils.data import Dataset, DataLoader, random_split
 import logging
 
-from config.config import features,labels,img_extension,input_height,input_width,output_height,output_width,random_seed,pin_memory,duplex_labels
+from config.config import features,labels,duplex_labels,img_extension,input_height,input_width,output_height,output_width,pin_memory
 from utils.check_data import checkInput, checkLabel
 
 class SimplexDataset(Dataset):
@@ -106,7 +106,14 @@ class DuplexDataset(Dataset):
             filenamme = feature+"-"+pn2+"-grayscale"+img_extension
             path = os.path.join(self.input_folder,pdf_name,filenamme)
             img.append(self.transform(torchvision.io.read_image(path)))
-        return
+        output = []
+        for label in labels:
+            output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label])))))
+        for label in duplex_labels:
+            output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label])))))
+        for label in labels:
+            output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page2[label])))))
+        return tuple((torch.cat(img),torch.cat(output)))
     
 
 def collate_fn(batch):
@@ -116,7 +123,7 @@ def collate_fn(batch):
 
 def load_dataloader(dataset,batch_size,ratio):
     logging.info("Preparing Dataloader...")
-    train_set, val_set = random_split(dataset,ratio,torch.Generator().manual_seed(random_seed))
+    train_set, val_set = random_split(dataset,ratio,torch.Generator())
     loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=pin_memory)
     train_loader = DataLoader(train_set, shuffle=True, **loader_args)
     val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)

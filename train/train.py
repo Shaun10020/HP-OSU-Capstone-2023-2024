@@ -3,7 +3,7 @@ from tqdm import tqdm
 from torch import optim
 from torch import nn
 
-from config.config import train_val_ratio,lr
+from config.config import train_val_ratio
 from dataloader.load_data import load_dataloader
 
 class Train:
@@ -13,13 +13,12 @@ class Train:
                  device,
                  dataset,
                  batch_size,
-                 epochs,
+                 lr,
                  optimizer = None,
                  criterion = None):
         logging.info("Initializing training script...")
         self.device = device
         self.model = model.to(self.device)
-        self.epochs = epochs
         self.train_dataloader, self.val_dataloader = load_dataloader(dataset,batch_size,train_val_ratio)
         if optimizer:
             self.optim = optimizer
@@ -57,11 +56,11 @@ class Train:
             epoch_loss += loss.item()
         self.epoch_losses_val.append(epoch_loss / len(self.val_dataloader))
             
-    def run(self):
+    def run(self,epochs):
         logging.info("Running training script...")
-        for i in range(self.epochs):
-            logging.info(f'''Running Epoch {i+1}/{self.epochs}...''')
+        for i in range(epochs):
+            logging.info(f'''Running Epoch {i+1}/{epochs}...''')
             self.run_epoch()
             self.run_epoch_val()
-            logging.info(f'''Epoch [{i+1}/{self.epochs}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}''')
+            logging.info(f'''Epoch [{i+1}/{epochs}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}''')
         logging.info("Done running training script...")

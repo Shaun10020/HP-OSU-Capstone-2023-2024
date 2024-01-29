@@ -22,15 +22,15 @@ def get_arguments():
     parser.add_argument(
         "--save_folder",
         "-s",
-        default="./saved_weights",
-        help=("Folder to save weights"))
+        default="./checkpoints",
+        help=("Folder to save model weights"))
     
     parser.add_argument(
         "--mode",
         "-m",
-        choices=["train","test"],
+        choices=["train","test","inference"],
         default="train",
-        help=("Choice from 'train' or 'test'"))
+        help=("Choose from 'train', 'test' or 'inference'"))
     
     parser.add_argument(
         "--epoch",
@@ -38,15 +38,19 @@ def get_arguments():
         help=("Epoch number, default is 5"))
     
     parser.add_argument(
+        "--lr",
+        default=1e-5,
+        help=("Learning rate, default is 1e-5"))
+    
+    parser.add_argument(
         "--batch",
         default=10,
         help=("Batch Size, default is 10"))
     
     parser.add_argument(
-        "--method",
-        choices=["seg","bb"],
-        default="seg",
-        help=("Choice from 'seg'(segmentation) or 'bb'(bounding box)"))
-    
+        "--dataset",
+        choices=["simplex","duplex"],
+        default="simplex",
+        help=("Dataset, choose from 'simplex' or 'duplex'"))
 
     return parser.parse_args()
