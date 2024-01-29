@@ -24,12 +24,15 @@ def get_arguments():
         "-s",
         default="./checkpoints",
         help=("Folder to save model weights"))
+<<<<<<< HEAD
     
     parser.add_argument(
         "--model",
         choices=["unet","enet","deeplabv3"],
         default="unet",
         help=("Choose from 'unet', 'enet' or 'deeplabv3'"))
+=======
+>>>>>>> 606262a98b8e14486d4def8ba36ae016bff1eae3
     
     parser.add_argument(
         "--mode",
