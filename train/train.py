@@ -1,7 +1,6 @@
 import logging
 from tqdm import tqdm
 import torch
-import os
 
 from config.config import train_val_ratio
 from dataloader.load_data import load_dataloader

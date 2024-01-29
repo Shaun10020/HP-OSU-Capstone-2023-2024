@@ -12,10 +12,7 @@ from train.test import Test
 import logging
 import torch
 from torch.utils.data import random_split
-<<<<<<< HEAD
 import os
-=======
->>>>>>> 606262a98b8e14486d4def8ba36ae016bff1eae3
 
 args = get_arguments()
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
@@ -40,27 +37,9 @@ def test(n_input,n_output,dataset):
 def inference():
     None
 
-def train():
-    unet = UNet(2*len(features),2*len(labels)+len(duplex_labels))
-    pdf,algorithm,intermediate = load_results(args.label_folder)
-    dataset = DuplexDataset(args.input_folder,args.label_folder,intermediate)
-    train_set, test_set = random_split(dataset,train_test_ratio,torch.Generator())
-    train = Train(unet,device,train_set,args.batch,args.lr)
-    train.run(args.epoch)
-    
-    test = Test(train.model,device,test_set,args.batch)
-    test.run()
-
-def test():
-    None
-
-def inference():
-    None
-
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     logging.info(f'''Using device: {device}''')
-<<<<<<< HEAD
     
     n_input = len(features) if args.dataset == 'simplex' else 2*len(features)
     n_output = len(labels) if args.dataset == 'simplex' else 2*len(labels)+len(duplex_labels)
@@ -77,11 +56,3 @@ if __name__ == "__main__":
         inference()
     elif args.mode == 'test':
         test(n_input,n_output,dataset)
-=======
-    if args.mode == 'train':
-        train()
-    elif args.mode == 'inference':
-        inference()
-    elif args.mode == 'test':
-        test()
->>>>>>> 606262a98b8e14486d4def8ba36ae016bff1eae3
