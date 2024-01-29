@@ -30,6 +30,7 @@ class Train:
         else:
             self.criterion = nn.CrossEntropyLoss()
         self.epoch_losses = []
+        self.epoch_losses_val = []
         logging.info("Done initialize training script")
 
         
@@ -44,12 +45,23 @@ class Train:
             loss.backward()
             self.optim.step()
             epoch_loss += loss.item()
-        self.epoch_losses.append(epoch_loss / len(self.train_loader))
+        self.epoch_losses.append(epoch_loss / len(self.train_dataloader))
+        
+    def run_epoch_val(self):
+        self.model.eval()
+        epoch_loss = 0.0
+        for batch_data in tqdm(self.val_dataloader):
+            inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
+            preds = self.model(inputs.float())
+            loss = self.criterion(labels,preds)
+            epoch_loss += loss.item()
+        self.epoch_losses_val.append(epoch_loss / len(self.val_dataloader))
             
     def run(self):
         logging.info("Running training script...")
-        self.model.train()
         for i in range(self.epochs):
-            logging.info(f'''Running Epoch {i}/{self.epochs}...''')
+            logging.info(f'''Running Epoch {i+1}/{self.epochs}...''')
             self.run_epoch()
+            self.run_epoch_val()
+            logging.info(f'''Epoch [{i+1}/{self.epochs}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}''')
         logging.info("Done running training script...")
