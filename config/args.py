@@ -14,6 +14,12 @@ def get_arguments():
         help=("Folder to get data from."))
     
     parser.add_argument(
+        "--output_folder",
+        "-o",
+        default="./output",
+        help=("Folder to save output to."))
+    
+    parser.add_argument(
         "--label_folder",
         "-l",
         default="./data/dcdata/output/DP_a2200_xml_ff2c81d8ad6655f915cbaa558ee7bf9e878730a8",

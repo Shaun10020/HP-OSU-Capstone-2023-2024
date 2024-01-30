@@ -1,6 +1,6 @@
 
 from config.args import get_arguments
-from config.config import features,labels,duplex_labels,train_test_ratio
+from config.config import features,labels,duplex_labels,train_test_ratio,label_extension
 from dataloader.load_data import SimplexDataset, DuplexDataset, InputSimplexDataset
 from utils.load_json import load_results
 from utils.save_load_model import load
@@ -11,7 +11,9 @@ from train.train import Train
 from train.test import Test
 
 import logging
+import os
 import torch
+from torchvision.transforms.functional import to_pil_image
 from torch.utils.data import random_split, DataLoader
 
 args = get_arguments()
@@ -38,8 +40,14 @@ def inference(model):
     loader = DataLoader(data,batch_size = args.batch)
     for batch in loader:
         input = batch[2].to(device)
-        output = model(input.float())
-        print(input.shape)
+        outputs = model(input.float())
+        for name,pgnum,output in zip(batch[0],batch[1],outputs):
+            path = os.path.join(args.output_folder,name)
+            if not os.path.exists(path):
+                os.mkdir(path)
+            os.mkdir(os.path.join(path,pgnum))
+            for i, label in enumerate(labels):
+                to_pil_image(output[i]).save(os.path.join(path,pgnum,f'''{label}{label_extension}'''))
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
