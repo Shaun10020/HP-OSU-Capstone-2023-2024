@@ -12,7 +12,7 @@ from train.test import Test
 
 import logging
 import torch
-from torch.utils.data import random_split
+from torch.utils.data import random_split, DataLoader
 
 args = get_arguments()
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
@@ -35,6 +35,11 @@ def inference(model):
     model.eval()
     model.to(device)
     data = InputSimplexDataset(args)
+    loader = DataLoader(data,batch_size = args.batch)
+    for batch in loader:
+        input = batch[2].to(device)
+        output = model(input.float())
+        print(input.shape)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
