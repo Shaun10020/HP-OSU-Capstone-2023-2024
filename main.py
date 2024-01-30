@@ -1,7 +1,7 @@
 
 from config.args import get_arguments
 from config.config import features,labels,duplex_labels,train_test_ratio
-from dataloader.load_data import SimplexDataset, DuplexDataset
+from dataloader.load_data import SimplexDataset, DuplexDataset, InputSimplexDataset
 from utils.load_json import load_results
 from utils.save_load_model import load
 from model.UNet import UNet
@@ -27,13 +27,14 @@ def train(model,dataset):
     test.run()
 
 def test(model,dataset):
-    pdf,algorithm,intermediate = load_results(args.label_folder)
     model = load(model,args)
     test = Test(model,device,dataset,args.batch)
     test.run()
 
 def inference(model):
-    None
+    model.eval()
+    model.to(device)
+    data = InputSimplexDataset(args)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')

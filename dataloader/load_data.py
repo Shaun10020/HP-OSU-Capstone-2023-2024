@@ -40,8 +40,7 @@ class SimplexDataset(Dataset):
         pn = str(self.dataset[index]['page']['page_num'])
         pdf_name = self.dataset[index]['name']
         page = self.dataset[index]['page']
-        while len(pn) <4:
-            pn = '0'+pn
+        pn = (4-len(str(page['page_num'])))*"0" + str(pn)
         img = []
         for feature in features:
             filenamme = feature+"-"+pn+"-grayscale"+img_extension
@@ -71,9 +70,7 @@ class DuplexDataset(Dataset):
         for result in intermediate:
             for page in result:
                 pdf_name = page['pdf_filename'].replace('.pdf','')
-                pn = str(page['page_num'])
-                while len(pn) <4:   
-                    pn = '0'+pn
+                pn = (4-len(str(page['page_num'])))*"0" + str(page['page_num'])
                 if checkInput(self.input_folder,pdf_name,pn) and checkLabel(page,self.label_folder,pdf_name):
                     if page['page_num']%2 and duplex_labels[0] in page:
                         data = {'page1':page,'name':pdf_name}
@@ -93,10 +90,8 @@ class DuplexDataset(Dataset):
         pdf_name = self.dataset[index]['name']
         page1 = self.dataset[index]['page1']
         page2 = self.dataset[index]['page2']
-        while len(pn1) <4:
-            pn1 = '0'+pn1
-        while len(pn2) <4:
-            pn2 = '0'+pn2
+        pn1 = (4-len(str(pn1)))*"0" + str(pn1)
+        pn2 = (4-len(str(pn2)))*"0" + str(pn2)
         img = []
         for feature in features:
             filenamme = feature+"-"+pn1+"-grayscale"+img_extension
@@ -114,7 +109,38 @@ class DuplexDataset(Dataset):
         for label in labels:
             output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page2[label])))))
         return tuple((torch.cat(img),torch.cat(output)))
+
+class InputSimplexDataset(Dataset):
+    def __init__(self,args,transform = None):
+        if transform == None: 
+            self.transform = torchvision.transforms.Resize((input_height,input_width,),antialias=True)
+        else:
+            self.transform = transform
+        items = os.listdir(args.input_folder)
+        self.dataset = []
+        for item in items:
+            path = os.path.join(args.input_folder,item)
+            if os.path.isdir(path): 
+                pn = 1
+                pgnum = (4-len(str(pn)))*"0" + str(pn)
+                while checkInput(args.input_folder,item,pgnum):
+                    data = {'pn':pn,'name':item,'pgnum':pgnum}
+                    for feature in features:
+                        filename = feature+"-"+str(pgnum)+"-grayscale"+img_extension
+                        data[feature] = os.path.join(args.input_folder,item,filename)
+                    pn += 1
+                    pgnum = (4-len(str(pn)))*"0" + str(pn)
+                    self.dataset.append(data)
+
+    def __len__(self):
+        return len(self.dataset)
     
+    def __getitem__(self,index):
+        data = self.dataset[index]
+        img = []
+        for feature in features:
+            img.append(self.transform(torchvision.io.read_image(data[feature])))
+        return tuple((data['name'],data['pgnum'],torch.cat(img)))
 
 def collate_fn(batch):
     # Return a tuple instead of a dictionary
