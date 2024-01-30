@@ -6,19 +6,18 @@ from utils.load_json import load_results
 from utils.save_load_model import load
 from model.UNet import UNet
 from model.ENet import ENet
+from model.DeepLabV3 import CustomDeepLabV3
 from train.train import Train
 from train.test import Test
 
 import logging
 import torch
 from torch.utils.data import random_split
-import os
 
 args = get_arguments()
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
-def train(n_input,n_output,dataset):
-    model = UNet(n_input,n_output)
+def train(model,dataset):
     train_set, test_set = random_split(dataset,train_test_ratio,torch.Generator())
     train = Train(model,device,train_set,args)
     train.run(args.epoch)
@@ -27,14 +26,13 @@ def train(n_input,n_output,dataset):
     test = Test(model,device,test_set,args.batch)
     test.run()
 
-def test(n_input,n_output,dataset):
-    model = UNet(n_input,n_output)
+def test(model,dataset):
     pdf,algorithm,intermediate = load_results(args.label_folder)
     model = load(model,args)
     test = Test(model,device,dataset,args.batch)
     test.run()
 
-def inference():
+def inference(model):
     None
 
 if __name__ == "__main__":
@@ -50,9 +48,16 @@ if __name__ == "__main__":
         else:
             dataset = DuplexDataset(args.input_folder,args.label_folder,intermediate)
             
+    if args.model == 'unet':
+        model = UNet(n_input,n_output)
+    elif args.model == 'enet':
+        model = ENet(n_input,n_output)
+    elif args.model == 'deeplabv3':
+        model = CustomDeepLabV3(n_output)
+    
     if args.mode == 'train':
-        train(n_input,n_output,dataset)
+        train(model,dataset)
     elif args.mode == 'inference':
-        inference()
+        inference(model)
     elif args.mode == 'test':
-        test(n_input,n_output,dataset)
+        test(model,dataset)
