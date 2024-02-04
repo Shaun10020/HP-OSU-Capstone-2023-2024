@@ -144,7 +144,7 @@ class InputSimplexDataset(Dataset):
                 pn = 1
                 pgnum = (4-len(str(pn)))*"0" + str(pn)
                 while checkInput(args.input_folder,item,pgnum):
-                    data = {'pn':pn,'name':item,'pgnum':pgnum}
+                    data = {'pn':pn,'name':item}
                     for feature in features:
                         filename = feature+"-"+str(pgnum)+"-grayscale"+img_extension
                         data[feature] = os.path.join(args.input_folder,item,filename)
@@ -160,7 +160,7 @@ class InputSimplexDataset(Dataset):
         img = []
         for feature in features:
             img.append(self.transform(torchvision.io.read_image(data[feature])))
-        return tuple((data['name'],data['pgnum'],torch.cat(img)))
+        return tuple((data['name'],data['pn'],torch.cat(img)))
     
 ### Placeholder, NOT Done yet !!!!
 class InputDuplexDataset(Dataset):
@@ -180,10 +180,16 @@ class InputDuplexDataset(Dataset):
                 pn = 1
                 pgnum = (4-len(str(pn)))*"0" + str(pn)
                 while checkInput(args.input_folder,item,pgnum):
-                    data = {'pn':pn,'name':item,'pgnum':pgnum}
+                    data = {'pn':pn,'name':item}
                     for feature in features:
                         filename = feature+"-"+str(pgnum)+"-grayscale"+img_extension
-                        data[feature] = os.path.join(args.input_folder,item,filename)
+                        data[feature+"1"] = os.path.join(args.input_folder,item,filename)
+                    pn += 1
+                    pgnum = (4-len(str(pn)))*"0" + str(pn)
+                    if checkInput(args.input_folder,item,pgnum):
+                        for feature in features:
+                            filename = feature+"-"+str(pgnum)+"-grayscale"+img_extension
+                            data[feature+"2"] = os.path.join(args.input_folder,item,filename)
                     pn += 1
                     pgnum = (4-len(str(pn)))*"0" + str(pn)
                     self.dataset.append(data)
@@ -195,8 +201,15 @@ class InputDuplexDataset(Dataset):
         data = self.dataset[index]
         img = []
         for feature in features:
-            img.append(self.transform(torchvision.io.read_image(data[feature])))
-        return tuple((data['name'],data['pgnum'],torch.cat(img)))
+            img.append(self.transform(torchvision.io.read_image(data[feature+"1"])))
+        if features[0]+"2" in data:
+            for feature in features:
+                img.append(self.transform(torchvision.io.read_image(data[feature+"2"])))
+        else:
+            for feature in features:
+                tmp = self.emptyInputTransform(torch.Tensor(1,1))
+                img.append(tmp.byte())
+        return tuple((data['name'],data['pn'],torch.cat(img)))
 
 def collate_fn(batch):
     # Return a tuple instead of a dictionary
