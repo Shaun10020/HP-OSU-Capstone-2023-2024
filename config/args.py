@@ -62,7 +62,7 @@ def get_arguments():
     parser.add_argument(
         "--dataset",
         choices=["simplex","duplex"],
-        default="simplex",
+        default="duplex",
         help=("Dataset, choose from 'simplex' or 'duplex'"))
 
     return parser.parse_args()

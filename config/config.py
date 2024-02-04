@@ -16,3 +16,4 @@ input_height = 300
 input_width = 300
 output_height = 300
 output_width = 300
+threshold = 0.5

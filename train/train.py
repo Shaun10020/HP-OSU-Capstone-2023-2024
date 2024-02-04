@@ -19,11 +19,11 @@ class Train:
         self.device = device
         self.args = args
         self.model = model.to(self.device)
-        self.train_dataloader, self.val_dataloader = load_dataloader(dataset,args.batch,train_val_ratio)
+        self.train_dataloader, self.val_dataloader = load_dataloader(dataset,int(args.batch),train_val_ratio)
         if optimizer:
             self.optim = optimizer
         else:
-            self.optim = torch.optim.Adam(model.parameters(), lr=args.lr)
+            self.optim = torch.optim.Adam(model.parameters(), lr=float(args.lr))
         if criterion:
             self.criterion = criterion
         else:
@@ -56,13 +56,13 @@ class Train:
             epoch_loss += loss.item()
         self.epoch_losses_val.append(epoch_loss / len(self.val_dataloader))
             
-    def run(self,epochs):
+    def run(self):
         logging.info("Running training script...")
-        for i in range(epochs):
-            logging.info(f'''Running Epoch {i+1}/{epochs}...''')
+        for i in range(int(self.args.epoch)):
+            logging.info(f'''Running Epoch {i+1}/{int(self.args.epoch)}...''')
             self.run_epoch()
             self.run_epoch_val()
-            logging.info(f'''Epoch [{i+1}/{epochs}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}''')
+            logging.info(f'''Epoch [{i+1}/{int(self.args.epoch)}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}''')
             if self.epoch_losses_val[-1] == min(self.epoch_losses_val):
                 save(self.model,self.args)
         logging.info("Done running training script...")

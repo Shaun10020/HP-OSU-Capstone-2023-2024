@@ -1,6 +1,6 @@
 
 from config.args import get_arguments
-from config.config import features,labels,duplex_labels,train_test_ratio,label_extension
+from config.config import features,labels,duplex_labels,train_test_ratio,label_extension,threshold
 from dataloader.load_data import SimplexDataset, DuplexDataset, InputSimplexDataset
 from utils.load_json import load_results
 from utils.save_load_model import load
@@ -22,32 +22,37 @@ device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cp
 def train(model,dataset):
     train_set, test_set = random_split(dataset,train_test_ratio,torch.Generator())
     train = Train(model,device,train_set,args)
-    train.run(args.epoch)
+    train.run()
     
     model = load(model,args)
-    test = Test(model,device,test_set,args.batch)
+    test = Test(model,device,test_set,int(args.batch))
     test.run()
 
 def test(model,dataset):
     model = load(model,args)
-    test = Test(model,device,dataset,args.batch)
+    test = Test(model,device,dataset,int(args.batch))
     test.run()
 
 def inference(model):
+    if not os.path.exists(args.output_folder):
+        os.mkdir(args.output_folder)
     model.eval()
     model.to(device)
     data = InputSimplexDataset(args)
-    loader = DataLoader(data,batch_size = args.batch)
+    loader = DataLoader(data,batch_size = int(args.batch))
     for batch in loader:
         input = batch[2].to(device)
         outputs = model(input.float())
+        outputs = torch.where(outputs > threshold, 1.0, 0.0)
         for name,pgnum,output in zip(batch[0],batch[1],outputs):
             path = os.path.join(args.output_folder,name)
             if not os.path.exists(path):
                 os.mkdir(path)
-            os.mkdir(os.path.join(path,pgnum))
+            path = os.path.join(path,pgnum)
+            if not os.path.exists(path):
+                os.mkdir(path)
             for i, label in enumerate(labels):
-                to_pil_image(output[i]).save(os.path.join(path,pgnum,f'''{label}{label_extension}'''))
+                to_pil_image(output[i]).save(os.path.join(path,f'''{label}{label_extension}'''))
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')

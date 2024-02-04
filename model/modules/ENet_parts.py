@@ -15,7 +15,7 @@ class InitialBlock(nn.Module):
             activation = nn.PReLU
         self.main_branch = nn.Conv2d(
             in_channels,
-            out_channels - 3,
+            out_channels - in_channels,
             kernel_size=3,
             stride=2,
             padding=1,
@@ -114,9 +114,6 @@ class BottleNeck(nn.Module):
         out = main + ext
         return self.out_activation(out)
             
-    def forward(self,x):
-        return 
-    
 class DownSamplingBottleNeck(nn.Module):
     
     def __init__(self,

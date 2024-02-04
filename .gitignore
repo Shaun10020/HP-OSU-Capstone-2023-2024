@@ -4,6 +4,11 @@ data/
 # Python cache
 __pycache__/
 
+# Output folder
+output/
+*.bmp
+
+# Checkpoint files
+checkpoints/
 *.pt
 
-output/
