@@ -54,12 +54,14 @@ class Train:
     def run_epoch_val(self):
         self.model.eval()
         epoch_loss = 0.0
+        IoU = 0.0
         for batch_data in tqdm(self.val_dataloader):
             inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
             preds = self.model(inputs.float())
             loss = self.criterion(labels,preds)
             epoch_loss += loss.item()
-            self.IoU.append(binary_iou(convertBinary(preds),labels))
+            IoU += binary_iou(convertBinary(preds),labels)
+        self.IoU.append(IoU / len(self.val_dataloader))
         self.epoch_losses_val.append(epoch_loss / len(self.val_dataloader))
             
     def run(self):
@@ -68,7 +70,7 @@ class Train:
             logging.info(f'''Running Epoch {i+1}/{int(self.args.epoch)}...''')
             self.run_epoch()
             self.run_epoch_val()
-            logging.info(f'''Epoch [{i+1}/{int(self.args.epoch)}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}''')
+            logging.info(f'''Epoch [{i+1}/{int(self.args.epoch)}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}, IoU: {self.IoU[-1] * 100:.2f}%''')
             if self.epoch_losses_val[-1] == min(self.epoch_losses_val):
                 save(self.model,self.args)
         logging.info("Done running training script...")
