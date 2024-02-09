@@ -7,6 +7,7 @@ __pycache__/
 # Output folder
 output/
 *.bmp
+plots/
 
 # Checkpoint files
 checkpoints/

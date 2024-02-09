@@ -1,6 +1,8 @@
 import logging
 from tqdm import tqdm
 import torch
+import matplotlib.pyplot as plt
+import os
 
 from config.config import train_val_ratio
 from dataloader.load_data import load_dataloader
@@ -66,3 +68,18 @@ class Train:
             if self.epoch_losses_val[-1] == min(self.epoch_losses_val):
                 save(self.model,self.args)
         logging.info("Done running training script...")
+        
+    
+    def save_plot(self):
+        plt.title("Loss over Epoch")
+        plt.xlabel("Epoch")
+        plt.ylabel("Loss")
+        
+        plt.plot(range(len(self.epoch_losses)),self.epoch_losses,label = "Training Loss")
+        plt.plot(range(len(self.epoch_losses_val)),self.epoch_losses_val,label = "Validation Loss")
+        plt.legend()
+        
+        filename = self.args.model+"-"+self.args.dataset+".png" 
+        if not os.path.exists("plots"):
+            os.mkdir("plots")
+        plt.savefig(os.path.join("plots",filename))

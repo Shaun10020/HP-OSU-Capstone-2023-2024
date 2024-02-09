@@ -28,6 +28,8 @@ def train(model,dataset):
     model = load(model,args)
     test = Test(model,device,test_set,int(args.batch))
     test.run()
+    
+    train.save_plot()
 
 def test(model,dataset):
     model = load(model,args)
