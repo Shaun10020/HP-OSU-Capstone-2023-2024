@@ -1,3 +1,5 @@
+import torch
+
 def binary_iou(pred, target):
     """
     Calculate the Intersection over Union (IoU) for binary segmentation.

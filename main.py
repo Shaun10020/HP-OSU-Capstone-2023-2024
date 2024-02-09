@@ -4,6 +4,7 @@ from config.config import features,labels,duplex_labels,train_test_ratio,label_e
 from dataloader.load_data import SimplexDataset, DuplexDataset, InputSimplexDataset, InputDuplexDataset
 from utils.load_json import load_results
 from utils.save_load_model import load
+from utils.convert import convertBinary
 from model.UNet import UNet
 from model.ENet import ENet
 from model.DeepLabV3 import CustomDeepLabV3
@@ -52,7 +53,7 @@ def inference(model):
     for batch in loader:
         input = batch[2].to(device)
         outputs = model(input.float())
-        outputs = torch.where(outputs > threshold, 1.0, 0.0)
+        outputs = convertBinary(outputs)
         for name,pn,output in zip(batch[0],batch[1],outputs):
             if not json_name:
                 json_name = name

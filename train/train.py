@@ -7,6 +7,8 @@ import os
 from config.config import train_val_ratio
 from dataloader.load_data import load_dataloader
 from utils.save_load_model import save
+from utils.metrics import binary_iou
+from utils.convert import convertBinary
 
 class Train:
     
@@ -32,6 +34,7 @@ class Train:
             self.criterion = torch.nn.CrossEntropyLoss()
         self.epoch_losses = []
         self.epoch_losses_val = []
+        self.IoU = []
         logging.info("Done initialize training script")
 
         
@@ -56,6 +59,7 @@ class Train:
             preds = self.model(inputs.float())
             loss = self.criterion(labels,preds)
             epoch_loss += loss.item()
+            self.IoU.append(binary_iou(convertBinary(preds),labels))
         self.epoch_losses_val.append(epoch_loss / len(self.val_dataloader))
             
     def run(self):
@@ -79,7 +83,16 @@ class Train:
         plt.plot(range(len(self.epoch_losses_val)),self.epoch_losses_val,label = "Validation Loss")
         plt.legend()
         
-        filename = self.args.model+"-"+self.args.dataset+".png" 
+        filename = self.args.model+"-"+self.args.dataset+"-loss.png" 
         if not os.path.exists("plots"):
             os.mkdir("plots")
+        plt.savefig(os.path.join("plots",filename))
+        
+        plt.clf()
+        
+        plt.title("IoU over Epoch")
+        plt.ylabel("IoU")
+        
+        plt.plot(range(len(self.IoU)),self.IoU)
+        filename = self.args.model+"-"+self.args.dataset+"-IoU.png" 
         plt.savefig(os.path.join("plots",filename))
