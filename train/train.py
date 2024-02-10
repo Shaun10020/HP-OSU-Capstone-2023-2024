@@ -1,11 +1,14 @@
 import logging
 from tqdm import tqdm
-from torch import optim
-from torch import nn
-import torch.optim.lr_scheduler as lr_scheduler
+import torch
+import matplotlib.pyplot as plt
+import os
 
-from config.config import train_val_ratio, weight_decay,lr,lr_decay,lr_decay_epochs
+from config.config import train_val_ratio
 from dataloader.load_data import load_dataloader
+from utils.save_load_model import save
+from utils.metrics import binary_iou
+from utils.convert import convertBinary
 
 class Train:
     
@@ -13,32 +16,83 @@ class Train:
                  model,
                  device,
                  dataset,
-                 batch_size,
+                 args,
                  optimizer = None,
-                 lr_updater = None,
                  criterion = None):
-        self.model = model
+        logging.info("Initializing training script...")
         self.device = device
-        self.train_dataloader, self.val_dataloader = load_dataloader(dataset,batch_size,train_val_ratio)
+        self.args = args
+        self.model = model.to(self.device)
+        self.train_dataloader, self.val_dataloader = load_dataloader(dataset,int(args.batch),train_val_ratio)
         if optimizer:
             self.optim = optimizer
         else:
-            self.optim = optim.Adam(model.parameters(), lr=lr,weight_decay=weight_decay)
-        if lr_updater:
-            self.lr_updater = lr_updater  
-        else:
-            self.lr_updater = lr_scheduler.StepLR(self.optim, lr_decay_epochs,lr_decay)
+            self.optim = torch.optim.Adam(model.parameters(), lr=float(args.lr))
         if criterion:
             self.criterion = criterion
         else:
-            self.criterion = nn.CrossEntropyLoss()
+            self.criterion = torch.nn.CrossEntropyLoss()
+        self.epoch_losses = []
+        self.epoch_losses_val = []
+        self.IoU = []
+        logging.info("Done initialize training script")
 
         
     def run_epoch(self):
         self.model.train()
         epoch_loss = 0.0
-        for step, batch_data in enumerate(self.data_loader):
-            None
+        for batch_data in tqdm(self.train_dataloader):
+            self.optim.zero_grad()
+            inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
+            preds = self.model(inputs.float())
+            loss = self.criterion(labels,preds)
+            loss.backward()
+            self.optim.step()
+            epoch_loss += loss.item()
+        self.epoch_losses.append(epoch_loss / len(self.train_dataloader))
         
-    def validate(self):
-        None
+    def run_epoch_val(self):
+        self.model.eval()
+        epoch_loss = 0.0
+        for batch_data in tqdm(self.val_dataloader):
+            inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
+            preds = self.model(inputs.float())
+            loss = self.criterion(labels,preds)
+            epoch_loss += loss.item()
+            self.IoU.append(binary_iou(convertBinary(preds),labels))
+        self.epoch_losses_val.append(epoch_loss / len(self.val_dataloader))
+            
+    def run(self):
+        logging.info("Running training script...")
+        for i in range(int(self.args.epoch)):
+            logging.info(f'''Running Epoch {i+1}/{int(self.args.epoch)}...''')
+            self.run_epoch()
+            self.run_epoch_val()
+            logging.info(f'''Epoch [{i+1}/{int(self.args.epoch)}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}''')
+            if self.epoch_losses_val[-1] == min(self.epoch_losses_val):
+                save(self.model,self.args)
+        logging.info("Done running training script...")
+        
+    
+    def save_plot(self):
+        plt.title("Loss over Epoch")
+        plt.xlabel("Epoch")
+        plt.ylabel("Loss")
+        
+        plt.plot(range(len(self.epoch_losses)),self.epoch_losses,label = "Training Loss")
+        plt.plot(range(len(self.epoch_losses_val)),self.epoch_losses_val,label = "Validation Loss")
+        plt.legend()
+        
+        filename = self.args.model+"-"+self.args.dataset+"-loss.png" 
+        if not os.path.exists("plots"):
+            os.mkdir("plots")
+        plt.savefig(os.path.join("plots",filename))
+        
+        plt.clf()
+        
+        plt.title("IoU over Epoch")
+        plt.ylabel("IoU")
+        
+        plt.plot(range(len(self.IoU)),self.IoU)
+        filename = self.args.model+"-"+self.args.dataset+"-IoU.png" 
+        plt.savefig(os.path.join("plots",filename))
