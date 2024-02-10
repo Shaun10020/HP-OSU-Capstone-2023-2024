@@ -31,7 +31,7 @@ class Train:
         if criterion:
             self.criterion = criterion
         else:
-            self.criterion = torch.nn.CrossEntropyLoss()
+            self.criterion = torch.nn.BCEWithLogitsLoss()
         self.epoch_losses = []
         self.epoch_losses_val = []
         self.IoU = []
@@ -45,7 +45,7 @@ class Train:
             self.optim.zero_grad()
             inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
             preds = self.model(inputs.float())
-            loss = self.criterion(labels,preds)
+            loss = self.criterion(preds,labels)
             loss.backward()
             self.optim.step()
             epoch_loss += loss.item()
@@ -58,7 +58,7 @@ class Train:
         for batch_data in tqdm(self.val_dataloader):
             inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
             preds = self.model(inputs.float())
-            loss = self.criterion(labels,preds)
+            loss = self.criterion(preds,labels)
             epoch_loss += loss.item()
             IoU += binary_iou(convertBinary(preds),labels)
         self.IoU.append(IoU / len(self.val_dataloader))

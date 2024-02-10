@@ -23,7 +23,7 @@ class Test:
         if criterion:
             self.criterion = criterion
         else:
-            self.criterion = nn.CrossEntropyLoss()
+            self.criterion = nn.BCEWithLogitsLoss()
         logging.info("Done initialize testing script")
 
         
@@ -35,9 +35,9 @@ class Test:
         for batch_data in tqdm(self.test_dataloader):
             inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
             preds = self.model(inputs.float())
-            loss = self.criterion(labels,preds)
+            loss = self.criterion(preds,labels)
             epoch_loss += loss.item()
             IoU += binary_iou(convertBinary(preds),labels)
         logging.info(f'''Test Loss: {epoch_loss / len(self.test_dataloader):.4f}''')
-        logging.info(f'''Test IoU: {IoU / len(self.test_dataloader * 100):.2f}%''')
+        logging.info(f'''Test IoU: {IoU / len(self.test_dataloader)* 100:.2f}%''')
         logging.info("Done running testing script...")
