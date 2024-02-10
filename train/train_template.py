@@ -31,6 +31,8 @@ for epoch in range(num_epochs):
       optimizer.zero_grad()
 
       # Forward pass
+      # make sure the output has gone through a sigmoid pass -- 'torch.sigmoid(output)'
+      # in the forward function
       outputs = model(inputs.float())
 
       # Compute loss
