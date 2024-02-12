@@ -1,6 +1,6 @@
 
 from config.args import get_arguments
-from config.config import features,labels,duplex_labels,train_test_ratio,label_extension,threshold
+from config.config import features,labels,duplex_labels,train_test_ratio,label_extension,threshold,random
 from dataloader.load_data import SimplexDataset, DuplexDataset, InputSimplexDataset, InputDuplexDataset
 from utils.load_json import load_results
 from utils.save_load_model import load
@@ -16,13 +16,21 @@ import os
 import torch
 import json
 from torchvision.transforms.functional import to_pil_image
-from torch.utils.data import random_split, DataLoader
+from torch.utils.data import random_split, DataLoader, Subset
 
 args = get_arguments()
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
 def train(model,dataset):
-    train_set, test_set = random_split(dataset,train_test_ratio,torch.Generator())
+    if random:
+        train_set, test_set = random_split(dataset,train_test_ratio,torch.Generator())
+    else:
+        train_size = len(dataset)*train_test_ratio[0]
+        train_set = Subset(dataset,range(int(train_size)))
+        test_set = Subset(dataset,range(int(train_size),len(dataset)))
+    filepath = os.path.join(args.save_folder,f'''{args.model}-{args.dataset}.pt''')
+    if os.path.exists(filepath):
+        model = load(model,args)
     train = Train(model,device,train_set,args)
     train.run()
     

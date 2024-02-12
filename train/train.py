@@ -34,6 +34,7 @@ class Train:
             self.criterion = torch.nn.BCEWithLogitsLoss()
         self.epoch_losses = []
         self.epoch_losses_val = []
+        self.train_IoU = []
         self.IoU = []
         logging.info("Done initialize training script")
 
@@ -41,6 +42,7 @@ class Train:
     def run_epoch(self):
         self.model.train()
         epoch_loss = 0.0
+        IoU = 0.0
         for batch_data in tqdm(self.train_dataloader):
             self.optim.zero_grad()
             inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
@@ -49,6 +51,8 @@ class Train:
             loss.backward()
             self.optim.step()
             epoch_loss += loss.item()
+            IoU += binary_iou(convertBinary(preds),labels)
+        self.train_IoU.append(IoU / len(self.train_dataloader))
         self.epoch_losses.append(epoch_loss / len(self.train_dataloader))
         
     def run_epoch_val(self):
@@ -70,7 +74,7 @@ class Train:
             logging.info(f'''Running Epoch {i+1}/{int(self.args.epoch)}...''')
             self.run_epoch()
             self.run_epoch_val()
-            logging.info(f'''Epoch [{i+1}/{int(self.args.epoch)}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}, IoU: {self.IoU[-1] * 100:.2f}%''')
+            logging.info(f'''Epoch [{i+1}/{int(self.args.epoch)}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}, Train IoU: {self.train_IoU[-1] * 100:.2f}%, IoU: {self.IoU[-1] * 100:.2f}%''')
             if self.epoch_losses_val[-1] == min(self.epoch_losses_val):
                 save(self.model,self.args)
         logging.info("Done running training script...")

@@ -5,7 +5,7 @@ from PIL import Image
 from torch.utils.data import Dataset, DataLoader, random_split
 import logging
 
-from config.config import features,labels,duplex_labels,img_extension,input_height,input_width,output_height,output_width,pin_memory
+from config.config import features,labels,duplex_labels,img_extension,input_height,input_width,output_height,output_width,pin_memory,random
 from utils.check_data import checkInput, checkLabel
 
 class SimplexDataset(Dataset):
@@ -217,7 +217,12 @@ def collate_fn(batch):
 
 def load_dataloader(dataset,batch_size,ratio):
     logging.info("Preparing Dataloader...")
-    train_set, val_set = random_split(dataset,ratio,torch.Generator())
+    if random:
+        train_set, val_set = random_split(dataset,ratio,torch.Generator())
+    else:
+        train_size = len(dataset)*ratio[0]
+        train_set = torch.utils.data.Subset(dataset,range(int(train_size)))
+        val_set = torch.utils.data.Subset(dataset,range(int(train_size),len(dataset)))
     loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=pin_memory)
     train_loader = DataLoader(train_set, shuffle=True, **loader_args)
     val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)

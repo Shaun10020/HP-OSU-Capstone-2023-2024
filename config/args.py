@@ -51,12 +51,12 @@ def get_arguments():
     
     parser.add_argument(
         "--lr",
-        default=5e-5,
+        default=1e-4,
         help=("Learning rate, default is 1e-5"))
     
     parser.add_argument(
         "--batch",
-        default=10,
+        default=5,
         help=("Batch Size, default is 10"))
     
     parser.add_argument(

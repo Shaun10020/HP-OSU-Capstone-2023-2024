@@ -21,7 +21,6 @@ class UNet(nn.Module):
         self.upSampling4 = UpSampling(128, 64)
         
         self.outputConv = OutputConv(64,number_classes)
-        self.output = torch.nn.Sigmoid()
         logging.info("Done initialize UNet Model")
         
     def forward(self,x):
@@ -35,5 +34,4 @@ class UNet(nn.Module):
         x = self.upSampling3(x, x2)
         x = self.upSampling4(x, x1)
         logits = self.outputConv(x)
-        sigmoid = self.output(logits)
-        return sigmoid
+        return logits
