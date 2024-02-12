@@ -81,8 +81,7 @@ class DuplexDataset(Dataset):
                 if checkInput(self.input_folder,pdf_name,pn) and checkLabel(page,self.label_folder,pdf_name):
                     if page['page_num']%2:
                         data = {'page1':page,'name':pdf_name}
-                        if duplex_labels[0] not in page:
-                            self.dataset.append(data)
+                        self.dataset.append(data)
                     elif data['page1']['page_num']+1 == page['page_num'] and data['name'] == pdf_name:
                         data['page2'] = page
                         self.dataset.append(data)

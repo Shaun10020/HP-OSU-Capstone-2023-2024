@@ -1,8 +1,9 @@
 from .modules.ENet_parts import *
-import logging
+import logging 
+
 class ENet(nn.Module):
     
-    def __init__(self, number_features, num_classes, encoder_relu=False, decoder_relu=True):
+    def __init__(self, number_features, num_classes, encoder_relu=True, decoder_relu=True):
         logging.info("Initializing ENet Model...")
         super().__init__()
         self.initial_block = InitialBlock(number_features, 16, relu=encoder_relu)

@@ -10,7 +10,7 @@ def get_arguments():
     parser.add_argument(
         "--input_folder",
         "-i",
-        default="./data/dcdata/cache/DP_a2200_xml_ff2c81d8ad6655f915cbaa558ee7bf9e878730a8",
+        default="./data/cache/DP_a2200_xml_ff2c81d8ad6655f915cbaa558ee7bf9e878730a8",
         help=("Folder to get data from."))
     
     parser.add_argument(
@@ -22,7 +22,7 @@ def get_arguments():
     parser.add_argument(
         "--label_folder",
         "-l",
-        default="./data/dcdata/output/DP_a2200_xml_ff2c81d8ad6655f915cbaa558ee7bf9e878730a8",
+        default="./data/output/DP_a2200_xml_ff2c81d8ad6655f915cbaa558ee7bf9e878730a8",
         help=("Folder to get label from."))
     
     parser.add_argument(
@@ -51,7 +51,7 @@ def get_arguments():
     
     parser.add_argument(
         "--lr",
-        default=1e-5,
+        default=5e-5,
         help=("Learning rate, default is 1e-5"))
     
     parser.add_argument(
