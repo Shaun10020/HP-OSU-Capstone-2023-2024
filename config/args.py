@@ -51,8 +51,19 @@ def get_arguments():
     
     parser.add_argument(
         "--lr",
-        default=1e-4,
-        help=("Learning rate, default is 1e-5"))
+        default=5e-5,
+        help=("Learning rate, default is 5e-5"))
+
+    parser.add_argument(
+        "--lr_decay",
+        default=0.1,
+        help=("Learning rate decay factor, default is 0.1"))
+
+    parser.add_argument(
+        "--lr_epoch",
+        default=50,
+        help="The number of epochs before adjusting the learning rate. "
+        "Default: 100")
     
     parser.add_argument(
         "--batch",

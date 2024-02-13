@@ -4,7 +4,7 @@ import torch
 import matplotlib.pyplot as plt
 import os
 
-from config.config import train_val_ratio
+from config.config import train_val_ratio, target
 from dataloader.load_data import load_dataloader
 from utils.save_load_model import save
 from utils.metrics import binary_iou
@@ -27,11 +27,13 @@ class Train:
         if optimizer:
             self.optim = optimizer
         else:
-            self.optim = torch.optim.Adam(model.parameters(), lr=float(args.lr))
+            self.optim = torch.optim.Adam(model.parameters(), lr=float(args.lr), weight_decay=1e-5)
         if criterion:
             self.criterion = criterion
         else:
             self.criterion = torch.nn.BCELoss()
+        self.lr_updater = torch.optim.lr_scheduler.StepLR(self.optim, args.lr_epoch,
+                                        args.lr_decay)
         self.epoch_losses = []
         self.epoch_losses_val = []
         self.train_IoU = []
@@ -70,13 +72,34 @@ class Train:
             
     def run(self):
         logging.info("Running training script...")
-        for i in range(int(self.args.epoch)):
-            logging.info(f'''Running Epoch {i+1}/{int(self.args.epoch)}...''')
+        if target:
+            epoch = 1
+            logging.info(f'''Running Epoch {epoch}...''')
             self.run_epoch()
+            self.lr_updater.step()
             self.run_epoch_val()
-            logging.info(f'''Epoch [{i+1}/{int(self.args.epoch)}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}, Train IoU: {self.train_IoU[-1] * 100:.2f}%, IoU: {self.IoU[-1] * 100:.2f}%''')
+            logging.info(f'''Epoch [{epoch}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}, Train IoU: {self.train_IoU[-1] * 100:.2f}%, IoU: {self.IoU[-1] * 100:.2f}%''')
+            epoch += 1
             if self.epoch_losses_val[-1] == min(self.epoch_losses_val):
                 save(self.model,self.args)
+            while self.IoU[-1] * 100 < 95.0:
+                logging.info(f'''Running Epoch {epoch}...''')
+                self.run_epoch()
+                self.lr_updater.step()
+                self.run_epoch_val()
+                logging.info(f'''Epoch [{epoch}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}, Train IoU: {self.train_IoU[-1] * 100:.2f}%, IoU: {self.IoU[-1] * 100:.2f}%''')
+                epoch += 1
+                if self.epoch_losses_val[-1] == min(self.epoch_losses_val):
+                    save(self.model,self.args)
+        else:
+            for i in range(int(self.args.epoch)):
+                logging.info(f'''Running Epoch {i+1}/{int(self.args.epoch)}...''')
+                self.run_epoch()
+                self.lr_updater.step()
+                self.run_epoch_val()
+                logging.info(f'''Epoch [{i+1}/{int(self.args.epoch)}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}, Train IoU: {self.train_IoU[-1] * 100:.2f}%, IoU: {self.IoU[-1] * 100:.2f}%''')
+                if self.epoch_losses_val[-1] == min(self.epoch_losses_val):
+                    save(self.model,self.args)
         logging.info("Done running training script...")
         
     
