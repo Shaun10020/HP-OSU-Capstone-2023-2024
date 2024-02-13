@@ -12,11 +12,11 @@ class SimplexDataset(Dataset):
     def __init__(self, input_folder,label_folder,intermediate, transform=None,transform_output=None):   
         logging.info("Preparing SimplexDataset...")
         if transform == None: 
-            self.transform = torchvision.transforms.Resize((input_height,input_width),antialias=True)
+            self.transform = torchvision.transforms.Resize((input_height,input_width),interpolation=0,antialias=True)
         else:
             self.transform = transform
         if transform_output == None: 
-            self.transform_output = torchvision.transforms.Resize((output_height,output_width),antialias=True)
+            self.transform_output = torchvision.transforms.Resize((output_height,output_width),interpolation=0,antialias=True)
         else:
             self.transform_output = transform_output
         self.trans2Tensor = torchvision.transforms.ToTensor()
@@ -56,11 +56,11 @@ class DuplexDataset(Dataset):
     def __init__(self, input_folder,label_folder,intermediate, transform=None,transform_output=None):  
         logging.info("Preparing DuplexDataset...") 
         if transform == None: 
-            self.transform = torchvision.transforms.Resize((input_height,input_width),antialias=True)
+            self.transform = torchvision.transforms.Resize((input_height,input_width),interpolation=0,antialias=True)
         else:
             self.transform = transform
         if transform_output == None: 
-            self.transform_output = torchvision.transforms.Resize((output_height,output_width),antialias=True)
+            self.transform_output = torchvision.transforms.Resize((output_height,output_width),interpolation=0,antialias=True)
         else:
             self.transform_output = transform_output
         self.emptyInputTransform = torchvision.transforms.Compose([torchvision.transforms.ToPILImage(),
@@ -132,7 +132,7 @@ class DuplexDataset(Dataset):
 class InputSimplexDataset(Dataset):
     def __init__(self,args,transform = None):
         if transform == None: 
-            self.transform = torchvision.transforms.Resize((input_height,input_width,),antialias=True)
+            self.transform = torchvision.transforms.Resize((input_height,input_width,),interpolation=0,antialias=True)
         else:
             self.transform = transform
         items = os.listdir(args.input_folder)
@@ -165,7 +165,7 @@ class InputSimplexDataset(Dataset):
 class InputDuplexDataset(Dataset):
     def __init__(self,args,transform = None):
         if transform == None: 
-            self.transform = torchvision.transforms.Resize((input_height,input_width,),antialias=True)
+            self.transform = torchvision.transforms.Resize((input_height,input_width,),interpolation=0,antialias=True)
         else:
             self.transform = transform
         items = os.listdir(args.input_folder)
@@ -224,7 +224,7 @@ def load_dataloader(dataset,batch_size,ratio):
         train_set = torch.utils.data.Subset(dataset,range(int(train_size)))
         val_set = torch.utils.data.Subset(dataset,range(int(train_size),len(dataset)))
     loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=pin_memory)
-    train_loader = DataLoader(train_set, shuffle=True, **loader_args)
+    train_loader = DataLoader(train_set, shuffle=random, **loader_args)
     val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
     logging.info("Done preparing Dataloader")
     return train_loader,val_loader

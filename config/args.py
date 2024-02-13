@@ -57,7 +57,7 @@ def get_arguments():
     parser.add_argument(
         "--batch",
         default=5,
-        help=("Batch Size, default is 10"))
+        help=("Batch Size, default is 5"))
     
     parser.add_argument(
         "--dataset",

@@ -31,7 +31,7 @@ class Train:
         if criterion:
             self.criterion = criterion
         else:
-            self.criterion = torch.nn.BCEWithLogitsLoss()
+            self.criterion = torch.nn.BCELoss()
         self.epoch_losses = []
         self.epoch_losses_val = []
         self.train_IoU = []

@@ -1,9 +1,10 @@
 from .modules.ENet_parts import *
 import logging 
+import torch
 
 class ENet(nn.Module):
     
-    def __init__(self, number_features, num_classes, encoder_relu=True, decoder_relu=True):
+    def __init__(self, number_features, num_classes, encoder_relu=False, decoder_relu=True):
         logging.info("Initializing ENet Model...")
         super().__init__()
         self.initial_block = InitialBlock(number_features, 16, relu=encoder_relu)
@@ -106,6 +107,7 @@ class ENet(nn.Module):
             stride=2,
             padding=1,
             bias=False)
+        self.output = torch.nn.Sigmoid()
         logging.info("Done initialize ENet Model")
 
     def forward(self, x):
@@ -152,4 +154,6 @@ class ENet(nn.Module):
         x = self.upsample5_0(x, max_indices1_0, output_size=stage1_input_size)
         x = self.regular5_1(x)
         x = self.transposed_conv(x, output_size=input_size)
+        
+        x = self.output(x)
         return x
