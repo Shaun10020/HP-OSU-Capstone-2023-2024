@@ -224,7 +224,7 @@ def load_dataloader(dataset,batch_size,ratio):
         train_set = torch.utils.data.Subset(dataset,range(int(train_size)))
         val_set = torch.utils.data.Subset(dataset,range(int(train_size),len(dataset)))
     loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=pin_memory)
-    train_loader = DataLoader(train_set, shuffle=random, **loader_args)
+    train_loader = DataLoader(train_set, shuffle=random, drop_last=True, **loader_args)
     val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
     logging.info("Done preparing Dataloader")
     return train_loader,val_loader
