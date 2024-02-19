@@ -16,5 +16,5 @@ input_width = 300
 output_height = 300
 output_width = 300
 threshold = 0.5
-target = True
+target = False
 random = True

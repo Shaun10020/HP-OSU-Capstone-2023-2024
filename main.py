@@ -48,6 +48,7 @@ def test(model,dataset):
 def inference(model):
     if not os.path.exists(args.output_folder):
         os.mkdir(args.output_folder)
+    model = load(model,args)
     model.eval()
     model.to(device)
     if args.dataset == "simplex":

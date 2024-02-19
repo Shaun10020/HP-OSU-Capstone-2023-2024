@@ -23,7 +23,7 @@ class Test:
         if criterion:
             self.criterion = criterion
         else:
-            self.criterion = nn.BCEWithLogitsLoss()
+            self.criterion = nn.BCELoss()
         logging.info("Done initialize testing script")
 
         
