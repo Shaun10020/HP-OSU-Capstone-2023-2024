@@ -161,7 +161,6 @@ class InputSimplexDataset(Dataset):
             img.append(self.transform(torchvision.io.read_image(data[feature])))
         return tuple((data['name'],data['pn'],torch.cat(img)))
     
-### Placeholder, NOT Done yet !!!!
 class InputDuplexDataset(Dataset):
     def __init__(self,args,transform = None):
         if transform == None: 
