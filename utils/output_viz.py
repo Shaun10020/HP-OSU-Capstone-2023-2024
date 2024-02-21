@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from config.config import labels
+from config.config import labels, duplex_labels
 from utils.convert import convertBinary
 
 def print_output(idx,masks, outputs):
@@ -11,17 +11,19 @@ def print_output(idx,masks, outputs):
     param outputs: the predicted outputs of the test set
     
     '''
+    num_channels = len(masks[idx])
     
-    fig, axs = plt.subplots(2, 3, figsize=(12, 8))
+    _label = labels if num_channels==len(labels) else labels + duplex_labels + labels
+    
+    fig, axs = plt.subplots(2, len(_label), figsize=(12, 8))
 
+    duplex = labels + duplex_labels + labels
 
-    for i in range(len(labels)):
+    for i in range(len(_label)):
         # Display each mask in the first row
         axs[0, i].imshow(masks[idx][i].cpu().detach().numpy(), cmap='gray')
         axs[0, i].axis('off')  # Hide axes for clarity
-        axs[0, i].set_title(labels[i])
-
-        # Display each output in the second row
+        axs[0, i].set_title(_label[i])
         axs[1, i].imshow(outputs[idx][i].cpu().detach().numpy(), cmap='gray')
         axs[1, i].axis('off')  # Hide axes for clarity
 

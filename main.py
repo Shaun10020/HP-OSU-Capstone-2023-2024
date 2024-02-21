@@ -6,7 +6,7 @@ from utils.load_json import load_results
 from utils.save_load_model import load
 from utils.convert import convertBinary
 from model.UNet import UNet
-from model.ENet import ENet
+from model.ENet import ENet, CustomENet
 from model.DeepLabV3 import CustomDeepLabV3
 from train.train import Train
 from train.test import Test
@@ -130,7 +130,8 @@ if __name__ == "__main__":
     if args.model == 'unet':
         model = UNet(n_input,n_output)
     elif args.model == 'enet':
-        model = ENet(n_input,n_output)
+        model = CustomENet(n_input,n_output)
+        # model = ENet(n_input,n_output)
     elif args.model == 'deeplabv3':
         model = CustomDeepLabV3(n_output)
     

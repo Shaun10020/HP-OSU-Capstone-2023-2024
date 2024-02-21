@@ -3,6 +3,7 @@ from tqdm import tqdm
 from torch import nn
 from torch.utils.data import DataLoader
 import os
+import time
 
 from utils.convert import convertBinary
 from utils.metrics import binary_iou
@@ -25,6 +26,7 @@ class Test:
         else:
             self.criterion = nn.BCELoss()
         logging.info("Done initialize testing script")
+        # self.time_per_page = []
 
         
     def run(self):
@@ -34,10 +36,13 @@ class Test:
         IoU = 0.0
         for batch_data in tqdm(self.test_dataloader):
             inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
+            # start = time.time()
             preds = self.model(inputs.float())
+            # self.time_per_page.append(len(inputs)/(time.time() - start))
             loss = self.criterion(preds,labels)
             epoch_loss += loss.item()
             IoU += binary_iou(convertBinary(preds),labels)
         logging.info(f'''Test Loss: {epoch_loss / len(self.test_dataloader):.4f}''')
         logging.info(f'''Test IoU: {IoU / len(self.test_dataloader)* 100:.2f}%''')
+        # logging.info(f'''Test Executing Time: {sum(self.time_per_page) / len(self.time_per_page):.2f} pages per second''')
         logging.info("Done running testing script...")
