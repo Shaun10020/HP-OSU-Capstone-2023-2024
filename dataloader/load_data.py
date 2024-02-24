@@ -5,7 +5,7 @@ from PIL import Image
 from torch.utils.data import Dataset, DataLoader, random_split
 import logging
 
-from config.config import features,labels,duplex_labels,img_extension,input_height,input_width,output_height,output_width,pin_memory,random
+from config.config import features,labels,duplex_labels,img_extension,input_height,input_width,output_height,output_width,pin_memory,random,detect_labels,detect_duplex_labels
 from utils.check_data import checkInput, checkLabel
 
 class SimplexDataset(Dataset):
@@ -19,16 +19,13 @@ class SimplexDataset(Dataset):
             self.transform_output = torchvision.transforms.Resize((output_height,output_width),interpolation=0,antialias=True)
         else:
             self.transform_output = transform_output
-        self.trans2Tensor = torchvision.transforms.ToTensor()
         self.label_folder = label_folder
         self.input_folder = input_folder
         self.dataset = []
         for result in intermediate:
             for page in result:
                 pdf_name = page['pdf_filename'].replace('.pdf','')
-                pn = str(page['page_num'])
-                while len(pn) <4:   
-                    pn = '0'+pn
+                pn = (4-len(str(page['page_num'])))*"0" + str(page['page_num'])
                 if checkInput(self.input_folder,pdf_name,pn) and checkLabel(page,self.label_folder,pdf_name):
                     self.dataset.append({'page':page,'name':pdf_name})
         logging.info("Finished preparing SimplexDataset")
@@ -209,6 +206,113 @@ class InputDuplexDataset(Dataset):
                 img.append(tmp.byte())
         return tuple((data['name'],data['pn'],torch.cat(img)))
 
+class SimplexDetectDataset(Dataset):
+    def __init__(self, input_folder,algorithms, pdf,transform=None):   
+        logging.info("Preparing SimplexDetectDataset...")
+        if transform == None: 
+            self.transform = torchvision.transforms.Resize((input_height,input_width),interpolation=0,antialias=True)
+        else:
+            self.transform = transform
+        self.input_folder = input_folder
+        self.dataset = []
+        for pdf_name ,results in zip(pdf,algorithms):
+            pdf_name = pdf_name.replace('.pdf','')
+            page_num = 0
+            for _results in results:
+                result = _results['results']
+                page_num += 1
+                data = {'name':pdf_name,'page_num':page_num}
+                for characteristic in result:
+                    if characteristic['characteristic'] in detect_labels:
+                        pn = (4-len(str(page_num)))*"0" + str(page_num)
+                        if checkInput(self.input_folder,pdf_name,pn):
+                            if len(characteristic['boundingBoxResults']):
+                                data[characteristic['characteristic']] = 1
+                            else:
+                                data[characteristic['characteristic']] = 0
+                self.dataset.append(data)
+        logging.info("Finished preparing SimplexDetectDataset")
+        logging.info(f'''Total {self.__len__()} samples''')
+            
+    def __len__(self):
+        return len(self.dataset)
+    
+    def __getitem__(self, index):
+        pdf_name = self.dataset[index]['name']
+        pn = (4-len(str(self.dataset[index]['page_num'])))*"0" + str(self.dataset[index]['page_num'])
+        img = []
+        for feature in features:
+            filenamme = feature+"-"+pn+"-grayscale"+img_extension
+            path = os.path.join(self.input_folder,pdf_name,filenamme)
+            img.append(self.transform(torchvision.io.read_image(path)))
+        output = []
+        for label in detect_labels:
+            output.append(torch.Tensor([self.dataset[index][label]]))
+        return tuple((torch.cat(img),torch.cat(output)))
+    
+    
+class DuplexDetectDataset(Dataset):
+    def __init__(self, input_folder,algorithms, pdf,transform=None):   
+        logging.info("Preparing DuplexDetectDataset...")
+        if transform == None: 
+            self.transform = torchvision.transforms.Resize((input_height,input_width),interpolation=0,antialias=True)
+        else:
+            self.transform = transform
+        self.emptyInputTransform = torchvision.transforms.Compose([torchvision.transforms.ToPILImage(),
+                         torchvision.transforms.Resize((input_height,input_width)),
+                         torchvision.transforms.ToTensor()])
+        self.emptyTensor = torch.Tensor(1,1)
+        self.input_folder = input_folder
+        self.dataset = []
+        for pdf_name ,results in zip(pdf,algorithms):
+            pdf_name = pdf_name.replace('.pdf','')
+            page_num = 0
+            for _results in results:
+                result = _results['results']
+                page_num += 1
+                _p = "2"
+                if page_num%2:
+                    data = {'name':pdf_name,'page_num1':page_num}
+                    _p = "1"
+                for characteristic in result:
+                    if characteristic['characteristic'] in detect_labels+detect_duplex_labels:
+                        pn = (4-len(str(page_num)))*"0" + str(page_num)
+                        if checkInput(self.input_folder,pdf_name,pn):
+                            if len(characteristic['boundingBoxResults']):
+                                data[characteristic['characteristic']+_p] = 1
+                            else:
+                                data[characteristic['characteristic']+_p] = 0
+                if not page_num%2:
+                    data['page_num2'] = page_num
+                    self.dataset.append(data)
+        logging.info("Finished preparing DuplexDetectDataset")
+        logging.info(f'''Total {self.__len__()} samples''')
+            
+    def __len__(self):
+        return len(self.dataset)
+    
+    def __getitem__(self, index):
+        pdf_name = self.dataset[index]['name']
+        pn1 = (4-len(str(self.dataset[index]['page_num1'])))*"0" + str(self.dataset[index]['page_num1'])
+        pn2 = (4-len(str(self.dataset[index]['page_num2'])))*"0" + str(self.dataset[index]['page_num2'])
+        img = []
+        for feature in features:
+            filenamme = feature+"-"+pn1+"-grayscale"+img_extension
+            path = os.path.join(self.input_folder,pdf_name,filenamme)
+            img.append(self.transform(torchvision.io.read_image(path)))
+        for feature in features:
+            filenamme = feature+"-"+pn2+"-grayscale"+img_extension
+            path = os.path.join(self.input_folder,pdf_name,filenamme)
+            img.append(self.transform(torchvision.io.read_image(path)))
+        output = []
+        for label in detect_labels:
+            output.append(torch.Tensor([self.dataset[index][label+'1']]))
+        for label in detect_duplex_labels:
+            output.append(torch.Tensor([self.dataset[index][label+'1']]))
+        for label in detect_labels:
+            output.append(torch.Tensor([self.dataset[index][label+'2']]))
+        return tuple((torch.cat(img),torch.cat(output)))
+    
 def collate_fn(batch):
     # Return a tuple instead of a dictionary
     return tuple(torch.stack([x[key] for x in batch]) for key in ['input', 'HighMoistureSimplexPage_bitmap', 'HighMoistureSimplexObject1.3cm_bitmap', 'HighMoistureSimplexObject2.5cm_bitmap'])

@@ -1,12 +1,12 @@
 
 from config.args import get_arguments
 from config.config import features,labels,duplex_labels,train_test_ratio,label_extension,threshold,random
-from dataloader.load_data import SimplexDataset, DuplexDataset, InputSimplexDataset, InputDuplexDataset
+from dataloader.load_data import SimplexDataset, DuplexDataset, InputSimplexDataset, InputDuplexDataset, SimplexDetectDataset, DuplexDetectDataset
 from utils.load_json import load_results
 from utils.save_load_model import load
 from utils.convert import convertBinary
 from model.UNet import UNet
-from model.ENet import ENet, CustomENet
+from model.ENet import ENet
 from model.DeepLabV3 import CustomDeepLabV3
 from train.train import Train
 from train.test import Test
@@ -130,8 +130,7 @@ if __name__ == "__main__":
     if args.model == 'unet':
         model = UNet(n_input,n_output)
     elif args.model == 'enet':
-        model = CustomENet(n_input,n_output)
-        # model = ENet(n_input,n_output)
+        model = ENet(n_input,n_output)
     elif args.model == 'deeplabv3':
         model = CustomDeepLabV3(n_output)
     
