@@ -19,6 +19,7 @@ class SimplexDataset(Dataset):
             self.transform_output = torchvision.transforms.Resize((output_height,output_width),interpolation=0,antialias=True)
         else:
             self.transform_output = transform_output
+        self.trans2Tensor = torchvision.transforms.ToTensor()
         self.label_folder = label_folder
         self.input_folder = input_folder
         self.dataset = []
