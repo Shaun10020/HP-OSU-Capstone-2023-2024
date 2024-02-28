@@ -19,6 +19,7 @@ class SimplexDataset(Dataset):
             self.transform_output = torchvision.transforms.Resize((output_height,output_width),interpolation=0,antialias=True)
         else:
             self.transform_output = transform_output
+        self.trans2Tensor = torchvision.transforms.ToTensor()
         self.label_folder = label_folder
         self.input_folder = input_folder
         self.dataset = []
@@ -43,7 +44,7 @@ class SimplexDataset(Dataset):
         for feature in features:
             filenamme = feature+"-"+pn+"-grayscale"+img_extension
             path = os.path.join(self.input_folder,pdf_name,filenamme)
-            img.append(self.transform(torchvision.io.read_image(path)))
+            img.append(self.transform(torchvision.io.read_image(path)/255))
         output = []
         for label in labels:
             output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page[label])))))
@@ -98,7 +99,7 @@ class DuplexDataset(Dataset):
         for feature in features:
             filenamme = feature+"-"+pn1+"-grayscale"+img_extension
             path = os.path.join(self.input_folder,pdf_name,filenamme)
-            img.append(self.transform(torchvision.io.read_image(path)))
+            img.append(self.transform(torchvision.io.read_image(path)/255))
         for label in labels:
             output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label])))))
         
@@ -109,7 +110,7 @@ class DuplexDataset(Dataset):
             for feature in features:
                 filenamme = feature+"-"+pn2+"-grayscale"+img_extension
                 path = os.path.join(self.input_folder,pdf_name,filenamme)
-                img.append(self.transform(torchvision.io.read_image(path)))
+                img.append(self.transform(torchvision.io.read_image(path)/255))
             for label in duplex_labels:
                 output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label])))))
             for label in labels:
@@ -155,7 +156,7 @@ class InputSimplexDataset(Dataset):
         data = self.dataset[index]
         img = []
         for feature in features:
-            img.append(self.transform(torchvision.io.read_image(data[feature])))
+            img.append(self.transform(torchvision.io.read_image(data[feature])/255))
         return tuple((data['name'],data['pn'],torch.cat(img)))
     
 class InputDuplexDataset(Dataset):
@@ -196,10 +197,10 @@ class InputDuplexDataset(Dataset):
         data = self.dataset[index]
         img = []
         for feature in features:
-            img.append(self.transform(torchvision.io.read_image(data[feature+"1"])))
+            img.append(self.transform(torchvision.io.read_image(data[feature+"1"])/255))
         if features[0]+"2" in data:
             for feature in features:
-                img.append(self.transform(torchvision.io.read_image(data[feature+"2"])))
+                img.append(self.transform(torchvision.io.read_image(data[feature+"2"])/255))
         else:
             for feature in features:
                 tmp = self.emptyInputTransform(torch.Tensor(1,1))
@@ -244,7 +245,7 @@ class SimplexDetectDataset(Dataset):
         for feature in features:
             filenamme = feature+"-"+pn+"-grayscale"+img_extension
             path = os.path.join(self.input_folder,pdf_name,filenamme)
-            img.append(self.transform(torchvision.io.read_image(path)))
+            img.append(self.transform(torchvision.io.read_image(path)/255))
         output = []
         for label in detect_labels:
             output.append(torch.Tensor([self.dataset[index][label]]))
@@ -299,11 +300,11 @@ class DuplexDetectDataset(Dataset):
         for feature in features:
             filenamme = feature+"-"+pn1+"-grayscale"+img_extension
             path = os.path.join(self.input_folder,pdf_name,filenamme)
-            img.append(self.transform(torchvision.io.read_image(path)))
+            img.append(self.transform(torchvision.io.read_image(path)/255))
         for feature in features:
             filenamme = feature+"-"+pn2+"-grayscale"+img_extension
             path = os.path.join(self.input_folder,pdf_name,filenamme)
-            img.append(self.transform(torchvision.io.read_image(path)))
+            img.append(self.transform(torchvision.io.read_image(path)/255))
         output = []
         for label in detect_labels:
             output.append(torch.Tensor([self.dataset[index][label+'1']]))

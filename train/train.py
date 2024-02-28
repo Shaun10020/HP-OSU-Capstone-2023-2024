@@ -3,6 +3,7 @@ from tqdm import tqdm
 import torch
 import matplotlib.pyplot as plt
 import os
+import csv
 
 from config.config import train_val_ratio, target
 from dataloader.load_data import load_dataloader
@@ -100,6 +101,11 @@ class Train:
                 logging.info(f'''Epoch [{i+1}/{int(self.args.epoch)}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}, Train IoU: {self.train_IoU[-1] * 100:.2f}%, IoU: {self.IoU[-1] * 100:.2f}%''')
                 if self.epoch_losses_val[-1] == min(self.epoch_losses_val):
                     save(self.model,self.args)
+        with open(f'''{self.args.model}-{self.args.dataset}-train-epoch.csv''','w') as fd:
+            writer = csv.writer(fd)
+            writer.writerow(['Epoch','Train Loss','Validation Loss','Train IoU','Validation IoU'])
+            for i,(train_loss,validation_loss,train_iou,validation_iou) in enumerate(zip(self.epoch_losses,self.epoch_losses_val,self.train_IoU,self.IoU)):
+                writer.writerow(i+1,train_loss,validation_loss,train_iou*100,validation_iou*100)
         logging.info("Done running training script...")
         
     

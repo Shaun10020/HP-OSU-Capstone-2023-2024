@@ -61,9 +61,9 @@ def get_arguments():
 
     parser.add_argument(
         "--lr_epoch",
-        default=50,
+        default=10,
         help="The number of epochs before adjusting the learning rate. "
-        "Default: 100")
+        "Default: 10")
     
     parser.add_argument(
         "--batch",
@@ -73,7 +73,7 @@ def get_arguments():
     parser.add_argument(
         "--dataset",
         choices=["simplex","duplex"],
-        default="duplex",
+        default="simplex",
         help=("Dataset, choose from 'simplex' or 'duplex'"))
 
     return parser.parse_args()
