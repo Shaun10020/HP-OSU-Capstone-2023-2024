@@ -35,14 +35,14 @@ def train(model,dataset):
     train.run()
     
     model = load(model,args)
-    test = Test(model,device,test_set,int(args.batch))
+    test = Test(model,device,test_set,int(args.batch),args)
     test.run()
     
     train.save_plot()
 
 def test(model,dataset):
     model = load(model,args)
-    test = Test(model,device,dataset,int(args.batch))
+    test = Test(model,device,dataset,int(args.batch),args)
     test.run()
 
 def inference(model):

@@ -105,7 +105,7 @@ class Train:
             writer = csv.writer(fd)
             writer.writerow(['Epoch','Train Loss','Validation Loss','Train IoU','Validation IoU'])
             for i,(train_loss,validation_loss,train_iou,validation_iou) in enumerate(zip(self.epoch_losses,self.epoch_losses_val,self.train_IoU,self.IoU)):
-                writer.writerow(i+1,train_loss,validation_loss,train_iou*100,validation_iou*100)
+                writer.writerow([i+1,train_loss,validation_loss,train_iou*100,validation_iou*100])
         logging.info("Done running training script...")
         
     
