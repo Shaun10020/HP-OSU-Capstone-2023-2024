@@ -29,7 +29,7 @@ class Test:
         else:
             self.criterion = nn.BCELoss()
         logging.info("Done initialize testing script")
-        # self.time_per_page = []
+        self.time_per_page = []
 
         
     def run(self):
@@ -39,9 +39,9 @@ class Test:
         IoU = 0.0
         for batch_data in tqdm(self.test_dataloader):
             inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
-            # start = time.time()
+            start = time.time()
             preds = self.model(inputs.float())
-            # self.time_per_page.append(len(inputs)/(time.time() - start))
+            self.time_per_page.append(len(inputs)/(time.time() - start))
             loss = self.criterion(preds,labels)
             epoch_loss += loss.item()
             IoU += binary_iou(convertBinary(preds),labels)
@@ -49,7 +49,7 @@ class Test:
         logging.info(f'''Test IoU: {IoU / len(self.test_dataloader)* 100:.2f}%''')
         with open(f'''{self.args.model}-{self.args.dataset}-test.csv''','w') as fd:
             writer = csv.writer(fd)
-            writer.writerow(['Test Loss','Test IoU'])
-            writer.writerow([epoch_loss / len(self.test_dataloader),IoU / len(self.test_dataloader)*100])
-        # logging.info(f'''Test Executing Time: {sum(self.time_per_page) / len(self.time_per_page):.2f} pages per second''')
+            writer.writerow(['Test Loss','Test IoU','Test Running Time'])
+            writer.writerow([epoch_loss / len(self.test_dataloader),IoU / len(self.test_dataloader)*100,sum(self.time_per_page) / len(self.time_per_page)])
+        logging.info(f'''Test Executing Time: {sum(self.time_per_page) / len(self.time_per_page):.2f} pages per second''')
         logging.info("Done running testing script...")
