@@ -4,7 +4,7 @@ import torch
 
 class ENet(nn.Module):
     
-    def __init__(self, number_features, num_classes, encoder_relu=False, decoder_relu=True):
+    def __init__(self, number_features, num_classes, encoder_relu=True, decoder_relu=True):
         logging.info("Initializing ENet Model...")
         super().__init__()
         self.initial_block = InitialBlock(number_features, 16, relu=encoder_relu)
@@ -149,6 +149,70 @@ class ENet(nn.Module):
         x = self.upsample4_0(x, max_indices2_0, output_size=stage2_input_size)
         x = self.regular4_1(x)
         x = self.regular4_2(x)
+
+        # Stage 5 - Decoder
+        x = self.upsample5_0(x, max_indices1_0, output_size=stage1_input_size)
+        x = self.regular5_1(x)
+        x = self.transposed_conv(x, output_size=input_size)
+        
+        x = self.output(x)
+        return x
+
+from .modules.ENet_parts import *
+import logging 
+import torch
+
+class CustomENet1(nn.Module):
+    
+    def __init__(self, number_features, num_classes, encoder_relu=True, decoder_relu=True):
+        logging.info("Initializing ENet Model...")
+        super().__init__()
+        self.initial_block = InitialBlock(number_features, 16, relu=encoder_relu)
+
+        # Stage 1 - Encoder
+        self.downsample1_0 = DownSamplingBottleNeck(
+            16,
+            64,
+            return_indices=True,
+            dropout_prob=0.01,
+            relu=encoder_relu)
+        self.regular1_1 = BottleNeck(
+            64, padding=1, dropout_prob=0.01, relu=encoder_relu)
+        self.regular1_2 = BottleNeck(
+            64, padding=1, dropout_prob=0.01, relu=encoder_relu)
+        self.regular1_3 = BottleNeck(
+            64, padding=1, dropout_prob=0.01, relu=encoder_relu)
+        self.regular1_4 = BottleNeck(
+            64, padding=1, dropout_prob=0.01, relu=encoder_relu)
+
+
+        # Stage 5 - Decoder
+        self.upsample5_0 = UpSamplingBottleNeck(
+            64, 16, dropout_prob=0.1, relu=decoder_relu)
+        self.regular5_1 = BottleNeck(
+            16, padding=1, dropout_prob=0.1, relu=decoder_relu)
+        self.transposed_conv = nn.ConvTranspose2d(
+            16,
+            num_classes,
+            kernel_size=3,
+            stride=2,
+            padding=1,
+            bias=False)
+        self.output = torch.nn.Sigmoid()
+        logging.info("Done initialize ENet Model")
+
+    def forward(self, x):
+        # Initial block
+        input_size = x.size()
+        x = self.initial_block(x)
+
+        # Stage 1 - Encoder
+        stage1_input_size = x.size()
+        x, max_indices1_0 = self.downsample1_0(x)
+        x = self.regular1_1(x)
+        x = self.regular1_2(x)
+        x = self.regular1_3(x)
+        x = self.regular1_4(x)
 
         # Stage 5 - Decoder
         x = self.upsample5_0(x, max_indices1_0, output_size=stage1_input_size)

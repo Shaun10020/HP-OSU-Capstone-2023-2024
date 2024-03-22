@@ -33,9 +33,9 @@ def get_arguments():
     
     parser.add_argument(
         "--model",
-        choices=["unet","enet","deeplabv3"],
+        choices=["unet","enet","deeplabv3","customunet1","customenet1"],
         default="unet",
-        help=("Choose from 'unet', 'enet' or 'deeplabv3'"))
+        help=("Choose from 'unet', 'customunet1','enet','customenet1' or 'deeplabv3'"))
 
     parser.add_argument(
         "--mode",
@@ -61,9 +61,9 @@ def get_arguments():
 
     parser.add_argument(
         "--lr_epoch",
-        default=10,
+        default=50,
         help="The number of epochs before adjusting the learning rate. "
-        "Default: 10")
+        "Default: 50")
     
     parser.add_argument(
         "--batch",
