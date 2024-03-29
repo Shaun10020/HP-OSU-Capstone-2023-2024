@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 import os
 import csv
 
-from config.config import train_val_ratio, target
-from dataloader.load_data import load_dataloader
+from config.config import target
 from utils.save_load_model import save
 from utils.metrics import binary_iou
 from utils.convert import convertBinary
@@ -16,7 +15,8 @@ class Train:
     def __init__(self,
                  model,
                  device,
-                 dataset,
+                 train_dataloader,
+                 val_dataloader,
                  args,
                  optimizer = None,
                  criterion = None):
@@ -24,7 +24,7 @@ class Train:
         self.device = device
         self.args = args
         self.model = model.to(self.device)
-        self.train_dataloader, self.val_dataloader = load_dataloader(dataset,int(args.batch),train_val_ratio)
+        self.train_dataloader, self.val_dataloader = train_dataloader, val_dataloader
         if optimizer:
             self.optim = optimizer
         else:

@@ -5,7 +5,22 @@ from PIL import Image
 from torch.utils.data import Dataset, DataLoader, random_split
 import logging
 
-from config.config import features,labels,duplex_labels,img_extension,input_height,input_width,output_height,output_width,pin_memory,random,detect_labels,detect_duplex_labels
+from config.config import (features,
+                           labels,
+                           duplex_labels,
+                           img_extension,
+                           input_height,
+                           input_width,
+                           output_height,
+                           output_width,
+                           pin_memory,
+                           detect_labels,
+                           detect_duplex_labels,
+                           train_test_ratio,
+                           train_val_ratio,
+                           train_dataloader_name,
+                           val_dataloader_name,
+                           test_dataloader_name)
 from utils.check_data import checkInput, checkLabel
 
 class SimplexDataset(Dataset):
@@ -319,16 +334,27 @@ def collate_fn(batch):
     return tuple(torch.stack([x[key] for x in batch]) for key in ['input', 'HighMoistureSimplexPage_bitmap', 'HighMoistureSimplexObject1.3cm_bitmap', 'HighMoistureSimplexObject2.5cm_bitmap'])
 
 
-def load_dataloader(dataset,batch_size,ratio):
+def load_dataloader(dataset,data_type,batch_size):
     logging.info("Preparing Dataloader...")
-    if random:
-        train_set, val_set = random_split(dataset,ratio,torch.Generator())
+    batch_size = int(batch_size)
+    if not os.path.exists('./dataloader'):
+        os.mkdir('./dataloader')
+    path = os.path.join('./dataloader',data_type)
+    if not os.path.exists(path):
+        os.mkdir(path)
+    if not os.path.exists(os.path.join(path,train_dataloader_name)) or not os.path.exists(os.path.join(path,val_dataloader_name)) or not os.path.exists(os.path.join(path,test_dataloader_name)):
+        train_set, test_set = random_split(dataset,train_test_ratio,torch.Generator())
+        train_set, val_set = random_split(train_set,train_val_ratio,torch.Generator())
+        loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=pin_memory)
+        train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
+        val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
+        test_loader = DataLoader(test_set, shuffle=False, **loader_args)
+        torch.save(train_loader,os.path.join(path,train_dataloader_name))
+        torch.save(val_loader,os.path.join(path,val_dataloader_name))
+        torch.save(test_loader,os.path.join(path,test_dataloader_name))
     else:
-        train_size = len(dataset)*ratio[0]
-        train_set = torch.utils.data.Subset(dataset,range(int(train_size)))
-        val_set = torch.utils.data.Subset(dataset,range(int(train_size),len(dataset)))
-    loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=pin_memory)
-    train_loader = DataLoader(train_set, shuffle=random, drop_last=True, **loader_args)
-    val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
+        train_loader = torch.load(os.path.join(path,train_dataloader_name))
+        val_loader = torch.load(os.path.join(path,val_dataloader_name))
+        test_loader = torch.load(os.path.join(path,test_dataloader_name))
     logging.info("Done preparing Dataloader")
-    return train_loader,val_loader
+    return train_loader,val_loader,test_loader

@@ -8,8 +8,11 @@ __pycache__/
 output/
 *.bmp
 plots/
+*.csv
 
 # Checkpoint files
 checkpoints/
 *.pt
 
+# backup files
+backup/

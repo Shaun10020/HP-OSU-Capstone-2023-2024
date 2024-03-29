@@ -19,4 +19,7 @@ output_height = 300
 output_width = 300
 threshold = 0.5
 target = False
-random = True
+
+train_dataloader_name = 'Train_loader.pth'
+val_dataloader_name = 'Validation_loader.pth'
+test_dataloader_name = 'Test_loader.pth'

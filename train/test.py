@@ -1,29 +1,24 @@
 import logging
 from tqdm import tqdm
 from torch import nn
-from torch.utils.data import DataLoader
-import os
 import time
 import csv
 
 from utils.convert import convertBinary
 from utils.metrics import binary_iou
-from config.config import pin_memory
 class Test:
     
     def __init__(self,
                  model,
                  device,
-                 dataset,
-                 batch_size,
+                 dataloader,
                  args,
                  criterion = None):
         logging.info("Initializing testing script...")
         self.device = device
         self.args = args
         self.model = model.to(self.device)
-        loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=pin_memory)
-        self.test_dataloader = DataLoader(dataset, shuffle=True, **loader_args)
+        self.test_dataloader = dataloader
         if criterion:
             self.criterion = criterion
         else:
@@ -41,7 +36,9 @@ class Test:
             inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
             start = time.time()
             preds = self.model(inputs.float())
-            self.time_per_page.append(len(inputs)/(time.time() - start))
+            end = time.time()
+            if end - start != 0 :
+                self.time_per_page.append(len(inputs)/(end - start))
             loss = self.criterion(preds,labels)
             epoch_loss += loss.item()
             IoU += binary_iou(convertBinary(preds),labels)

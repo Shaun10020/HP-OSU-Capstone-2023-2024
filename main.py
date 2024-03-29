@@ -1,7 +1,10 @@
 
 from config.args import get_arguments
-from config.config import features,labels,duplex_labels,train_test_ratio,label_extension,threshold,random
-from dataloader.load_data import SimplexDataset, DuplexDataset, InputSimplexDataset, InputDuplexDataset, SimplexDetectDataset, DuplexDetectDataset
+from config.config import (features,
+                           labels,
+                           duplex_labels,
+                           label_extension)
+from dataloader.load_data import SimplexDataset, DuplexDataset, InputSimplexDataset, InputDuplexDataset, load_dataloader
 from utils.load_json import load_results
 from utils.save_load_model import load
 from utils.convert import convertBinary
@@ -16,33 +19,29 @@ import os
 import torch
 import json
 from torchvision.transforms.functional import to_pil_image
-from torch.utils.data import random_split, DataLoader, Subset
+from torch.utils.data import DataLoader
 
 args = get_arguments()
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 
 def train(model,dataset):
-    if random:
-        train_set, test_set = random_split(dataset,train_test_ratio,torch.Generator())
-    else:
-        train_size = len(dataset)*train_test_ratio[0]
-        train_set = Subset(dataset,range(int(train_size)))
-        test_set = Subset(dataset,range(int(train_size),len(dataset)))
+    train_dataloader,val_dataloader,test_dataloader = load_dataloader(dataset,args.dataset,args.batch)
     filepath = os.path.join(args.save_folder,f'''{args.model}-{args.dataset}.pt''')
     if os.path.exists(filepath):
         model = load(model,args)
-    train = Train(model,device,train_set,args)
+    train = Train(model,device,train_dataloader,val_dataloader,args)
     train.run()
     
     model = load(model,args)
-    test = Test(model,device,test_set,int(args.batch),args)
+    test = Test(model,device,test_dataloader,args)
     test.run()
     
     train.save_plot()
 
 def test(model,dataset):
     model = load(model,args)
-    test = Test(model,device,dataset,int(args.batch),args)
+    _,_,test_dataloader = load_dataloader(dataset,args.dataset,args.batch)
+    test = Test(model,device,test_dataloader,args)
     test.run()
 
 def inference(model):
@@ -134,9 +133,9 @@ if __name__ == "__main__":
     elif args.model == 'deeplabv3':
         model = CustomDeepLabV3(n_output)
     elif args.model == 'customunet1':
-        model = CustomUNet1(n_output)
+        model = CustomUNet1(n_input,n_output)
     elif args.model == 'customenet1':
-        model = CustomENet1(n_output)
+        model = CustomENet1(n_input,n_output)
     
     if args.mode == 'train':
         train(model,dataset)
