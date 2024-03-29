@@ -12,7 +12,7 @@ plots/
 
 # Checkpoint files
 checkpoints/
-*.pt
+*.pth
 
 # backup files
 backup/
