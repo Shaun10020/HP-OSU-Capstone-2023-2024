@@ -1,8 +1,12 @@
 from argparse import ArgumentParser
 
+'''
+This script is reponsible for setting up argument parser object, default value
+'''
 
 def get_arguments():
-    """Defines command-line arguments, and parses them.
+    """
+    Defines command-line arguments, and parses them.
 
     """
     parser = ArgumentParser()

@@ -5,6 +5,10 @@ import torch.nn.functional as F
 import torch.optim as optim
 import torchvision.models.segmentation as segmentation
 
+'''
+This is the DeepLabV3 or DeepLabV3 realated architectures
+'''
+
 class CustomDeepLabV3(nn.Module):
     def __init__(self, num_classes=3):
         super(CustomDeepLabV3, self).__init__()

@@ -1,7 +1,16 @@
 from .modules.UNet_parts import *
 import logging
 
+'''
+This is the Unet or Unet realated architectures
+'''
 class UNet(nn.Module):
+    """UNet model
+
+    Args:
+        number_features (int): This the number of input channels 
+        number_claasses (int): This the number of output channels
+    """
     
     def __init__(self,number_features,number_classes):
         logging.info("Initializing UNet Model...")
@@ -40,6 +49,12 @@ class UNet(nn.Module):
     
     
 class CustomUNet1(nn.Module):
+    """Custom UNet model
+
+    Args:
+        number_features (int): This the number of input channels 
+        number_claasses (int): This the number of output channels
+    """
     
     def __init__(self,number_features,number_classes):
         logging.info("Initializing UNet Model...")

@@ -24,8 +24,24 @@ from config.config import (features,
 from utils.check_data import checkInput, checkLabel
 
 class SimplexDataset(Dataset):
-    def __init__(self, input_folder,label_folder,intermediate, transform=None,transform_output=None):   
+    '''
+    This class is for simplex, which each data instance represent a page
+    '''
+    
+    def __init__(self, input_folder,label_folder,intermediate, transform=None,transform_output=None):
+        '''
+        This function is the initialization of the dataset object
+        
+        param input_folder: The filepath to the root folder contains input/channel images
+        param label_folder: The filepath to the root folder contains label/mask images
+        param intermediate: A list of intermediate results from json files
+        param transform: Transformation function for input images 
+        param transform_output: Transformation function for label images
+        
+        '''   
         logging.info("Preparing SimplexDataset...")
+        
+        ## Setting up default transformation if it is None
         if transform == None: 
             self.transform = torchvision.transforms.Resize((input_height,input_width),interpolation=0,antialias=True)
         else:
@@ -35,9 +51,13 @@ class SimplexDataset(Dataset):
         else:
             self.transform_output = transform_output
         self.trans2Tensor = torchvision.transforms.ToTensor()
+        
+        ## Initialization
         self.label_folder = label_folder
         self.input_folder = input_folder
         self.dataset = []
+        
+        ## For each intermediate result, check if it is valid and then append to the dataset list
         for result in intermediate:
             for page in result:
                 pdf_name = page['pdf_filename'].replace('.pdf','')
@@ -51,23 +71,53 @@ class SimplexDataset(Dataset):
         return len(self.dataset)
     
     def __getitem__(self, index):
+        '''
+        This function is used to get the data given index of it in the dataset list
+        
+        param: index of the data in the dataset list
+        
+        Return:
+        Tuplex: Tensor array with number of channels x height x width, Tensor array with number of characteristics x height x width
+        '''
+        
+        ## get the page info
         pn = str(self.dataset[index]['page']['page_num'])
         pdf_name = self.dataset[index]['name']
         page = self.dataset[index]['page']
         pn = (4-len(str(page['page_num'])))*"0" + str(pn)
+        
+        ## append the page's channel images
         img = []
         for feature in features:
             filenamme = feature+"-"+pn+"-grayscale"+img_extension
             path = os.path.join(self.input_folder,pdf_name,filenamme)
             img.append(self.transform(torchvision.io.read_image(path)/255))
+            
+        ## append the page's label images
         output = []
         for label in labels:
             output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page[label])))))
         return tuple((torch.cat(img),torch.cat(output)))
     
 class DuplexDataset(Dataset):
-    def __init__(self, input_folder,label_folder,intermediate, transform=None,transform_output=None):  
+    '''
+    This class is for duplex , which each data instance represent 2 pages
+    '''
+    
+    def __init__(self, input_folder,label_folder,intermediate, transform=None,transform_output=None):
+        '''
+        This function is the initialization of the dataset object
+        
+        param input_folder: The filepath to the root folder contains input/channel images
+        param label_folder: The filepath to the root folder contains label/mask images
+        param intermediate: A list of intermediate results from json files
+        param transform: Transformation function for input images 
+        param transform_output: Transformation function for label images
+        
+        '''   
         logging.info("Preparing DuplexDataset...") 
+        
+        ## Setting up default transformation if it is None
         if transform == None: 
             self.transform = torchvision.transforms.Resize((input_height,input_width),interpolation=0,antialias=True)
         else:
@@ -83,18 +133,27 @@ class DuplexDataset(Dataset):
                          torchvision.transforms.Resize((output_height,output_width)),
                          torchvision.transforms.ToTensor()])
         self.trans2Tensor = torchvision.transforms.ToTensor()
+        
+        ## Initialization
         self.label_folder = label_folder
         self.input_folder = input_folder
         self.dataset = []
+        
+        ## For each intermediate result, check if it is valid and then append to the dataset list
         for result in intermediate:
             data = {}
             for page in result:
                 pdf_name = page['pdf_filename'].replace('.pdf','')
                 pn = (4-len(str(page['page_num'])))*"0" + str(page['page_num'])
                 if checkInput(self.input_folder,pdf_name,pn) and checkLabel(page,self.label_folder,pdf_name):
+                    
+                    ## When it is odd pages (assume odd pages will be the 'first' page), initialize data variable with first page info 
                     if page['page_num']%2:
                         data = {'page1':page,'name':pdf_name}
+                        ## append with only first page info, to create more data with missing second page samples in the dataset
                         self.dataset.append(data)
+                    
+                    ## When it is even pages (assume even pages will be the 'second' page), append second page info to data, and then append to dataset
                     elif data['page1']['page_num']+1 == page['page_num'] and data['name'] == pdf_name:
                         data['page2'] = page
                         self.dataset.append(data)
@@ -105,19 +164,34 @@ class DuplexDataset(Dataset):
         return len(self.dataset)
     
     def __getitem__(self, index):
+        '''
+        This function is used to get the data given index of it in the dataset list
+        
+        param: index of the data in the dataset list
+        
+        Return:
+        Tuplex: Tensor array with number of channels x height x width, Tensor array with number of characteristics x height x width
+        '''
+        
+        ## get the page info
         pdf_name = self.dataset[index]['name']
         page1 = self.dataset[index]['page1']
         pn1 = str(self.dataset[index]['page1']['page_num'])
         pn1 = (4-len(str(pn1)))*"0" + str(pn1)
+        
+        ## append the page's channel images
         img = []
-        output = []
         for feature in features:
             filenamme = feature+"-"+pn1+"-grayscale"+img_extension
             path = os.path.join(self.input_folder,pdf_name,filenamme)
             img.append(self.transform(torchvision.io.read_image(path)/255))
+            
+        ## append the page's label images (simplex characteristics only)
+        output = []
         for label in labels:
             output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label])))))
         
+        ## append the page's channel and label images (duplex characteristics)
         if 'page2' in self.dataset[index]:
             pn2 = str(self.dataset[index]['page2']['page_num'])
             page2 = self.dataset[index]['page2']
@@ -130,6 +204,8 @@ class DuplexDataset(Dataset):
                 output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label])))))
             for label in labels:
                 output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page2[label])))))
+                
+        ## When there is no second page, create empty tensor arrays to substitiute as second page
         else:
             for feature in features:
                 tmp = self.emptyInputTransform(torch.Tensor(1,1))
@@ -143,12 +219,28 @@ class DuplexDataset(Dataset):
         return tuple((torch.cat(img),torch.cat(output)))
 
 class InputSimplexDataset(Dataset):
+    '''
+    This class is for simplex, which each data instance represent a page, and only load inputs without ground true images, 
+    it is intended to use it to output predicted masked images only
+    '''
     def __init__(self,args,transform = None):
+        '''
+        This function is the initialization of the dataset object
+        
+        param args: arg object that has 'input_folder'
+        param transform: Transformation function for input images 
+        '''
+        
+        ## Setting up default transformation if it is None
         if transform == None: 
             self.transform = torchvision.transforms.Resize((input_height,input_width,),interpolation=0,antialias=True)
         else:
             self.transform = transform
+            
+        ## Initialization
         items = os.listdir(args.input_folder)
+        
+        ## Check if all the channels exists before adding them to dataset list 
         self.dataset = []
         for item in items:
             path = os.path.join(args.input_folder,item)
@@ -168,6 +260,15 @@ class InputSimplexDataset(Dataset):
         return len(self.dataset)
     
     def __getitem__(self,index):
+        '''
+        This function is used to get the data given index of it in the dataset list
+        param: index of the data in the dataset list
+        
+        Return:
+        Tuplex: pdf name, pdf page number, Tensor array with number of channels x height x width
+        '''
+        
+        ## append each channel image
         data = self.dataset[index]
         img = []
         for feature in features:
@@ -175,15 +276,32 @@ class InputSimplexDataset(Dataset):
         return tuple((data['name'],data['pn'],torch.cat(img)))
     
 class InputDuplexDataset(Dataset):
+    '''
+    This class is for duplex, which each data instance represent 2 pages, and only load inputs without ground true images, 
+    it is intended to use it to output predicted masked images only
+    '''
+    
     def __init__(self,args,transform = None):
+        '''
+        This function is the initialization of the dataset object
+        
+        param args: arg object that has 'input_folder'
+        param transform: Transformation function for input images 
+        '''
+        
+        ## Setting up default transformation if it is None
         if transform == None: 
             self.transform = torchvision.transforms.Resize((input_height,input_width,),interpolation=0,antialias=True)
         else:
             self.transform = transform
-        items = os.listdir(args.input_folder)
         self.emptyInputTransform = torchvision.transforms.Compose([torchvision.transforms.ToPILImage(),
                          torchvision.transforms.Resize((input_height,input_width)),
                          torchvision.transforms.ToTensor()])
+        
+        ## Initialization
+        items = os.listdir(args.input_folder)
+        
+        ## Check if all the channels exists before adding them to dataset list 
         self.dataset = []
         for item in items:
             path = os.path.join(args.input_folder,item)
@@ -209,10 +327,19 @@ class InputDuplexDataset(Dataset):
         return len(self.dataset)
     
     def __getitem__(self,index):
+        '''
+        This function is used to get the data given index of it in the dataset list
+
+        param: index of the data in the dataset list
+        
+        Return:
+        Tuplex: pdf name, pdf page number, Tensor array with number of channels x height x width
+        '''
         data = self.dataset[index]
         img = []
         for feature in features:
             img.append(self.transform(torchvision.io.read_image(data[feature+"1"])/255))
+        ## check if second page exists, if yes, append them, if not, append empty tensor arrays.
         if features[0]+"2" in data:
             for feature in features:
                 img.append(self.transform(torchvision.io.read_image(data[feature+"2"])/255))
@@ -223,13 +350,30 @@ class InputDuplexDataset(Dataset):
         return tuple((data['name'],data['pn'],torch.cat(img)))
 
 class SimplexDetectDataset(Dataset):
+    '''
+    This class is for simplex dataset, which each data instance represent a page, and only load inputs without ground true images
+    '''
     def __init__(self, input_folder,algorithms, pdf,transform=None):   
+        '''
+        This function is the initialization of the dataset object
+        
+        param input_folder:  The filepath to the root folder contains input/channel images
+        param algorithms: A list of algorithms results from the 'results' json files
+        param pdf: a list of pdf name
+        param transform: Transformation function for input images 
+        '''
         logging.info("Preparing SimplexDetectDataset...")
+        
+        ## Setting up default transformation if it is None
         if transform == None: 
             self.transform = torchvision.transforms.Resize((input_height,input_width),interpolation=0,antialias=True)
         else:
             self.transform = transform
+
+        ## Initialization
         self.input_folder = input_folder
+        
+        ## for each algorithms result, check if it has valid input, then append it to the dataset list
         self.dataset = []
         for pdf_name ,results in zip(pdf,algorithms):
             pdf_name = pdf_name.replace('.pdf','')
@@ -254,13 +398,27 @@ class SimplexDetectDataset(Dataset):
         return len(self.dataset)
     
     def __getitem__(self, index):
+        '''
+        This function is used to get the data given index of it in the dataset list
+        
+        param: index of the data in the dataset list
+        
+        Return:
+        Tuplex: Tensor array with number of channels x height x width, tensor array with true or false for each characteristic
+        '''
+        
+        ## Initiaiization
         pdf_name = self.dataset[index]['name']
         pn = (4-len(str(self.dataset[index]['page_num'])))*"0" + str(self.dataset[index]['page_num'])
+        
+        ## Append each channel images for the page
         img = []
         for feature in features:
             filenamme = feature+"-"+pn+"-grayscale"+img_extension
             path = os.path.join(self.input_folder,pdf_name,filenamme)
             img.append(self.transform(torchvision.io.read_image(path)/255))
+            
+        ## Append true if there at least one bounding boxes, false if there is no bounding boxes for each characteristics
         output = []
         for label in detect_labels:
             output.append(torch.Tensor([self.dataset[index][label]]))
@@ -268,8 +426,17 @@ class SimplexDetectDataset(Dataset):
     
     
 class DuplexDetectDataset(Dataset):
+    '''
+    This class is for simplex dataset, which each data instance represent two pages, and only load inputs without ground true images
+    '''
+    
     def __init__(self, input_folder,algorithms, pdf,transform=None):   
+        '''
+        This function is the initialization of the dataset object
+        '''
         logging.info("Preparing DuplexDetectDataset...")
+        
+        ## Setting up default transformation if it is None
         if transform == None: 
             self.transform = torchvision.transforms.Resize((input_height,input_width),interpolation=0,antialias=True)
         else:
@@ -278,7 +445,11 @@ class DuplexDetectDataset(Dataset):
                          torchvision.transforms.Resize((input_height,input_width)),
                          torchvision.transforms.ToTensor()])
         self.emptyTensor = torch.Tensor(1,1)
+        
+        ## Initialization
         self.input_folder = input_folder
+        
+        ## for every 2 algorithms result, check if it has valid input, then append it to the dataset list
         self.dataset = []
         for pdf_name ,results in zip(pdf,algorithms):
             pdf_name = pdf_name.replace('.pdf','')
@@ -308,18 +479,34 @@ class DuplexDetectDataset(Dataset):
         return len(self.dataset)
     
     def __getitem__(self, index):
+        '''
+        This function is used to get the data given index of it in the dataset list
+        
+        param: index of the data in the dataset list
+        
+        Return:
+        Tuplex: Tensor array with number of channels x height x width, tensor array with true or false for each characterisitc
+        '''
+        
+        ## Initiaiization
         pdf_name = self.dataset[index]['name']
         pn1 = (4-len(str(self.dataset[index]['page_num1'])))*"0" + str(self.dataset[index]['page_num1'])
         pn2 = (4-len(str(self.dataset[index]['page_num2'])))*"0" + str(self.dataset[index]['page_num2'])
+        
+        ## append each first page channel images
         img = []
         for feature in features:
             filenamme = feature+"-"+pn1+"-grayscale"+img_extension
             path = os.path.join(self.input_folder,pdf_name,filenamme)
             img.append(self.transform(torchvision.io.read_image(path)/255))
+            
+        ## append each second page channel images
         for feature in features:
             filenamme = feature+"-"+pn2+"-grayscale"+img_extension
             path = os.path.join(self.input_folder,pdf_name,filenamme)
             img.append(self.transform(torchvision.io.read_image(path)/255))
+            
+        ## Append true if there at least one bounding boxes, false if there is no bounding boxes for each characteristics
         output = []
         for label in detect_labels:
             output.append(torch.Tensor([self.dataset[index][label+'1']]))
@@ -335,13 +522,31 @@ def collate_fn(batch):
 
 
 def load_dataloader(dataset,data_type,batch_size):
+    '''
+    This function prepares dataloaders given the dataset
+    
+    param dataset: the dataset object
+    param data_type: the type of dataset object, this is for save file name
+    param batch_size: the batch size to load from dataloader
+    
+    Return:
+    train_loader: the dataloader contains the training dataset
+    val_loader: the dataloader contains the validation dataset
+    test_loader: the dataloader contains the testing dataset
+    '''
     logging.info("Preparing Dataloader...")
+    
+    ## Initialization 
     batch_size = int(batch_size)
+    
+    ## Create folders for dataloaders if not exists
     if not os.path.exists('./dataloader'):
         os.mkdir('./dataloader')
     path = os.path.join('./dataloader',data_type)
     if not os.path.exists(path):
         os.mkdir(path)
+        
+    ## If there are no dataloader save files, split dataset and initialize into training dataloader, validation loader, and testing dataloader, then return them
     if not os.path.exists(os.path.join(path,train_dataloader_name)) or not os.path.exists(os.path.join(path,val_dataloader_name)) or not os.path.exists(os.path.join(path,test_dataloader_name)):
         train_set, test_set = random_split(dataset,train_test_ratio,torch.Generator())
         train_set, val_set = random_split(train_set,train_val_ratio,torch.Generator())
@@ -349,9 +554,11 @@ def load_dataloader(dataset,data_type,batch_size):
         train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
         val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
         test_loader = DataLoader(test_set, shuffle=False, **loader_args)
+        ## save the dataloaders
         torch.save(train_loader,os.path.join(path,train_dataloader_name))
         torch.save(val_loader,os.path.join(path,val_dataloader_name))
         torch.save(test_loader,os.path.join(path,test_dataloader_name))
+    ## If there are dataloader save files, load and return them
     else:
         train_loader = torch.load(os.path.join(path,train_dataloader_name))
         val_loader = torch.load(os.path.join(path,val_dataloader_name))

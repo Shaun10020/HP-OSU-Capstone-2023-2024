@@ -2,7 +2,23 @@ from .modules.ENet_parts import *
 import logging 
 import torch
 
+'''
+This is the Enet or Enet realated architectures
+'''
+
 class ENet(nn.Module):
+    """Generate the ENet model.
+
+    Keyword arguments:
+    - num_classes (int): the number of classes to segment.
+    - encoder_relu (bool, optional): When ``True`` ReLU is used as the
+    activation function in the encoder blocks/layers; otherwise, PReLU
+    is used. Default: False.
+    - decoder_relu (bool, optional): When ``True`` ReLU is used as the
+    activation function in the decoder blocks/layers; otherwise, PReLU
+    is used. Default: True.
+
+    """
     
     def __init__(self, number_features, num_classes, encoder_relu=True, decoder_relu=True):
         logging.info("Initializing ENet Model...")
@@ -158,11 +174,20 @@ class ENet(nn.Module):
         x = self.output(x)
         return x
 
-from .modules.ENet_parts import *
-import logging 
-import torch
 
 class CustomENet1(nn.Module):
+    """Generate the Custom ENet model.
+
+    Keyword arguments:
+    - num_classes (int): the number of classes to segment.
+    - encoder_relu (bool, optional): When ``True`` ReLU is used as the
+    activation function in the encoder blocks/layers; otherwise, PReLU
+    is used. Default: False.
+    - decoder_relu (bool, optional): When ``True`` ReLU is used as the
+    activation function in the decoder blocks/layers; otherwise, PReLU
+    is used. Default: True.
+
+    """
     
     def __init__(self, number_features, num_classes, encoder_relu=True, decoder_relu=True):
         logging.info("Initializing ENet Model...")

@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 from config.config import labels, duplex_labels
-from utils.convert import convertBinary
 
 def print_output(idx,masks, outputs):
     '''
