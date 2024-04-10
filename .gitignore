@@ -3,3 +3,16 @@ data/
 
 # Python cache
 __pycache__/
+
+# Output folder
+output/
+*.bmp
+plots/
+*.csv
+
+# Checkpoint files
+checkpoints/
+*.pth
+
+# backup files
+backup/

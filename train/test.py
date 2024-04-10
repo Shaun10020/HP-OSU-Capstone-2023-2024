@@ -1,17 +1,79 @@
 import logging
 from tqdm import tqdm
+from torch import nn
+import time
+import csv
 
-from dataloader.load_data import load_dataloader
+from utils.convert import convertBinary
+from utils.metrics import binary_iou
 
+'''
+This script is reponsible for testing the models
+'''
 class Test:
     
-    def __init__(self,model,device,dataloader,batch_size):
-        self.model = model
+    def __init__(self,
+                 model,
+                 device,
+                 dataloader,
+                 args,
+                 criterion = None):
+        logging.info("Initializing testing script...")
+        '''
+        This function is the initialization of testing class
+        
+        param model: The model architecture, for example, unet. enet, etc.
+        param device: The type of device the training is going to take place, torch.device("cuda") or torch.device("cpu")
+        param train_dataloader: the training dataloader, contains the training split of the dataset
+        param val_dataloader: the validation dataloader, contains the validation split of the dataset
+        param args: the argument parser object, contains model information, dataset information, and training hyperparameters
+        param optimizer: the optimizer for the model, default is Adam if it is None
+        param criterion: the loss function for the model, default is Binary Cross Entropy Loss if it is None 
+        '''
+        ## Initialization
         self.device = device
+        self.args = args
+        self.model = model.to(self.device)
         self.test_dataloader = dataloader
         
-    def run_epoch(self):
-        None
+        ## Setup optimizer and criterion
+        if criterion:
+            self.criterion = criterion
+        else:
+            self.criterion = nn.BCELoss()
+        logging.info("Done initialize testing script")
+        self.pages_per_second = []
+
         
-    def validate(self):
-        None
+    def run(self):
+        '''
+        This function is to run testing on the model with test dataloader
+        '''
+        logging.info("Running testing script...")
+        
+        ## Initialization
+        self.model.eval()
+        epoch_loss = 0.0
+        IoU = 0.0
+        
+        ## Loop through the test dataloader for each batch size
+        for batch_data in tqdm(self.test_dataloader):
+            inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
+            start = time.time()
+            preds = self.model(inputs.float())
+            end = time.time()
+            if end - start != 0 :
+                self.pages_per_second.append(len(inputs)/(end - start))
+            loss = self.criterion(preds,labels)
+            epoch_loss += loss.item()
+            IoU += binary_iou(convertBinary(preds),labels)
+        logging.info(f'''Test Loss: {epoch_loss / len(self.test_dataloader):.4f}''')
+        logging.info(f'''Test IoU: {IoU / len(self.test_dataloader)* 100:.2f}%''')
+        
+        ## Save the results in a csv file
+        with open(f'''{self.args.model}-{self.args.dataset}-test.csv''','w') as fd:
+            writer = csv.writer(fd)
+            writer.writerow(['Test Loss','Test IoU','Test Running Time'])
+            writer.writerow([epoch_loss / len(self.test_dataloader),IoU / len(self.test_dataloader)*100,sum(self.pages_per_second) / len(self.pages_per_second)])
+        logging.info(f'''Test Executing Time: {sum(self.pages_per_second) / len(self.pages_per_second):.2f} pages per second''')
+        logging.info("Done running testing script...")
