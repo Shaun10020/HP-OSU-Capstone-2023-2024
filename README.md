@@ -36,6 +36,7 @@ It shows how to run the script to start testing a UNet model, with batch size of
 Example:
 `python main.py --model=unet --mode=inference --batch=5 --dataset=simplex --input_folder=PATH_TO_INPUT_FOLDER --OUTPUT_folder=PATH_TO_OUTPUT_FOLDER  --save_folder=PATH_TO_CHECKOOINT_FILES`
 It shows how to run the script to start generate outputs given inputs, with batch size of 5, assume data is simplex type, output to the folder 'PATH_TO_OUTPUT_FOLDER'
+
 ---
 ## Help
 This commands list all available arguments for running main.py
@@ -55,11 +56,19 @@ This commands list all available arguments for running main.py
 - utils
 
 **checkpoints** :This folder contains the files that store model weights
+
 **config**: This folder contains the configuration related to input channels and output characteristics
+
 **data**: This is where the data should be place under
+
 **dataloader**: This folder contains a script to process and convert data to dataloader , and save them as .pt files
+
 **model**: This folder contains the model architectures
+
 **pdf_webcrawler**: This folder contains scripts that use scrappy to scrap pdf files from websites
+
 **plots**: This folder contains plots, such as training loss over epoch.
+
 **train**: This folder contains training script, testing script
+
 **utils**: This folder contains utilities scripts, such as load json files, check for valid data, etc.
