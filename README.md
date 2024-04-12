@@ -2,13 +2,13 @@
 
 The purpose of this repository is to train a semantic segmentation model to predict characteristic binary mask images. This repository uses pytorch framework. The models being used are UNet, ENet and DeepLabV3+
 
-- Requirements
-- Quick Start
-	- how to train 
-	- how to test
-	- how to inference
-- Help
-- Project structure
+- [Requirements](#requirements)
+- [Quick Start](#quick-start)
+	- [how to train](#how-to-train)
+	- [how to test](#how-to-test)
+	- [how to inference](#how-to-inference)
+- [Help](#help)
+- [Project structure](#project-structure)
 ---
 ## Requirements
 ```
@@ -26,14 +26,16 @@ tqdm >= 4.66.1
 
 #### How to train
 Example:
-`python main.py --model=unet --mode=train --batch=5 --epoch=70 --dataset=simplex`
+`python main.py --model=unet --mode=train --batch=5 --epoch=70 --dataset=simplex --input_folder=PATH_TO_INPUT_FOLDER --label_folder=PATH_TO_LABEL_FOLDER  --save_folder=PATH_TO_CHECKOOINT_FILES`
+It shows how to run the script to start training a UNet model, witch batch size of 5, 70 epochs, and simplex dataset
 #### How to test
 Example:
-`python main.py --model=unet --mode=test --batch=5 --dataset=simplex`
+`python main.py --model=unet --mode=test --batch=5 --dataset=simplex --input_folder=PATH_TO_INPUT_FOLDER --label_folder=PATH_TO_LABEL_FOLDER  --save_folder=PATH_TO_CHECKOOINT_FILES`
+It shows how to run the script to start testing a UNet model, with batch size of 5, and simplex dataset
 #### How to inference
 Example:
-`python main.py --model=unet --mode=inference --batch=5 --dataset=simplex`
-
+`python main.py --model=unet --mode=inference --batch=5 --dataset=simplex --input_folder=PATH_TO_INPUT_FOLDER --OUTPUT_folder=PATH_TO_OUTPUT_FOLDER  --save_folder=PATH_TO_CHECKOOINT_FILES`
+It shows how to run the script to start generate outputs given inputs, with batch size of 5, assume data is simplex type, output to the folder 'PATH_TO_OUTPUT_FOLDER'
 ---
 ## Help
 This commands list all available arguments for running main.py
