@@ -42,6 +42,33 @@ It shows how to run the script to start generate outputs given inputs, with batc
 This commands list all available arguments for running main.py
 `python main.py --help`
 
+The list of available arguments:
+Folder related:
+```
+--input_folder: path to the folder contains input data, etc., pdf grayscale images for each channel
+--label_folder: path to the folder contains label data, etc., binary images	for each characteristics	
+--output_folder: path to the folder that the model is going to output binary imagess
+--save_folder: path to the folder that will store model weight files
+```
+
+Model setting:
+```
+--model: The model architecture to use, etc.: unet, enet.
+--dataset: The type of dataset, etc.: simplex, duplex
+--mode: The mode the script is going to run, etc.:train, test, inference.
+```
+Hyper-parameter:
+```
+--epoch: Number of epoch the model is going to run, only use in train mode
+--lr: The learning rate, only use in train mode
+--batch: The batch size model is going to take
+```
+Learning Rate decay:
+```
+--lr_decay: Learning rate decay
+--lr_epoch Learning rate decay epoch, every 'lr_epoch' epoch the learning rate going to decay 
+```
+
 ---
 ## Project structure
 
