@@ -43,6 +43,7 @@ This commands list all available arguments for running main.py
 `python main.py --help`
 
 The list of available arguments:
+
 Folder related:
 ```
 --input_folder: path to the folder contains input data, etc., pdf grayscale images for each channel
