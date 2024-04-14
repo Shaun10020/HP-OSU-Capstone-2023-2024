@@ -71,6 +71,54 @@ Learning Rate decay:
 ```
 
 ---
+## Config.py
+Input configutions:
+```
+--img_extension: The file extension associated to input channel images, by default is '.png'
+--features: A list of input channel name
+```
+
+Output configurations:
+```
+--label_extension: The file extension associated to label images, by default is '.bmp'
+--labels: A list of simplex characteristic names in results.json intermediate results
+--duplex_labels: A list of duplex characteristic names in results.json intermediate results 
+--detect_labels: A list of simplex characteristic names in results.json algorithm results
+--detect_duplex_labels: A list of duplex characteristic names in results.json algorithm results
+```
+
+Dataset split ratio:
+```
+--train_val_ratio: The split ratio for training and validation data, default is 0.9 and 0.1 
+--train_test_ratio: The split ration for training(including validation) and testing data, default is 0.7 and 0.3
+```
+
+Dataloader configution:
+```
+--pin_memory: Allocate samples in a page-locked memory 
+```
+
+Image transformation:
+```
+--input_height: The resize height dimension for input channel images 
+--input_width: The resize width dimension for input channel images
+--output_height: The resize height dimension for label masked images
+--output_width: The resize width dimension for label masked images
+```
+
+Threshold for binary conversion:
+```
+--threshold: The threshold value to convert from predicted grayscale image to binary image
+```
+
+Dataloader filenames:
+```
+--train_dataloader_name: The filename for train dataloader
+--val_dataloader_name: The filename for validation dataloader
+--test_dataloader_name: The filename for test dataloader
+```
+
+---
 ## Project structure
 
 - checkpoints
