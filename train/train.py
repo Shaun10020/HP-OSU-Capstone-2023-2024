@@ -4,6 +4,7 @@ import torch
 import matplotlib.pyplot as plt
 import os
 import csv
+import torch.nn as nn
 
 from utils.save_load_model import save
 from utils.metrics import binary_iou
@@ -73,6 +74,8 @@ class Train:
             self.optim.zero_grad()
             inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
             preds = self.model(inputs.float())
+            if self.args.model == 'deeplabv3+' or self.args.model == 'deeplabv3':
+                preds = torch.sigmoid(preds)
             loss = self.criterion(preds,labels)
             loss.backward()
             self.optim.step()
@@ -97,6 +100,8 @@ class Train:
         for batch_data in tqdm(self.val_dataloader):
             inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
             preds = self.model(inputs.float())
+            if self.args.model == 'deeplabv3+' or self.args.model == 'deeplabv3':
+                preds = torch.sigmoid(preds)
             loss = self.criterion(preds,labels)
             epoch_loss += loss.item()
             IoU += binary_iou(convertBinary(preds),labels)

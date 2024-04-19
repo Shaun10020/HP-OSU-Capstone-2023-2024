@@ -3,10 +3,10 @@ from tqdm import tqdm
 from torch import nn
 import time
 import csv
+import torch
 
 from utils.convert import convertBinary
 from utils.metrics import binary_iou
-
 '''
 This script is reponsible for testing the models
 '''
@@ -61,6 +61,8 @@ class Test:
             inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
             start = time.time()
             preds = self.model(inputs.float())
+            if self.args.model == 'deeplabv3+' or self.args.model == 'deeplabv3':
+                preds = torch.sigmoid(preds)
             end = time.time()
             if end - start != 0 :
                 self.pages_per_second.append(len(inputs)/(end - start))

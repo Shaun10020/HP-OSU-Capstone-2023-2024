@@ -37,9 +37,9 @@ def get_arguments():
     
     parser.add_argument(
         "--model",
-        choices=["unet","enet","deeplabv3","customunet1","customenet1"],
+        choices=["unet","enet","deeplabv3","deeplabv3+","customunet1","customenet1"],
         default="unet",
-        help=("Choose from 'unet', 'customunet1','enet','customenet1' or 'deeplabv3'"))
+        help=("Choose from 'unet', 'customunet1','enet','customenet1', 'deeplabv3','deeplabv3+'"))
 
     parser.add_argument(
         "--mode",

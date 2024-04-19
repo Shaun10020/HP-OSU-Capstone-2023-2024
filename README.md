@@ -28,14 +28,17 @@ tqdm >= 4.66.1
 #### How to train
 Example:
 `python main.py --model=unet --mode=train --batch=5 --epoch=70 --dataset=simplex --input_folder=PATH_TO_INPUT_FOLDER --label_folder=PATH_TO_LABEL_FOLDER  --save_folder=PATH_TO_CHECKOOINT_FILES`
+
 It shows how to run the script to start training a UNet model, witch batch size of 5, 70 epochs, and simplex dataset
 #### How to test
 Example:
 `python main.py --model=unet --mode=test --batch=5 --dataset=simplex --input_folder=PATH_TO_INPUT_FOLDER --label_folder=PATH_TO_LABEL_FOLDER  --save_folder=PATH_TO_CHECKOOINT_FILES`
+
 It shows how to run the script to start testing a UNet model, with batch size of 5, and simplex dataset
 #### How to inference
 Example:
 `python main.py --model=unet --mode=inference --batch=5 --dataset=simplex --input_folder=PATH_TO_INPUT_FOLDER --OUTPUT_folder=PATH_TO_OUTPUT_FOLDER  --save_folder=PATH_TO_CHECKOOINT_FILES`
+
 It shows how to run the script to start generate outputs given inputs, with batch size of 5, assume data is simplex type, output to the folder 'PATH_TO_OUTPUT_FOLDER'
 
 ---
@@ -149,3 +152,12 @@ test_dataloader_name: The filename for test dataloader
 **train**: This folder contains training script, testing script
 
 **utils**: This folder contains utilities scripts, such as load json files, check for valid data, etc.
+
+## Reference
+[UNet paper](https://arxiv.org/pdf/1505.04597.pdf)
+[UNet pytorch Implementation repo](https://github.com/milesial/Pytorch-UNet)
+[ENet paper](https://arxiv.org/pdf/1606.02147.pdf)
+[ENet pytorch implementation repo](https://github.com/davidtvs/PyTorch-ENet)
+
+
+## Future Improvements

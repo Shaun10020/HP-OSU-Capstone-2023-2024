@@ -3,9 +3,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch.optim as optim
-import torchvision.models.segmentation as segmentation
-
+import torchvision
 
 
 class Atrous_Convolution(nn.Module):
@@ -93,14 +91,18 @@ class ASSP(nn.Module):
 
 
 class ResNet_50(nn.Module):
-    def __init__(self, output_layer=None):
+    def __init__(self, args,output_layer=None):
         super(ResNet_50, self).__init__()
         self.pretrained = torchvision.models.resnet50(pretrained=False)
         self.output_layer = output_layer
 
         original_first_layer = self.pretrained.conv1
         # Create a new Conv2d layer with 10 input channels instead of 3 but same output channels and kernel size
-        self.pretrained.conv1 = nn.Conv2d(10, original_first_layer.out_channels,
+        if args.dataset == 'simplex':
+            num = 5
+        else: 
+            num = 10
+        self.pretrained.conv1 = nn.Conv2d(num, original_first_layer.out_channels,
                                           kernel_size=original_first_layer.kernel_size,
                                           stride=original_first_layer.stride,
                                           padding=original_first_layer.padding,
@@ -123,13 +125,14 @@ class ResNet_50(nn.Module):
     
 
 class Deeplabv3Plus(nn.Module):
-    def __init__(self, num_classes):
+    def __init__(self, args,num_classes):
 
         super(Deeplabv3Plus, self).__init__()
+        self.args = args
 
-        self.backbone = ResNet_50(output_layer='layer3')
+        self.backbone = ResNet_50(args,output_layer='layer3')
 
-        self.low_level_features = ResNet_50(output_layer='layer1')
+        self.low_level_features = ResNet_50(args,output_layer='layer1')
 
         self.assp = ASSP(in_channles=1024, out_channles=256)
 
@@ -142,7 +145,6 @@ class Deeplabv3Plus(nn.Module):
             nn.BatchNorm2d(256),
             nn.ReLU(inplace=True)
         )
-
         self.classifer = nn.Conv2d(256, num_classes, 1)
 
     def forward(self, x):

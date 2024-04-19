@@ -11,6 +11,7 @@ from utils.convert import convertBinary
 from model.UNet import UNet, CustomUNet1
 from model.ENet import ENet, CustomENet1
 from model.DeepLabV3 import CustomDeepLabV3
+from model.DeepLabV3Plus import Deeplabv3Plus
 from train.train import Train
 from train.test import Test
 
@@ -104,6 +105,8 @@ def inference(model):
         ## predict output from images
         input = batch[2].to(device)
         outputs = model(input.float())
+        if args.model == 'deeplabv3+' or args.model == 'deeplabv3':
+            outputs = torch.sigmoid(outputs)
         outputs = convertBinary(outputs)
         
         ## loop through each output
@@ -203,6 +206,8 @@ if __name__ == "__main__":
         model = ENet(n_input,n_output)
     elif args.model == 'deeplabv3':
         model = CustomDeepLabV3(n_output)
+    elif args.model == 'deeplabv3+':
+        model = Deeplabv3Plus(args,n_output)
     elif args.model == 'customunet1':
         model = CustomUNet1(n_input,n_output)
     elif args.model == 'customenet1':
