@@ -4,8 +4,11 @@ from config.config import (features,
                            labels,
                            duplex_labels,
                            label_extension)
-from dataloader.load_data import SimplexDataset, DuplexDataset, InputSimplexDataset, InputDuplexDataset, load_dataloader
-from utils.load_json import load_results
+from dataloader.load_data import (SimplexDataset, 
+                                  DuplexDataset, 
+                                  InputSimplexDataset, 
+                                  InputDuplexDataset, 
+                                  load_dataloader)
 from utils.save_load_model import load
 from utils.convert import convertBinary
 from model.UNet import UNet, CustomUNet1
@@ -21,12 +24,14 @@ import torch
 import json
 from torchvision.transforms.functional import to_pil_image
 from torch.utils.data import DataLoader
+import torch.distributed as dist
 
 
 ## Get args object, and device for this computer
 args = get_arguments()
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-
+# dist.init_process_group(backend="gloo", init_method="tcp://localhost:29500", rank=0, world_size=1)
+           
 def train(model,dataset):
     '''
     This function create train object and intialize training
@@ -105,8 +110,7 @@ def inference(model):
         ## predict output from images
         input = batch[2].to(device)
         outputs = model(input.float())
-        if args.model == 'deeplabv3+' or args.model == 'deeplabv3':
-            outputs = torch.sigmoid(outputs)
+        outputs = torch.sigmoid(outputs)
         outputs = convertBinary(outputs)
         
         ## loop through each output
@@ -193,11 +197,10 @@ if __name__ == "__main__":
     
     ## Setup dataset
     if args.mode != 'inference':
-        pdf,algorithm,intermediate = load_results(args.label_folder)
         if args.dataset =='simplex':
-            dataset = SimplexDataset(args.input_folder,args.label_folder,intermediate)
+            dataset = SimplexDataset(args.input_folder,args.label_folder)
         else:
-            dataset = DuplexDataset(args.input_folder,args.label_folder,intermediate)
+            dataset = DuplexDataset(args.input_folder,args.label_folder)
             
     ## Setup model
     if args.model == 'unet':

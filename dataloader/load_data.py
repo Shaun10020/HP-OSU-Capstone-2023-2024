@@ -1,6 +1,7 @@
 import torchvision
 import torch
 import os
+import json
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader, random_split
 import logging
@@ -28,13 +29,12 @@ class SimplexDataset(Dataset):
     This class is for simplex, which each data instance represent a page
     '''
     
-    def __init__(self, input_folder,label_folder,intermediate, transform=None,transform_output=None):
+    def __init__(self, input_folder,label_folder, transform=None,transform_output=None):
         '''
         This function is the initialization of the dataset object
         
         param input_folder: The filepath to the root folder contains input/channel images
         param label_folder: The filepath to the root folder contains label/mask images
-        param intermediate: A list of intermediate results from json files
         param transform: Transformation function for input images 
         param transform_output: Transformation function for label images
         
@@ -58,12 +58,17 @@ class SimplexDataset(Dataset):
         self.dataset = []
         
         ## For each intermediate result, check if it is valid and then append to the dataset list
-        for result in intermediate:
-            for page in result:
-                pdf_name = page['pdf_filename'].replace('.pdf','')
-                pn = (4-len(str(page['page_num'])))*"0" + str(page['page_num'])
-                if checkInput(self.input_folder,pdf_name,pn) and checkLabel(page,self.label_folder,pdf_name):
-                    self.dataset.append({'page':page,'name':pdf_name})
+        for root,dir,files in os.walk(label_folder):
+            for file in files:
+                if file == "results.json":
+                    _json = open(os.path.join(root,file))
+                    _json = json.load(_json)
+                    intermediate = _json["intermediate_results"]
+                    for page in intermediate:
+                        pdf_name = page['pdf_filename'].replace('.pdf','')
+                        pn = (4-len(str(page['page_num'])))*"0" + str(page['page_num'])
+                        if checkInput(self.input_folder,pdf_name,pn) and checkLabel(page,self.label_folder,pdf_name):
+                            self.dataset.append({'page':page,'name':pdf_name})
         logging.info("Finished preparing SimplexDataset")
         logging.info(f'''Total {self.__len__()} samples''')
             
@@ -104,13 +109,12 @@ class DuplexDataset(Dataset):
     This class is for duplex , which each data instance represent 2 pages
     '''
     
-    def __init__(self, input_folder,label_folder,intermediate, transform=None,transform_output=None):
+    def __init__(self, input_folder,label_folder, transform=None,transform_output=None):
         '''
         This function is the initialization of the dataset object
         
         param input_folder: The filepath to the root folder contains input/channel images
         param label_folder: The filepath to the root folder contains label/mask images
-        param intermediate: A list of intermediate results from json files
         param transform: Transformation function for input images 
         param transform_output: Transformation function for label images
         
@@ -140,23 +144,28 @@ class DuplexDataset(Dataset):
         self.dataset = []
         
         ## For each intermediate result, check if it is valid and then append to the dataset list
-        for result in intermediate:
-            data = {}
-            for page in result:
-                pdf_name = page['pdf_filename'].replace('.pdf','')
-                pn = (4-len(str(page['page_num'])))*"0" + str(page['page_num'])
-                if checkInput(self.input_folder,pdf_name,pn) and checkLabel(page,self.label_folder,pdf_name):
-                    
-                    ## When it is odd pages (assume odd pages will be the 'first' page), initialize data variable with first page info 
-                    if page['page_num']%2:
-                        data = {'page1':page,'name':pdf_name}
-                        ## append with only first page info, to create more data with missing second page samples in the dataset
-                        self.dataset.append(data)
-                    
-                    ## When it is even pages (assume even pages will be the 'second' page), append second page info to data, and then append to dataset
-                    elif data['page1']['page_num']+1 == page['page_num'] and data['name'] == pdf_name:
-                        data['page2'] = page
-                        self.dataset.append(data)
+        for root,dir,files in os.walk(label_folder):
+            for file in files:
+                if file == "results.json":
+                    _json = open(os.path.join(root,file))
+                    _json = json.load(_json)
+                    intermediate = _json["intermediate_results"]
+                    data = {}
+                    for page in intermediate:
+                        pdf_name = page['pdf_filename'].replace('.pdf','')
+                        pn = (4-len(str(page['page_num'])))*"0" + str(page['page_num'])
+                        if checkInput(self.input_folder,pdf_name,pn) and checkLabel(page,self.label_folder,pdf_name):
+                            
+                            ## When it is odd pages (assume odd pages will be the 'first' page), initialize data variable with first page info 
+                            if page['page_num']%2:
+                                data = {'page1':page,'name':pdf_name}
+                                ## append with only first page info, to create more data with missing second page samples in the dataset
+                                self.dataset.append(data)
+                            
+                            ## When it is even pages (assume even pages will be the 'second' page), append second page info to data, and then append to dataset
+                            elif data['page1']['page_num']+1 == page['page_num'] and data['name'] == pdf_name:
+                                data['page2'] = page
+                                self.dataset.append(data)
         logging.info("Finished preparing DuplexDataset")
         logging.info(f'''Total {self.__len__()} samples''')
             
@@ -353,13 +362,12 @@ class SimplexDetectDataset(Dataset):
     '''
     This class is for simplex dataset, which each data instance represent a page, and only load inputs without ground true images
     '''
-    def __init__(self, input_folder,algorithms, pdf,transform=None):   
+    def __init__(self, input_folder,label_folder,transform=None):   
         '''
         This function is the initialization of the dataset object
         
         param input_folder:  The filepath to the root folder contains input/channel images
-        param algorithms: A list of algorithms results from the 'results' json files
-        param pdf: a list of pdf name
+        param algorithms:he filepath to the root folder contains label/mask images
         param transform: Transformation function for input images 
         '''
         logging.info("Preparing SimplexDetectDataset...")
@@ -375,22 +383,28 @@ class SimplexDetectDataset(Dataset):
         
         ## for each algorithms result, check if it has valid input, then append it to the dataset list
         self.dataset = []
-        for pdf_name ,results in zip(pdf,algorithms):
-            pdf_name = pdf_name.replace('.pdf','')
-            page_num = 0
-            for _results in results:
-                result = _results['results']
-                page_num += 1
-                data = {'name':pdf_name,'page_num':page_num}
-                for characteristic in result:
-                    if characteristic['characteristic'] in detect_labels:
-                        pn = (4-len(str(page_num)))*"0" + str(page_num)
-                        if checkInput(self.input_folder,pdf_name,pn):
-                            if len(characteristic['boundingBoxResults']):
-                                data[characteristic['characteristic']] = 1
-                            else:
-                                data[characteristic['characteristic']] = 0
-                self.dataset.append(data)
+        for root,dir,files in os.walk(label_folder):
+            for file in files:
+                if file == "results.json":
+                    _json = open(os.path.join(root,file))
+                    _json = json.load(_json)
+                    pdf_name = _json["pdf_filename"]
+                    results = _json["algorithm_results"]
+                    pdf_name = pdf_name.replace('.pdf','')
+                    page_num = 0
+                    for _results in results:
+                        result = _results['results']
+                        page_num += 1
+                        data = {'name':pdf_name,'page_num':page_num}
+                        for characteristic in result:
+                            if characteristic['characteristic'] in detect_labels:
+                                pn = (4-len(str(page_num)))*"0" + str(page_num)
+                                if checkInput(self.input_folder,pdf_name,pn):
+                                    if len(characteristic['boundingBoxResults']):
+                                        data[characteristic['characteristic']] = 1
+                                    else:
+                                        data[characteristic['characteristic']] = 0
+                        self.dataset.append(data)
         logging.info("Finished preparing SimplexDetectDataset")
         logging.info(f'''Total {self.__len__()} samples''')
             
@@ -430,9 +444,13 @@ class DuplexDetectDataset(Dataset):
     This class is for simplex dataset, which each data instance represent two pages, and only load inputs without ground true images
     '''
     
-    def __init__(self, input_folder,algorithms, pdf,transform=None):   
+    def __init__(self, input_folder,label_folder,transform=None):   
         '''
         This function is the initialization of the dataset object
+        
+        param input_folder:  The filepath to the root folder contains input/channel images
+        param algorithms:he filepath to the root folder contains label/mask images
+        param transform: Transformation function for input images 
         '''
         logging.info("Preparing DuplexDetectDataset...")
         
@@ -451,27 +469,33 @@ class DuplexDetectDataset(Dataset):
         
         ## for every 2 algorithms result, check if it has valid input, then append it to the dataset list
         self.dataset = []
-        for pdf_name ,results in zip(pdf,algorithms):
-            pdf_name = pdf_name.replace('.pdf','')
-            page_num = 0
-            for _results in results:
-                result = _results['results']
-                page_num += 1
-                _p = "2"
-                if page_num%2:
-                    data = {'name':pdf_name,'page_num1':page_num}
-                    _p = "1"
-                for characteristic in result:
-                    if characteristic['characteristic'] in detect_labels+detect_duplex_labels:
-                        pn = (4-len(str(page_num)))*"0" + str(page_num)
-                        if checkInput(self.input_folder,pdf_name,pn):
-                            if len(characteristic['boundingBoxResults']):
-                                data[characteristic['characteristic']+_p] = 1
-                            else:
-                                data[characteristic['characteristic']+_p] = 0
-                if not page_num%2:
-                    data['page_num2'] = page_num
-                    self.dataset.append(data)
+        for root,dir,files in os.walk(label_folder):
+            for file in files:
+                if file == "results.json":
+                    _json = open(os.path.join(root,file))
+                    _json = json.load(_json)
+                    pdf_name = _json["pdf_filename"]
+                    results = _json["algorithm_results"]
+                    pdf_name = pdf_name.replace('.pdf','')
+                    page_num = 0
+                    for _results in results:
+                        result = _results['results']
+                        page_num += 1
+                        _p = "2"
+                        if page_num%2:
+                            data = {'name':pdf_name,'page_num1':page_num}
+                            _p = "1"
+                        for characteristic in result:
+                            if characteristic['characteristic'] in detect_labels+detect_duplex_labels:
+                                pn = (4-len(str(page_num)))*"0" + str(page_num)
+                                if checkInput(self.input_folder,pdf_name,pn):
+                                    if len(characteristic['boundingBoxResults']):
+                                        data[characteristic['characteristic']+_p] = 1
+                                    else:
+                                        data[characteristic['characteristic']+_p] = 0
+                        if not page_num%2:
+                            data['page_num2'] = page_num
+                            self.dataset.append(data)
         logging.info("Finished preparing DuplexDetectDataset")
         logging.info(f'''Total {self.__len__()} samples''')
             
