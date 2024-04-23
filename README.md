@@ -155,13 +155,12 @@ test_dataloader_name: The filename for test dataloader
 
 ## Results
 
-![UNet Simplex Training Loss](./plots/unet-simplex-loss.png) | ![UNet Simplex IoU](./plots/unet-simplex-IoU.png)
-
-![UNet Duplex Training Loss](./plots/unet-duplex-loss.png) | ![UNet Duplex IoU](./plots/unet-duplex-IoU.png)
-
-![ENet Simplex Training Loss](./plots/enet-simplex-loss.png) | ![ENet Simplex IoU](./plots/enet-simplex-IoU.png)
-
-![ENet Duplex Training Loss](./plots/enet-duplex-loss.png) | ![ENet Duplex IoU](./plots/enet-duplex-IoU.png)
+| Training Loss												  | IoU												 |
+|-------------------------------------------------------------|--------------------------------------------------|
+|![UNet Simplex Training Loss](./plots/unet-simplex-loss.png) | ![UNet Simplex IoU](./plots/unet-simplex-IoU.png)|
+|![UNet Duplex Training Loss](./plots/unet-duplex-loss.png)   | ![UNet Duplex IoU](./plots/unet-duplex-IoU.png)  |
+|![ENet Simplex Training Loss](./plots/enet-simplex-loss.png) | ![ENet Simplex IoU](./plots/enet-simplex-IoU.png)|
+|![ENet Duplex Training Loss](./plots/enet-duplex-loss.png)   | ![ENet Duplex IoU](./plots/enet-duplex-IoU.png)  |
 
 ---
 
