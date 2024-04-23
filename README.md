@@ -153,6 +153,26 @@ test_dataloader_name: The filename for test dataloader
 
 **utils**: This folder contains utilities scripts, such as load json files, check for valid data, etc.
 
+## Results
+
+![UNet Simplex Training Loss](./plots/unet-simplex-loss.png)
+
+![UNet Simplex IoU](./plots/unet-simplex-IoU.png)
+
+![UNet Duplex Training Loss](./plots/unet-duplex-loss.png)
+
+![UNet Duplex IoU](./plots/unet-duplex-IoU.png)
+
+![ENet Simplex Training Loss](./plots/enet-simplex-loss.png)
+
+![ENet Simplex IoU](./plots/enet-simplex-IoU.png)
+
+![ENet Duplex Training Loss](./plots/enet-duplex-loss.png)
+
+![ENet Duplex IoU](./plots/enet-duplex-IoU.png)
+
+---
+
 ## Reference
 [UNet paper](https://arxiv.org/pdf/1505.04597.pdf)
 [UNet pytorch Implementation repo](https://github.com/milesial/Pytorch-UNet)
