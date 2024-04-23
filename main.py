@@ -24,13 +24,11 @@ import torch
 import json
 from torchvision.transforms.functional import to_pil_image
 from torch.utils.data import DataLoader
-import torch.distributed as dist
 
 
 ## Get args object, and device for this computer
 args = get_arguments()
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-# dist.init_process_group(backend="gloo", init_method="tcp://localhost:29500", rank=0, world_size=1)
            
 def train(model,dataset):
     '''
@@ -67,6 +65,8 @@ def test(model,dataset):
     param model: The mode architecture to be tested
     param dataset: the dataset to be used for testing purpose
     '''
+    ## Testing
+    device = torch.device("cpu")
     
     ## Setup dataloaders
     _,_,test_dataloader = load_dataloader(dataset,args.dataset,args.batch)
