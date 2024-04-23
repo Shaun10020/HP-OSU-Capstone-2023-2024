@@ -17,8 +17,8 @@ matplotlib >= 3.8.2
 Python >= 3.11.7
 numpy >= 1.26.3
 pillow >= 10.2.0
-torch >= 2.2.0+cu118
-torchaudio >= 2.2.0+cu118
+torch >= 2.2.2
+torchaudio >= 2.2.2
 torchvision >= 0.17.0+cu118
 tqdm >= 4.66.1
 ```
@@ -173,5 +173,6 @@ ENet Duplex|![ENet Duplex Training Loss](./plots/enet-duplex-loss.png)   | ![ENe
 
 [ENet pytorch implementation repo](https://github.com/davidtvs/PyTorch-ENet)
 
+[fvcore for FLOPS calculation](https://github.com/facebookresearch/fvcore/blob/main/setup.py)
 
 ## Future Improvements
