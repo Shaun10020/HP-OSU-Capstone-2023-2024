@@ -21,6 +21,7 @@ torch >= 2.2.2
 torchaudio >= 2.2.2
 torchvision >= 0.17.0+cu118
 tqdm >= 4.66.1
+ptflops >= 0.7.2.2
 ```
 ---
 ## Quick start
@@ -173,6 +174,6 @@ ENet Duplex|![ENet Duplex Training Loss](./plots/enet-duplex-loss.png)   | ![ENe
 
 [ENet pytorch implementation repo](https://github.com/davidtvs/PyTorch-ENet)
 
-[fvcore for FLOPS calculation](https://github.com/facebookresearch/fvcore/blob/main/setup.py)
+[ptflops for FLOPS calculation](https://github.com/sovrasov/flops-counter.pytorch/tree/master)
 
 ## Future Improvements

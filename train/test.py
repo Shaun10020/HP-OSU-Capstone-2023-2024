@@ -7,6 +7,8 @@ import torch
 
 from utils.convert import convertBinary
 from utils.metrics import binary_iou
+from ptflops import get_model_complexity_info
+from config.config import features, input_height, input_width
 '''
 This script is reponsible for testing the models
 '''
@@ -78,3 +80,8 @@ class Test:
             writer.writerow([epoch_loss / len(self.test_dataloader),IoU / len(self.test_dataloader)*100,sum(self.pages_per_second) / len(self.pages_per_second)])
         logging.info(f'''Test Executing Time: {sum(self.pages_per_second) / len(self.pages_per_second):.2f} pages per second''')
         logging.info("Done running testing script...")
+        
+    def flops_count(self):
+        macs, params = get_model_complexity_info(self.model, (len(features), input_height, input_width), as_strings=True,
+                                           print_per_layer_stat=False, verbose=False)
+        return params
