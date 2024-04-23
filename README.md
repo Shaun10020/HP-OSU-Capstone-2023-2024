@@ -175,8 +175,11 @@ test_dataloader_name: The filename for test dataloader
 
 ## Reference
 [UNet paper](https://arxiv.org/pdf/1505.04597.pdf)
+
 [UNet pytorch Implementation repo](https://github.com/milesial/Pytorch-UNet)
+
 [ENet paper](https://arxiv.org/pdf/1606.02147.pdf)
+
 [ENet pytorch implementation repo](https://github.com/davidtvs/PyTorch-ENet)
 
 
