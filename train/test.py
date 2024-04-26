@@ -70,8 +70,12 @@ class Test:
             loss = self.criterion(preds,labels)
             epoch_loss += loss.item()
             IoU += binary_iou(convertBinary(preds),labels)
+        
+        macs, params = self.flops_count()
         logging.info(f'''Test Loss: {epoch_loss / len(self.test_dataloader):.4f}''')
         logging.info(f'''Test IoU: {IoU / len(self.test_dataloader)* 100:.2f}%''')
+        logging.info(f'''Number of parameters: {params}''')
+        logging.info(f'''Computational complexity: {macs}''')
         
         ## Save the results in a csv file
         with open(f'''{self.args.model}-{self.args.dataset}-test.csv''','w') as fd:
@@ -82,6 +86,6 @@ class Test:
         logging.info("Done running testing script...")
         
     def flops_count(self):
-        macs, params = get_model_complexity_info(self.model, (len(features), input_height, input_width), as_strings=True,
+        n_input = len(features) if self.args.dataset == 'simplex' else 2*len(features)
+        return get_model_complexity_info(self.model, (n_input, input_height, input_width), as_strings=True,
                                            print_per_layer_stat=False, verbose=False)
-        return params
