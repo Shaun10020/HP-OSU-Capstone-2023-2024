@@ -80,4 +80,9 @@ def get_arguments():
         default="simplex",
         help=("Dataset, choose from 'simplex' or 'duplex'"))
 
+    parser.add_argument(
+        "--parallel",
+        choices=["True","False"],
+        default="False",
+        help=("'True' or 'False', False by default, set True to use multiple CPU cores and execute in parallel."))
     return parser.parse_args()

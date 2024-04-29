@@ -23,7 +23,8 @@ import os
 import torch
 import json
 from torchvision.transforms.functional import to_pil_image
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, DistributedSampler
+import torch.multiprocessing as mp
 
 
 ## Get args object, and device for this computer
@@ -73,6 +74,30 @@ def test(model,dataset):
     model = load(model,args)
     test = Test(model,device,test_dataloader,args)
     test.run()
+    
+def parallel_test_run(rank,world_size,model,test_dataloader):
+    sampler = DistributedSampler(test_dataloader.dataset,world_size,rank)
+    loader_args = dict(batch_size=int(args.batch), num_workers=world_size, pin_memory=False)
+    test_dataloader = DataLoader(test_dataloader.dataset,shuffle=False,sampler=sampler,**loader_args)
+    device = torch.device("cpu")
+    test = Test(model,device,test_dataloader,args)
+    test.run()
+
+def parallel_test(model,dataset):
+    nums_cpu = int( os.cpu_count() /2)
+    torch.set_num_threads(1)
+    processes = []
+    mp.set_start_method("spawn")
+    model = load(model,args)
+    model.share_memory()
+    _,_,test_dataloader = load_dataloader(dataset,args.dataset,args.batch)
+    for rank in range(nums_cpu):
+        p = mp.Process(target=parallel_test_run,args = (rank,nums_cpu,model,test_dataloader))
+        p.start()
+        processes.append(p)
+        
+    for p in processes:
+        p.join()
 
 def inference(model):
     '''
@@ -220,4 +245,7 @@ if __name__ == "__main__":
     elif args.mode == 'inference':
         inference(model)
     elif args.mode == 'test':
-        test(model,dataset)
+        if args.parallel == 'False':
+            test(model,dataset)
+        else:
+            parallel_test(model,dataset)
