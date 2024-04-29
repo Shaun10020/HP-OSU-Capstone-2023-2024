@@ -202,17 +202,17 @@ if __name__ == "__main__":
             
     ## Setup model
     if args.model == 'unet':
-        model = UNet(n_input,n_output)
+        model = torch.nn.DataParallel(UNet(n_input,n_output))
     elif args.model == 'enet':
-        model = ENet(n_input,n_output)
+        model = torch.nn.DataParallel(ENet(n_input,n_output))
     elif args.model == 'deeplabv3':
-        model = CustomDeepLabV3(n_output)
+        model = torch.nn.DataParallel(CustomDeepLabV3(n_output))
     elif args.model == 'deeplabv3+':
-        model = Deeplabv3Plus(args,n_output)
+        model = torch.nn.DataParallel(Deeplabv3Plus(args,n_output))
     elif args.model == 'customunet1':
-        model = CustomUNet1(n_input,n_output)
+        model = torch.nn.DataParallel(CustomUNet1(n_input,n_output))
     elif args.model == 'customenet1':
-        model = CustomENet1(n_input,n_output)
+        model = torch.nn.DataParallel(CustomENet1(n_input,n_output))
     
     ## Run the training, testing or inference function
     if args.mode == 'train':

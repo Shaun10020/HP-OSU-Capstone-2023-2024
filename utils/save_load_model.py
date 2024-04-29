@@ -12,7 +12,7 @@ def load(model,args):
     Return:
     The model with the weights loaded
     '''
-    filepath = os.path.join(args.save_folder,f'''{args.model}-{args.dataset}.pt''')
+    filepath = os.path.join(args.save_folder,f'''{args.model}-{args.dataset}.pth''')
     checkpoint = torch.load(filepath)
     model.load_state_dict(checkpoint)
     return model
@@ -27,6 +27,6 @@ def save(model,args):
     '''
     if not os.path.exists(args.save_folder):
         os.mkdir(args.save_folder)
-    filepath = os.path.join(args.save_folder,f'''{args.model}-{args.dataset}.pt''')
+    filepath = os.path.join(args.save_folder,f'''{args.model}-{args.dataset}.pth''')
     logging.info("Saving best model... ["+filepath+"]")
     torch.save(model.state_dict(),filepath)
