@@ -53,6 +53,7 @@ def train(model,dataset):
     
     ## Initialize Test class object and start testing
     model = load(model,args)
+    model = model.module.to(device)
     test = Test(model,device,test_dataloader,args)
     test.run()
     
@@ -72,6 +73,7 @@ def test(model,dataset):
     
     ## Initialize Test class object and start testing
     model = load(model,args)
+    model = model.module.to(device)
     test = Test(model,device,test_dataloader,args)
     test.run()
     
@@ -89,6 +91,7 @@ def parallel_test(model,dataset):
     processes = []
     mp.set_start_method("spawn")
     model = load(model,args)
+    model = model.module.to(device)
     model.share_memory()
     _,_,test_dataloader = load_dataloader(dataset,args.dataset,args.batch)
     for rank in range(nums_cpu):
