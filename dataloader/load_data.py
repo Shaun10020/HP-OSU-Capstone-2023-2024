@@ -217,14 +217,14 @@ class DuplexDataset(Dataset):
         ## When there is no second page, create empty tensor arrays to substitiute as second page
         else:
             for feature in features:
-                tmp = self.emptyInputTransform(torch.Tensor(1,1))
-                img.append(tmp.byte())
+                tmp = self.emptyInputTransform(torch.Tensor(1,1).byte())
+                img.append(tmp)
             for label in duplex_labels:
-                tmp = self.emptyOutputTransform(torch.Tensor(1,1))
-                output.append(tmp.byte())
+                tmp = self.emptyOutputTransform(torch.Tensor(1,1).byte())
+                output.append(tmp)
             for label in labels:
-                tmp = self.emptyOutputTransform(torch.Tensor(1,1))
-                output.append(tmp.byte())
+                tmp = self.emptyOutputTransform(torch.Tensor(1,1).byte())
+                output.append(tmp)
         return tuple((torch.cat(img),torch.cat(output)))
 
 class InputSimplexDataset(Dataset):
