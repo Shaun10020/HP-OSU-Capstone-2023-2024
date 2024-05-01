@@ -354,8 +354,8 @@ class InputDuplexDataset(Dataset):
                 img.append(self.transform(torchvision.io.read_image(data[feature+"2"])/255))
         else:
             for feature in features:
-                tmp = self.emptyInputTransform(torch.Tensor(1,1))
-                img.append(tmp.byte())
+                tmp = self.emptyInputTransform(torch.Tensor(1,1).byte())
+                img.append(tmp)
         return tuple((data['name'],data['pn'],torch.cat(img)))
 
 class SimplexDetectDataset(Dataset):
