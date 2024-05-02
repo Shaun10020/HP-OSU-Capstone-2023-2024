@@ -79,7 +79,7 @@ def test(model,dataset):
     
 def parallel_test_run(rank,world_size,model,test_dataloader):
     sampler = DistributedSampler(test_dataloader.dataset,world_size,rank)
-    loader_args = dict(batch_size=int(args.batch), num_workers=world_size, pin_memory=False)
+    loader_args = dict(batch_size=int(args.batch), num_workers=1, pin_memory=True)
     test_dataloader = DataLoader(test_dataloader.dataset,shuffle=False,sampler=sampler,**loader_args)
     device = torch.device("cpu")
     test = Test(model,device,test_dataloader,args)
