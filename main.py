@@ -78,15 +78,16 @@ def test(model,dataset):
     test.run()
     
 def parallel_test_run(rank,world_size,model,test_dataloader):
+    device = torch.device('cpu')
     sampler = DistributedSampler(test_dataloader.dataset,world_size,rank)
     loader_args = dict(batch_size=int(args.batch), num_workers=1, pin_memory=True)
     test_dataloader = DataLoader(test_dataloader.dataset,shuffle=False,sampler=sampler,**loader_args)
-    device = torch.device("cpu")
-    test = Test(model,device,test_dataloader,args)
+    test = Test(model,device,test_dataloader,args,rank=rank)
     test.run()
 
 def parallel_test(model,dataset):
-    nums_cpu = int( os.cpu_count() /2)
+    device = torch.device('cpu')
+    nums = int (os.cpu_count() /2)
     torch.set_num_threads(1)
     processes = []
     mp.set_start_method("spawn")
@@ -94,8 +95,8 @@ def parallel_test(model,dataset):
     model = model.module.to(device)
     model.share_memory()
     _,_,test_dataloader = load_dataloader(dataset,args.dataset,args.batch)
-    for rank in range(nums_cpu):
-        p = mp.Process(target=parallel_test_run,args = (rank,nums_cpu,model,test_dataloader))
+    for rank in range(nums):
+        p = mp.Process(target=parallel_test_run,args = (rank,nums,model,test_dataloader))
         p.start()
         processes.append(p)
         

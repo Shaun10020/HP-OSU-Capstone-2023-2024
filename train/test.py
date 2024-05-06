@@ -19,6 +19,7 @@ class Test:
                  device,
                  dataloader,
                  args,
+                 rank = 0,
                  criterion = None):
         logging.info("Initializing testing script...")
         '''
@@ -30,12 +31,14 @@ class Test:
         param val_dataloader: the validation dataloader, contains the validation split of the dataset
         param args: the argument parser object, contains model information, dataset information, and training hyperparameters
         param optimizer: the optimizer for the model, default is Adam if it is None
+        param rank: The rank number, default is 0.
         param criterion: the loss function for the model, default is Binary Cross Entropy Loss if it is None 
         '''
         ## Initialization
         self.device = device
         self.args = args
         self.model = model.to(self.device)
+        self.rank = rank
         self.test_dataloader = dataloader
         
         ## Setup optimizer and criterion
@@ -58,8 +61,9 @@ class Test:
         epoch_loss = 0.0
         IoU = 0.0
         
+        text = f'#{self.rank}'
         ## Loop through the test dataloader for each batch size
-        for batch_data in tqdm(self.test_dataloader):
+        for batch_data in tqdm(self.test_dataloader,desc=text,position=self.rank+1):
             inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
             start = time.time()
             preds = self.model(inputs.float())
