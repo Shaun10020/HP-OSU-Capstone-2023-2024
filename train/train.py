@@ -126,7 +126,7 @@ class Train:
                 save(self.model,self.args)
         
         ## Save the results in a csv file
-        with open(f'''{self.args.model}-{self.args.dataset}-train-epoch.csv''','w') as fd:
+        with open(f'''{self.args.model}-{self.args.dataset}-train-epoch.csv''','w',newline='') as fd:
             writer = csv.writer(fd)
             writer.writerow(['Epoch','Train Loss','Validation Loss','Train IoU','Validation IoU'])
             for i,(train_loss,validation_loss,train_iou,validation_iou) in enumerate(zip(self.epoch_losses,self.epoch_losses_val,self.train_IoU,self.IoU)):

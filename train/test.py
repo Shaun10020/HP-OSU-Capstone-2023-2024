@@ -78,7 +78,7 @@ class Test:
         logging.info(f'''Computational complexity: {macs}''')
         
         ## Save the results in a csv file
-        with open(f'''{self.args.model}-{self.args.dataset}-test.csv''','w') as fd:
+        with open(f'''{self.args.model}-{self.args.dataset}-test.csv''','w',newline='') as fd:
             writer = csv.writer(fd)
             writer.writerow(['Test Loss','Test IoU','Test Running Time'])
             writer.writerow([epoch_loss / len(self.test_dataloader),IoU / len(self.test_dataloader)*100,sum(self.pages_per_second) / len(self.pages_per_second)])
