@@ -153,7 +153,7 @@ class Deeplabv3Plus(nn.Module):
         x_low_level = self.low_level_features(x)
         x_assp = self.assp(x_backbone)
         x_assp_upsampled = F.interpolate(
-            x_assp, scale_factor=(4, 4),
+            x_assp, scale_factor=4,
             mode='bilinear', align_corners=True)
         x_conv1x1 = self.conv1x1(x_low_level)
         x_assp_upsampled = F.interpolate(x_assp_upsampled, size=(75, 75), mode='bilinear', align_corners=False)
@@ -162,7 +162,7 @@ class Deeplabv3Plus(nn.Module):
         x_cat = torch.cat([x_conv1x1, x_assp_upsampled], dim=1)
         x_3x3 = self.conv_3x3(x_cat)
         x_3x3_upscaled = F.interpolate(
-            x_3x3, scale_factor=(4, 4),
+            x_3x3, scale_factor=4,
             mode='bilinear', align_corners=True)
         x_out = self.classifer(x_3x3_upscaled)
         # x_out = torch.sigmoid(x_out)
