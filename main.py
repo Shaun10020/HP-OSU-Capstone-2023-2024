@@ -78,6 +78,7 @@ def test(model,dataset):
     test.run()
     
 def parallel_test_run(rank,world_size,model,test_dataloader):
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     device = torch.device('cpu')
     sampler = DistributedSampler(test_dataloader.dataset,world_size,rank)
     loader_args = dict(batch_size=int(args.batch), num_workers=1, pin_memory=True)
