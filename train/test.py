@@ -48,9 +48,15 @@ class Test:
             self.criterion = nn.BCELoss()
         logging.info("Done initialize testing script")
         self.pages_per_second = []
+        self.times = []
 
-        
     def run(self):
+        if self.device == torch.device("cuda"):
+            self.run_cuda()
+        else:
+            self.run_CPU()
+        
+    def run_CPU(self):
         '''
         This function is to run testing on the model with test dataloader
         '''
@@ -60,17 +66,20 @@ class Test:
         self.model.eval()
         epoch_loss = 0.0
         IoU = 0.0
-        
         text = f'#{self.rank}'
+        
         ## Loop through the test dataloader for each batch size
-        for batch_data in tqdm(self.test_dataloader,desc=text,position=self.rank+1):
+        for batch_data in tqdm(self.test_dataloader,desc=text,position=self.rank):
             inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
             start = time.time()
             preds = self.model(inputs.float())
             preds = torch.sigmoid(preds)
             end = time.time()
-            if end - start != 0 :
-                self.pages_per_second.append(len(inputs)/(end - start))
+            torch.cuda.synchronize()
+            time = end - start
+            if time != 0 :
+                self.pages_per_second.append(len(inputs)/(time))
+                self.times.append(time)
             loss = self.criterion(preds,labels)
             epoch_loss += loss.item()
             IoU += binary_iou(convertBinary(preds),labels)
@@ -86,7 +95,55 @@ class Test:
             writer = csv.writer(fd)
             writer.writerow(['Test Loss','Test IoU','Test Running Time'])
             writer.writerow([epoch_loss / len(self.test_dataloader),IoU / len(self.test_dataloader)*100,sum(self.pages_per_second) / len(self.pages_per_second)])
-        logging.info(f'''Test Executing Time: {sum(self.pages_per_second) / len(self.pages_per_second):.2f} pages per second''')
+        logging.info(f'''Test Inference Time: {sum(self.times) / len(self.times):.2f} second''')
+        logging.info(f'''Test Inference Speed: {sum(self.pages_per_second) / len(self.pages_per_second):.2f} pages per second''')
+        logging.info("Done running testing script...")
+        
+    def run_cuda(self):
+        '''
+        This function is to run testing on the model with test dataloader
+        '''
+        logging.info("Running testing script...")
+        
+        ## Initialization
+        self.model.eval()
+        epoch_loss = 0.0
+        IoU = 0.0
+        start = torch.cuda.Event(enable_timing=True)
+        end = torch.cuda.Event(enable_timing=True)
+        text = f'#{self.rank}'
+        batch_data_0, batch_data_1 = next(iter(self.test_dataloader))
+        inputs, labels = batch_data_0.to(self.device), batch_data_1.to(self.device)
+        preds = self.model(inputs.float())
+        ## Loop through the test dataloader for each batch size
+        for batch_data in tqdm(self.test_dataloader,desc=text,position=self.rank):
+            inputs, labels = batch_data[0].to(self.device), batch_data[1].to(self.device)
+            start.record()
+            preds = self.model(inputs.float())
+            preds = torch.sigmoid(preds)
+            end.record()
+            torch.cuda.synchronize()
+            time = start.elapsed_time(end) / 1000
+            if time != 0 :
+                self.pages_per_second.append(len(inputs)/(time))
+                self.times.append(time)
+            loss = self.criterion(preds,labels)
+            epoch_loss += loss.item()
+            IoU += binary_iou(convertBinary(preds),labels)
+        
+        macs, params = self.flops_count()
+        logging.info(f'''Test Loss: {epoch_loss / len(self.test_dataloader):.4f}''')
+        logging.info(f'''Test IoU: {IoU / len(self.test_dataloader)* 100:.2f}%''')
+        logging.info(f'''Number of parameters: {params}''')
+        logging.info(f'''Computational complexity: {macs}''')
+        
+        ## Save the results in a csv file
+        with open(f'''{self.args.model}-{self.args.dataset}-test.csv''','w',newline='') as fd:
+            writer = csv.writer(fd)
+            writer.writerow(['Test Loss','Test IoU','Test Running Time'])
+            writer.writerow([epoch_loss / len(self.test_dataloader),IoU / len(self.test_dataloader)*100,sum(self.pages_per_second) / len(self.pages_per_second)])
+        logging.info(f'''Test Inference Time: {sum(self.times) / len(self.times):.2f} second''')
+        logging.info(f'''Test Inference Speed: {sum(self.pages_per_second) / len(self.pages_per_second):.2f} pages per second''')
         logging.info("Done running testing script...")
         
     def flops_count(self):
