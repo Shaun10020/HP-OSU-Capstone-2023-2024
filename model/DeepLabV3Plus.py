@@ -93,7 +93,7 @@ class ASSP(nn.Module):
 class ResNet_50(nn.Module):
     def __init__(self, args,output_layer=None):
         super(ResNet_50, self).__init__()
-        self.pretrained = torchvision.models.resnet50(pretrained=False)
+        self.pretrained = torchvision.models.resnet50(weights=None)
         self.output_layer = output_layer
 
         original_first_layer = self.pretrained.conv1
