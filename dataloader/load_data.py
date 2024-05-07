@@ -19,9 +19,9 @@ from config.config import (features,
                            detect_duplex_labels,
                            train_test_ratio,
                            train_val_ratio,
-                           train_dataloader_name,
-                           val_dataloader_name,
-                           test_dataloader_name)
+                           train_dataset_name,
+                           val_dataset_name,
+                           test_dataset_name)
 from utils.check_data import checkInput, checkLabel
 
 class SimplexDataset(Dataset):
@@ -571,21 +571,21 @@ def load_dataloader(dataset,data_type,batch_size):
         os.mkdir(path)
         
     ## If there are no dataloader save files, split dataset and initialize into training dataloader, validation loader, and testing dataloader, then return them
-    if not os.path.exists(os.path.join(path,train_dataloader_name)) or not os.path.exists(os.path.join(path,val_dataloader_name)) or not os.path.exists(os.path.join(path,test_dataloader_name)):
+    if not os.path.exists(os.path.join(path,train_dataset_name)) or not os.path.exists(os.path.join(path,val_dataset_name)) or not os.path.exists(os.path.join(path,test_dataset_name)):
         train_set, test_set = random_split(dataset,train_test_ratio,torch.Generator())
         train_set, val_set = random_split(train_set,train_val_ratio,torch.Generator())
-        loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=pin_memory)
-        train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
-        val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
-        test_loader = DataLoader(test_set, shuffle=False, **loader_args)
-        ## save the dataloaders
-        torch.save(train_loader,os.path.join(path,train_dataloader_name))
-        torch.save(val_loader,os.path.join(path,val_dataloader_name))
-        torch.save(test_loader,os.path.join(path,test_dataloader_name))
+        ## save the datasets
+        torch.save(train_set,os.path.join(path,train_dataset_name))
+        torch.save(val_set,os.path.join(path,val_dataset_name))
+        torch.save(test_set,os.path.join(path,test_dataset_name))
     ## If there are dataloader save files, load and return them
     else:
-        train_loader = torch.load(os.path.join(path,train_dataloader_name))
-        val_loader = torch.load(os.path.join(path,val_dataloader_name))
-        test_loader = torch.load(os.path.join(path,test_dataloader_name))
+        train_set = torch.load(os.path.join(path,train_dataset_name))
+        val_set = torch.load(os.path.join(path,val_dataset_name))
+        test_set = torch.load(os.path.join(path,test_dataset_name))
+    loader_args = dict(batch_size=batch_size, num_workers=os.cpu_count(), pin_memory=pin_memory)
+    train_loader = DataLoader(train_set, shuffle=True, drop_last=True, **loader_args)
+    val_loader = DataLoader(val_set, shuffle=False, drop_last=True, **loader_args)
+    test_loader = DataLoader(test_set, shuffle=False, **loader_args)
     logging.info("Done preparing Dataloader")
     return train_loader,val_loader,test_loader

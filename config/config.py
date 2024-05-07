@@ -30,6 +30,6 @@ output_width = 300
 threshold = 0.5
 
 ## Dataloader filenames
-train_dataloader_name = 'Train_loader.pth'
-val_dataloader_name = 'Validation_loader.pth'
-test_dataloader_name = 'Test_loader.pth'
+train_dataset_name = 'Train_dataset.pth'
+val_dataset_name = 'Validation_dataset.pth'
+test_dataset_name = 'Test_dataset.pth'
