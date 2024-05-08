@@ -29,7 +29,7 @@ import torch.multiprocessing as mp
 
 ## Get args object, and device for this computer
 args = get_arguments()
-device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+device = torch.device("cuda") if args.device=="cuda" else torch.device("cpu")
            
 def train(model,dataset):
     '''

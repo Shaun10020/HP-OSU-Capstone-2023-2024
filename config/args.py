@@ -42,6 +42,12 @@ def get_arguments():
         help=("Choose from 'unet', 'customunet1','enet','customenet1', 'deeplabv3','deeplabv3+'"))
 
     parser.add_argument(
+        "--device",
+        choices=["cuda","cpu"],
+        default="cuda",
+        help=("Choose from 'cuda' or 'cpu'"))
+
+    parser.add_argument(
         "--mode",
         "-m",
         choices=["train","test","inference"],
