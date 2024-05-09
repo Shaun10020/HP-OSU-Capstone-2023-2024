@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import os
 import csv
 import torch.nn as nn
+import time
 
 from utils.save_load_model import save
 from utils.metrics import binary_iou
@@ -44,6 +45,7 @@ class Train:
         self.epoch_losses_val = []
         self.train_IoU = []
         self.IoU = []
+        self.overall = []
         
         ## Setup optimizer and criterion
         if optimizer:
@@ -117,9 +119,12 @@ class Train:
         ## Loop through each epoch
         for i in range(int(self.args.epoch)):
             logging.info(f'''Running Epoch {i+1}/{int(self.args.epoch)}...''')
+            start = time.time()
             self.run_epoch()
             self.lr_updater.step()
             self.run_epoch_val()
+            end = time.time()
+            self.overall.append(end-start)
             logging.info(f'''Epoch [{i+1}/{int(self.args.epoch)}], Loss: {self.epoch_losses[-1]:.4f}, Val Loss: {self.epoch_losses_val[-1]:.4f}, Train IoU: {self.train_IoU[-1] * 100:.2f}%, IoU: {self.IoU[-1] * 100:.2f}%''')
             ## Save the model if it has the lowest validation loss
             if self.epoch_losses_val[-1] == min(self.epoch_losses_val):
@@ -128,9 +133,9 @@ class Train:
         ## Save the results in a csv file
         with open(f'''{self.args.model}-{self.args.dataset}-train-epoch.csv''','w',newline='') as fd:
             writer = csv.writer(fd)
-            writer.writerow(['Epoch','Train Loss','Validation Loss','Train IoU','Validation IoU'])
-            for i,(train_loss,validation_loss,train_iou,validation_iou) in enumerate(zip(self.epoch_losses,self.epoch_losses_val,self.train_IoU,self.IoU)):
-                writer.writerow([i+1,train_loss,validation_loss,train_iou*100,validation_iou*100])
+            writer.writerow(['Epoch','Train Loss','Validation Loss','Train IoU','Validation IoU','Epoch overall time'])
+            for i,(train_loss,validation_loss,train_iou,validation_iou,overall) in enumerate(zip(self.epoch_losses,self.epoch_losses_val,self.train_IoU,self.IoU,self.overall)):
+                writer.writerow([i+1,train_loss,validation_loss,train_iou*100,validation_iou*100,overall])
         logging.info("Done running training script...")
         
     
