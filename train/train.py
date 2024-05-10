@@ -56,8 +56,8 @@ class Train:
             self.criterion = criterion
         else:
             self.criterion = torch.nn.BCELoss()
-        self.lr_updater = torch.optim.lr_scheduler.StepLR(self.optim, args.lr_epoch,
-                                        args.lr_decay)
+        self.lr_updater = torch.optim.lr_scheduler.StepLR(self.optim, int(args.lr_epoch),
+                                        float(args.lr_decay))
         logging.info("Done initialize training script")
 
         
