@@ -158,9 +158,7 @@ test_dataloader_name: The filename for test dataloader
 
 Model  | Training Loss												  | IoU												 |
 -------|-------------------------------------------------------------|--------------------------------------------------|
-UNet Simplex|![UNet Simplex Training Loss](./plots/unet-simplex-loss.png) | ![UNet Simplex IoU](./plots/unet-simplex-IoU.png)|
 UNet Duplex|![UNet Duplex Training Loss](./plots/unet-duplex-loss.png)   | ![UNet Duplex IoU](./plots/unet-duplex-IoU.png)  |
-ENet Simplex|![ENet Simplex Training Loss](./plots/enet-simplex-loss.png) | ![ENet Simplex IoU](./plots/enet-simplex-IoU.png)|
 ENet Duplex|![ENet Duplex Training Loss](./plots/enet-duplex-loss.png)   | ![ENet Duplex IoU](./plots/enet-duplex-IoU.png)  |
 
 ---
