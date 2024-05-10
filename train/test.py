@@ -55,20 +55,14 @@ class Test:
 
     def run(self):
         ## Different time measuring method depends if using 'cpu' or 'cuda'
+        start = time.time()
         if self.device == torch.device("cuda"):
-            start = torch.cuda.Event(enable_timing=True)
-            end = torch.cuda.Event(enable_timing=True)
-            start.record()
             self.run_cuda()
-            end.record()
-            torch.cuda.synchronize()
-            _time = start.elapsed_time(end) / 1000
         else:
-            start = time.time()
             self.run_CPU()
-            end = time.time()
-            _time = end - start
-            
+        end = time.time()
+        _time = end - start
+        
         ## Calculate GFLOPS
         macs, params = self.flops_count()
         
@@ -82,10 +76,10 @@ class Test:
         if not os.path.exists(f'''{self.args.model}-{self.args.dataset}-test-{"CUDA" if self.device==torch.device("cuda") else "CPU"}.csv'''):
             with open(f'''{self.args.model}-{self.args.dataset}-test-{"CUDA" if self.device==torch.device("cuda") else "CPU"}.csv''','w',newline='') as fd:
                 writer = csv.writer(fd)
-                writer.writerow(['Rank','Test Loss','Test IoU','Test Inference Time','Test Inference Speed','Test Overall'])
+                writer.writerow(['Rank','Test Loss','Test IoU','Test Inference Time','Test Inference Speed','Test Overall','Starting Time','Ending Time'])
         with open(f'''{self.args.model}-{self.args.dataset}-test-{"CUDA" if self.device==torch.device("cuda") else "CPU"}.csv''','a',newline='') as fd:
             writer = csv.writer(fd)
-            writer.writerow([self.rank,self.epoch_loss / len(self.test_dataloader),self.IoU / len(self.test_dataloader)*100,sum(self.times) / len(self.times),sum(self.pages_per_second) / len(self.pages_per_second),_time])
+            writer.writerow([self.rank,self.epoch_loss / len(self.test_dataloader),self.IoU / len(self.test_dataloader)*100,sum(self.times) / len(self.times),sum(self.pages_per_second) / len(self.pages_per_second),_time,time.ctime(int(start)),time.ctime(int(end))])
         logging.info(f'''Test Inference Time: {sum(self.times) / len(self.times):.2f} second''')
         logging.info(f'''Test Inference Speed: {sum(self.pages_per_second) / len(self.pages_per_second):.2f} pages per second''')
         logging.info("Done running testing script...")
