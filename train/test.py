@@ -54,6 +54,7 @@ class Test:
         self.IoU = 0.0
 
     def run(self):
+        ## Different time measuring method depends if using 'cpu' or 'cuda'
         if self.device == torch.device("cuda"):
             start = torch.cuda.Event(enable_timing=True)
             end = torch.cuda.Event(enable_timing=True)
@@ -67,7 +68,11 @@ class Test:
             self.run_CPU()
             end = time.time()
             _time = end - start
+            
+        ## Calculate GFLOPS
         macs, params = self.flops_count()
+        
+        ## Logging the performance
         logging.info(f'''Test Loss: {self.epoch_loss / len(self.test_dataloader):.4f}''')
         logging.info(f'''Test IoU: {self.IoU / len(self.test_dataloader)* 100:.2f}%''')
         logging.info(f'''Number of parameters: {params}''')

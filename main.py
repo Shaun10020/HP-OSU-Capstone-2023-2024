@@ -78,29 +78,58 @@ def test(model,dataset):
     test.run()
     
 def parallel_test_run(rank,world_size,model,test_dataloader):
+    """The target function to run for parallel processes 
+
+    Args:
+        rank (int): Integer represent the process id
+        world_size (int): Total number of processes
+        model: The model architecture
+        test_dataloader: The test dataloader to test 
+    """
+    
+    ## Enable logging
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     device = torch.device('cpu')
+    
+    ## Prepare sampler for the process, it will sample different data sample from the dataset depends on the rank
     sampler = DistributedSampler(test_dataloader.dataset,world_size,rank)
     loader_args = dict(batch_size=int(args.batch), num_workers=1, pin_memory=True)
     test_dataloader = DataLoader(test_dataloader.dataset,shuffle=False,sampler=sampler,**loader_args)
+    
+    ## Initialize and run testing script
     test = Test(model,device,test_dataloader,args,rank=rank)
     test.run()
 
 def parallel_test(model,dataset):
+    """The function to initialize and run parallel processes
+
+    Args:
+        model: The model architecture to run
+        dataset: The dataset to run with 
+    """
+    
+    ## THe function is implemented with CPU in mind
     device = torch.device('cpu')
+    
+    ## Initialization
     nums = int (os.cpu_count() /2)
     torch.set_num_threads(1)
     processes = []
     mp.set_start_method("spawn")
+    
+    ## Prepare the model and the data
     model = load(model,args)
     model = model.module.to(device)
     model.share_memory()
     _,_,test_dataloader = load_dataloader(dataset,args.dataset,args.batch)
+    
+    ## Start processes
     for rank in range(nums):
         p = mp.Process(target=parallel_test_run,args = (rank,nums,model,test_dataloader))
         p.start()
         processes.append(p)
         
+    ## Join back processes
     for p in processes:
         p.join()
 
@@ -218,7 +247,6 @@ def inference(model):
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     logging.info(f'''Using device: {device}''')
-    
     ## Initialize the number of channels for input and output
     n_input = len(features) if args.dataset == 'simplex' else 2*len(features)
     n_output = len(labels) if args.dataset == 'simplex' else 2*len(labels)+len(duplex_labels)
