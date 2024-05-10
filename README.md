@@ -175,3 +175,8 @@ ENet Duplex|![ENet Duplex Training Loss](./plots/enet-duplex-loss.png)   | ![ENe
 [ptflops for FLOPS calculation](https://github.com/sovrasov/flops-counter.pytorch/tree/master)
 
 ## Future Improvements
+
+1. Additional Metrics
+2. Investigate Additional Layers on ENet to further improve IoU
+3. Prune Nodes
+4. Knowledge Distillation
