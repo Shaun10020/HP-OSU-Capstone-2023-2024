@@ -43,7 +43,7 @@ def train(model,dataset):
     train_dataloader,val_dataloader,test_dataloader = load_dataloader(dataset,args.dataset,args.batch)
     
     ## Load model weights to continue training if exist 
-    filepath = os.path.join(args.save_folder,f'''{args.model}-{args.dataset}.pt''')
+    filepath = os.path.join(args.save_folder,f'''{args.model}-{args.dataset}.pth''')
     if os.path.exists(filepath):
         model = load(model,args)
         
