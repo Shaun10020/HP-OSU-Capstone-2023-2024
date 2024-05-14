@@ -107,6 +107,8 @@ def f1_score(pred,target):
     Returns:
     float: F1 score
     """
-    _precision = precision(pred,target)
-    _recall = recall(pred,target)
-    return (_precision).item(),(_recall).item(),((2*_precision*_recall)/(_precision+_recall)).item()
+    _precision = precision(pred,target).item()
+    _recall = recall(pred,target).item()
+    if (_precision+_recall) == 0.0:
+        return _precision,_recall,0.0
+    return _precision,_recall,(2*_precision*_recall)/(_precision+_recall)
