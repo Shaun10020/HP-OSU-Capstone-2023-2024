@@ -7,9 +7,9 @@ import torch
 import os
 
 from utils.convert import convertBinary
-from utils.metrics import binary_iou
+from utils.metrics import binary_iou, accuracy, f1_score
 from ptflops import get_model_complexity_info
-from config.config import features, input_height, input_width
+from config.config import features, input_height, input_width, labels, duplex_labels
 '''
 This script is reponsible for testing the models
 '''
@@ -50,8 +50,14 @@ class Test:
         logging.info("Done initialize testing script")
         self.pages_per_second = []
         self.times = []
+        self.num_characteristics = len(labels) + len(duplex_labels) if args.dataset=="duplex" else len(labels)
+        self.characteristic = [[] for _ in range(self.num_characteristics)]
         self.epoch_loss = 0
         self.IoU = 0.0
+        self.accuracy = 0.0
+        self.f1score = 0.0
+        self.precision = 0.0
+        self.recall = 0.0
 
     def run(self):
         ## Different time measuring method depends if using 'cpu' or 'cuda'
@@ -76,10 +82,33 @@ class Test:
         if not os.path.exists(f'''{self.args.model}-{self.args.dataset}-test-{"CUDA" if self.device==torch.device("cuda") else "CPU"}.csv'''):
             with open(f'''{self.args.model}-{self.args.dataset}-test-{"CUDA" if self.device==torch.device("cuda") else "CPU"}.csv''','w',newline='') as fd:
                 writer = csv.writer(fd)
-                writer.writerow(['Rank','Test Loss','Test IoU','Test Inference Time','Test Inference Speed','Test Overall','Starting Time','Ending Time'])
+                writer.writerow(['Rank',
+                                 'Test Loss',
+                                 'Test IoU',
+                                 'Test Accuracy',
+                                 'Test Precision',
+                                 'Test Recall',
+                                 'Test F1 Score',
+                                 'Test Inference Time',
+                                 'Test Inference Speed',
+                                 'Test Overall',
+                                 'Starting Time',
+                                 'Ending Time'])
         with open(f'''{self.args.model}-{self.args.dataset}-test-{"CUDA" if self.device==torch.device("cuda") else "CPU"}.csv''','a',newline='') as fd:
             writer = csv.writer(fd)
-            writer.writerow([self.rank,self.epoch_loss / len(self.test_dataloader),self.IoU / len(self.test_dataloader)*100,sum(self.times) / len(self.times),sum(self.pages_per_second) / len(self.pages_per_second),_time,time.ctime(int(start)),time.ctime(int(end))])
+            writer.writerow([self.rank,self.epoch_loss / len(self.test_dataloader),
+                             self.IoU / len(self.test_dataloader)*100,
+                             self.accuracy / len(self.test_dataloader)*100,
+                             self.precision / len(self.test_dataloader)*100,
+                             self.recall / len(self.test_dataloader)*100,
+                             self.f1score / len(self.test_dataloader)*100,
+                             sum(self.times) / len(self.times),
+                             sum(self.pages_per_second) / len(self.pages_per_second),
+                             _time,time.ctime(int(start)),time.ctime(int(end))])
+        logging.info(f'''Accuracy: {self.accuracy / len(self.test_dataloader)*100:.2f}%''')
+        logging.info(f'''Precision: {self.precision / len(self.test_dataloader)*100:.2f}%''')
+        logging.info(f'''Recall: {self.recall / len(self.test_dataloader)*100:.2f}%''')
+        logging.info(f'''F1 Score: {self.f1score / len(self.test_dataloader)*100:.2f}%''')
         logging.info(f'''Test Inference Time: {sum(self.times) / len(self.times):.2f} second''')
         logging.info(f'''Test Inference Speed: {sum(self.pages_per_second) / len(self.pages_per_second):.2f} pages per second''')
         logging.info("Done running testing script...")
@@ -110,6 +139,11 @@ class Test:
             loss = self.criterion(preds,labels)
             self.epoch_loss += loss.item()
             self.IoU += binary_iou(convertBinary(preds),labels)
+            self.accuracy += accuracy(convertBinary(preds),labels)
+            _precision,_recall, _f1score = f1_score(convertBinary(preds),labels)
+            self.precision += _precision
+            self.recall += _recall
+            self.f1score += _f1score
         
 
         
@@ -147,6 +181,11 @@ class Test:
             loss = self.criterion(preds,labels)
             self.epoch_loss += loss.item()
             self.IoU += binary_iou(convertBinary(preds),labels)
+            self.accuracy += accuracy(convertBinary(preds),labels)
+            _precision,_recall, _f1score = f1_score(convertBinary(preds),labels)
+            self.precision += _precision
+            self.recall += _recall
+            self.f1score += _f1score
         
     def flops_count(self):
         n_input = len(features) if self.args.dataset == 'simplex' else 2*len(features)

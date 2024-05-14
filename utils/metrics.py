@@ -47,3 +47,66 @@ class DiceBCELoss(nn.Module):
         Dice_BCE = BCE + dice_loss
 
         return Dice_BCE
+
+def accuracy(pred,target):
+    """
+    Calculate the Accuracy for binary segmentation.
+    
+    Args:
+    pred (torch.Tensor): Predicted bitmap (after thresholding if necessary).
+    target (torch.Tensor): Ground truth bitmap.
+
+    Returns:
+    float: Accuracy
+    """
+    pred = pred.bool()
+    target = target.bool()
+    correct = (pred == target).float().sum()
+    incorrect = (pred != target).float().sum()
+    
+    return correct / (correct + incorrect)
+
+def precision(pred,target):
+    """
+    Calculate the Precision for binary segmentation.
+    
+    Args:
+    pred (torch.Tensor): Predicted bitmap (after thresholding if necessary).
+    target (torch.Tensor): Ground truth bitmap.
+
+    Returns:
+    float: Precision
+    """
+    intersection = torch.logical_and(pred, target).sum().float()
+    false_positive = torch.logical_and(pred.bool(), ~target.bool()).sum().float()
+    return intersection/(intersection + false_positive)
+
+def recall(pred,target):
+    """
+    Calculate the Recall for binary segmentation.
+    
+    Args:
+    pred (torch.Tensor): Predicted bitmap (after thresholding if necessary).
+    target (torch.Tensor): Ground truth bitmap.
+
+    Returns:
+    float: Recall
+    """
+    intersection = torch.logical_and(pred, target).sum().float()
+    false_negative = torch.logical_and(~pred.bool(),target.bool()).sum().float()
+    return intersection/(intersection + false_negative)
+
+def f1_score(pred,target):
+    """
+    Calculate the F1 score for binary segmentation.
+    
+    Args:
+    pred (torch.Tensor): Predicted bitmap (after thresholding if necessary).
+    target (torch.Tensor): Ground truth bitmap.
+
+    Returns:
+    float: F1 score
+    """
+    _precision = precision(pred,target)
+    _recall = recall(pred,target)
+    return _precision,_recall,(2*_precision*_recall)/(_precision+_recall)
