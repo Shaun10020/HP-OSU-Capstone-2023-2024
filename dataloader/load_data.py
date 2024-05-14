@@ -5,6 +5,7 @@ import json
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader, random_split
 import logging
+import torchvision.transforms.v2
 
 from config.config import (features,
                            labels,
@@ -43,14 +44,14 @@ class SimplexDataset(Dataset):
         
         ## Setting up default transformation if it is None
         if transform == None: 
-            self.transform = torchvision.transforms.Resize((input_height,input_width),interpolation=0,antialias=True)
+            self.transform = torchvision.transforms.v2.Resize((input_height,input_width),interpolation=0,antialias=True)
         else:
             self.transform = transform
         if transform_output == None: 
-            self.transform_output = torchvision.transforms.Resize((output_height,output_width),interpolation=0,antialias=True)
+            self.transform_output = torchvision.transforms.v2.Resize((output_height,output_width),interpolation=0,antialias=True)
         else:
             self.transform_output = transform_output
-        self.trans2Tensor = torchvision.transforms.ToTensor()
+        self.trans2Tensor = torchvision.transforms.v2.Compose([torchvision.transforms.v2.ToImage(), torchvision.transforms.v2.ToDtype(torch.float32, scale=True)])
         
         ## Initialization
         self.label_folder = label_folder
@@ -123,20 +124,20 @@ class DuplexDataset(Dataset):
         
         ## Setting up default transformation if it is None
         if transform == None: 
-            self.transform = torchvision.transforms.Resize((input_height,input_width),interpolation=0,antialias=True)
+            self.transform = torchvision.transforms.v2.Resize((input_height,input_width),interpolation=0,antialias=True)
         else:
             self.transform = transform
         if transform_output == None: 
-            self.transform_output = torchvision.transforms.Resize((output_height,output_width),interpolation=0,antialias=True)
+            self.transform_output = torchvision.transforms.v2.Resize((output_height,output_width),interpolation=0,antialias=True)
         else:
             self.transform_output = transform_output
-        self.emptyInputTransform = torchvision.transforms.Compose([torchvision.transforms.ToPILImage(),
-                         torchvision.transforms.Resize((input_height,input_width)),
-                         torchvision.transforms.ToTensor()])
-        self.emptyOutputTransform = torchvision.transforms.Compose([torchvision.transforms.ToPILImage(),
-                         torchvision.transforms.Resize((output_height,output_width)),
-                         torchvision.transforms.ToTensor()])
-        self.trans2Tensor = torchvision.transforms.ToTensor()
+        self.emptyInputTransform = torchvision.transforms.v2.Compose([torchvision.transforms.v2.ToPILImage(),
+                         torchvision.transforms.v2.Resize((input_height,input_width)),
+                         torchvision.transforms.v2.Compose([torchvision.transforms.v2.ToImage(), torchvision.transforms.v2.ToDtype(torch.float32, scale=True)])])
+        self.emptyOutputTransform = torchvision.transforms.v2.Compose([torchvision.transforms.v2.ToPILImage(),
+                         torchvision.transforms.v2.Resize((output_height,output_width)),
+                         torchvision.transforms.v2.Compose([torchvision.transforms.v2.ToImage(), torchvision.transforms.v2.ToDtype(torch.float32, scale=True)])])
+        self.trans2Tensor = torchvision.transforms.v2.Compose([torchvision.transforms.v2.ToImage(), torchvision.transforms.v2.ToDtype(torch.float32, scale=True)])
         
         ## Initialization
         self.label_folder = label_folder
@@ -239,7 +240,7 @@ class InputSimplexDataset(Dataset):
         
         ## Setting up default transformation if it is None
         if transform == None: 
-            self.transform = torchvision.transforms.Resize((input_height,input_width,),interpolation=0,antialias=True)
+            self.transform = torchvision.transforms.v2.Resize((input_height,input_width,),interpolation=0,antialias=True)
         else:
             self.transform = transform
             
@@ -297,12 +298,12 @@ class InputDuplexDataset(Dataset):
         
         ## Setting up default transformation if it is None
         if transform == None: 
-            self.transform = torchvision.transforms.Resize((input_height,input_width,),interpolation=0,antialias=True)
+            self.transform = torchvision.transforms.v2.Resize((input_height,input_width,),interpolation=0,antialias=True)
         else:
             self.transform = transform
-        self.emptyInputTransform = torchvision.transforms.Compose([torchvision.transforms.ToPILImage(),
-                         torchvision.transforms.Resize((input_height,input_width)),
-                         torchvision.transforms.ToTensor()])
+        self.emptyInputTransform = torchvision.transforms.v2.Compose([torchvision.transforms.v2.ToPILImage(),
+                         torchvision.transforms.v2.Resize((input_height,input_width)),
+                         torchvision.transforms.v2.Compose([torchvision.transforms.v2.ToImage(), torchvision.transforms.v2.ToDtype(torch.float32, scale=True)])])
         
         ## Initialization
         items = os.listdir(args.input_folder)
@@ -371,7 +372,7 @@ class SimplexDetectDataset(Dataset):
         
         ## Setting up default transformation if it is None
         if transform == None: 
-            self.transform = torchvision.transforms.Resize((input_height,input_width),interpolation=0,antialias=True)
+            self.transform = torchvision.transforms.v2.Resize((input_height,input_width),interpolation=0,antialias=True)
         else:
             self.transform = transform
 
@@ -453,12 +454,12 @@ class DuplexDetectDataset(Dataset):
         
         ## Setting up default transformation if it is None
         if transform == None: 
-            self.transform = torchvision.transforms.Resize((input_height,input_width),interpolation=0,antialias=True)
+            self.transform = torchvision.transforms.v2.Resize((input_height,input_width),interpolation=0,antialias=True)
         else:
             self.transform = transform
-        self.emptyInputTransform = torchvision.transforms.Compose([torchvision.transforms.ToPILImage(),
-                         torchvision.transforms.Resize((input_height,input_width)),
-                         torchvision.transforms.ToTensor()])
+        self.emptyInputTransform = torchvision.transforms.v2.Compose([torchvision.transforms.v2.ToPILImage(),
+                         torchvision.transforms.v2.Resize((input_height,input_width)),
+                         torchvision.transforms.v2.Compose([torchvision.transforms.v2.ToImage(), torchvision.transforms.v2.ToDtype(torch.float32, scale=True)])])
         self.emptyTensor = torch.Tensor(1,1)
         
         ## Initialization
