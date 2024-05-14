@@ -138,6 +138,7 @@ class DuplexDataset(Dataset):
                          torchvision.transforms.v2.Resize((output_height,output_width)),
                          torchvision.transforms.v2.Compose([torchvision.transforms.v2.ToImage(), torchvision.transforms.v2.ToDtype(torch.float32, scale=True)])])
         self.trans2Tensor = torchvision.transforms.v2.Compose([torchvision.transforms.v2.ToImage(), torchvision.transforms.v2.ToDtype(torch.float32, scale=True)])
+        self.data_augmentation = [torchvision.transforms.v2.RandomHorizontalFlip(1.0),torchvision.transforms.v2.RandomVerticalFlip(1.0)]
         
         ## Initialization
         self.label_folder = label_folder
@@ -159,14 +160,21 @@ class DuplexDataset(Dataset):
                             
                             ## When it is odd pages (assume odd pages will be the 'first' page), initialize data variable with first page info 
                             if page['page_num']%2:
-                                data = {'page1':page,'name':pdf_name}
+                                data = {'page1':page,'name':pdf_name,'transform':0}
                                 ## append with only first page info, to create more data with missing second page samples in the dataset
                                 self.dataset.append(data)
+                                for i in range(1,len(self.data_augmentation)+1):
+                                    data['transform'] = i
+                                    self.dataset.append(data)
                             
                             ## When it is even pages (assume even pages will be the 'second' page), append second page info to data, and then append to dataset
                             elif data['page1']['page_num']+1 == page['page_num'] and data['name'] == pdf_name:
                                 data['page2'] = page
+                                data['transform'] = 0
                                 self.dataset.append(data)
+                                for i in range(1,len(self.data_augmentation)+1):
+                                    data['transform'] = i
+                                    self.dataset.append(data)
         logging.info("Finished preparing DuplexDataset")
         logging.info(f'''Total {self.__len__()} samples''')
             
@@ -209,20 +217,38 @@ class DuplexDataset(Dataset):
             for feature in features:
                 filenamme = feature+"-"+pn2+"-grayscale"+img_extension
                 path = os.path.join(self.input_folder,pdf_name,filenamme)
-                img.append(self.transform(torchvision.io.read_image(path)/255))
+                if self.dataset[index]['transform'] == 0:
+                    img.append(self.transform(torchvision.io.read_image(path)/255))
+                else:
+                    img.append(self.data_augmentation[self.dataset[index]['transform']-1](self.transform(torchvision.io.read_image(path)/255)))
             for label in duplex_labels:
-                output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label])))))
+                if self.dataset[index]['transform'] == 0:
+                    output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label])))))
+                else:
+                    output.append(self.data_augmentation[self.dataset[index]['transform']-1](self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label]))))))
             for label in labels:
-                output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page2[label])))))
+                if self.dataset[index]['transform'] == 0:
+                    output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page2[label])))))
+                else:
+                    output.append(self.data_augmentation[self.dataset[index]['transform']-1](self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page2[label]))))))
                 
         ## When there is no second page, create empty tensor arrays to substitiute as second page
         else:
             for feature in features:
-                img.append(self.emptyInputTransform(torch.zeros((1,1)).byte()))
+                if self.dataset[index]['transform'] == 0:
+                    img.append(self.emptyInputTransform(torch.zeros((1,1)).byte()))
+                else:
+                    img.append(self.data_augmentation[self.dataset[index]['transform']-1](self.emptyInputTransform(torch.zeros((1,1)).byte())))
             for label in duplex_labels:
-                output.append(self.emptyOutputTransform(torch.zeros((1,1)).byte()))
+                if self.dataset[index]['transform'] == 0:
+                    output.append(self.emptyOutputTransform(torch.zeros((1,1)).byte()))
+                else:
+                    output.append(self.data_augmentation[self.dataset[index]['transform']-1](self.emptyOutputTransform(torch.zeros((1,1)).byte())))
             for label in labels:
-                output.append(self.emptyOutputTransform(torch.zeros((1,1)).byte()))
+                if self.dataset[index]['transform'] == 0:
+                    output.append(self.emptyOutputTransform(torch.zeros((1,1)).byte()))
+                else:
+                    output.append(self.data_augmentation[self.dataset[index]['transform']-1](self.emptyOutputTransform(torch.zeros((1,1)).byte())))
         return tuple((torch.cat(img),torch.cat(output)))
 
 class InputSimplexDataset(Dataset):
