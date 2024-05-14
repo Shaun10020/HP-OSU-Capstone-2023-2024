@@ -64,7 +64,7 @@ def accuracy(pred,target):
     correct = (pred == target).float().sum()
     incorrect = (pred != target).float().sum()
     
-    return correct / (correct + incorrect)
+    return (correct / (correct + incorrect)).item()
 
 def precision(pred,target):
     """
@@ -109,4 +109,4 @@ def f1_score(pred,target):
     """
     _precision = precision(pred,target)
     _recall = recall(pred,target)
-    return _precision,_recall,(2*_precision*_recall)/(_precision+_recall)
+    return (_precision).item(),(_recall).item(),((2*_precision*_recall)/(_precision+_recall)).item()
