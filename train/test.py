@@ -79,8 +79,10 @@ class Test:
         logging.info(f'''Computational complexity: {macs}''')
         
         ## Save the results in a csv file
-        if not os.path.exists(f'''{self.args.model}-{self.args.dataset}-test-{"CUDA" if self.device==torch.device("cuda") else "CPU"}.csv'''):
-            with open(f'''{self.args.model}-{self.args.dataset}-test-{"CUDA" if self.device==torch.device("cuda") else "CPU"}.csv''','w',newline='') as fd:
+        if not os.path.exists("csv_files"):
+            os.mkdir("csv_files")
+        if not os.path.exists(f'''csv_files/{self.args.model}-{self.args.dataset}-test-{"CUDA" if self.device==torch.device("cuda") else "CPU"}.csv'''):
+            with open(f'''csv_files/{self.args.model}-{self.args.dataset}-test-{"CUDA" if self.device==torch.device("cuda") else "CPU"}.csv''','w',newline='') as fd:
                 writer = csv.writer(fd)
                 writer.writerow(['Rank',
                                  'Test Loss',
@@ -94,7 +96,7 @@ class Test:
                                  'Test Overall',
                                  'Starting Time',
                                  'Ending Time'])
-        with open(f'''{self.args.model}-{self.args.dataset}-test-{"CUDA" if self.device==torch.device("cuda") else "CPU"}.csv''','a',newline='') as fd:
+        with open(f'''csv_files/{self.args.model}-{self.args.dataset}-test-{"CUDA" if self.device==torch.device("cuda") else "CPU"}.csv''','a',newline='') as fd:
             writer = csv.writer(fd)
             writer.writerow([self.rank,self.epoch_loss / len(self.test_dataloader),
                              self.IoU / len(self.test_dataloader)*100,

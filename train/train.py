@@ -177,7 +177,9 @@ class Train:
                 save(self.model,self.args)
         
         ## Save the results in a csv file
-        with open(f'''{self.args.model}-{self.args.dataset}-train-epoch.csv''','w',newline='') as fd:
+        if not os.path.exists("csv_files"):
+            os.mkdir("csv_files")
+        with open(f'''csv_files/{self.args.model}-{self.args.dataset}-train-epoch.csv''','w',newline='') as fd:
             writer = csv.writer(fd)
             writer.writerow(['Epoch',
                              'Train Loss',
