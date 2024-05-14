@@ -164,19 +164,17 @@ ENet Duplex|![ENet Duplex Training Loss](./plots/enet-duplex-loss.png)   | ![ENe
 ---
 
 ## Reference
-[UNet paper](https://arxiv.org/pdf/1505.04597.pdf)
+[U-Net: Convolutional Networks for Biomedical Image Segmentation](https://arxiv.org/pdf/1505.04597.pdf)
 
-[UNet pytorch Implementation repo](https://github.com/milesial/Pytorch-UNet)
+[U-Net: Semantic segmentation with PyTorch](https://github.com/milesial/Pytorch-UNet)
 
-[ENet paper](https://arxiv.org/pdf/1606.02147.pdf)
+[ENet: A Deep Neural Network Architecture for Real-Time Semantic Segmentation](https://arxiv.org/pdf/1606.02147.pdf)
 
-[ENet pytorch implementation repo](https://github.com/davidtvs/PyTorch-ENet)
+[PyTorch-ENet](https://github.com/davidtvs/PyTorch-ENet)
 
-[ptflops for FLOPS calculation](https://github.com/sovrasov/flops-counter.pytorch/tree/master)
+[Flops counting tool for neural networks in pytorch framework](https://github.com/sovrasov/flops-counter.pytorch/tree/master)
 
 ## Future Improvements
 
-1. Additional Metrics
-2. Investigate Additional Layers on ENet to further improve IoU
-3. Prune Nodes
-4. Knowledge Distillation
+1. Implement Vision Transformer (ViT)
+2. Knowledge distillation 
