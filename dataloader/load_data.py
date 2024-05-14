@@ -130,10 +130,12 @@ class DuplexDataset(Dataset):
             self.transform_output = torchvision.transforms.Resize((output_height,output_width),interpolation=0,antialias=True)
         else:
             self.transform_output = transform_output
-        self.emptyInputTransform = torchvision.transforms.Compose([torchvision.transforms.Resize((input_height,input_width)),
-                                                                   torchvision.transforms.ToTensor()])
-        self.emptyOutputTransform = torchvision.transforms.Compose([torchvision.transforms.Resize((output_height,output_width)),
-                                                                    torchvision.transforms.ToTensor()])
+        self.emptyInputTransform = torchvision.transforms.Compose([torchvision.transforms.ToPILImage(),
+                         torchvision.transforms.Resize((input_height,input_width)),
+                         torchvision.transforms.ToTensor()])
+        self.emptyOutputTransform = torchvision.transforms.Compose([torchvision.transforms.ToPILImage(),
+                         torchvision.transforms.Resize((output_height,output_width)),
+                         torchvision.transforms.ToTensor()])
         self.trans2Tensor = torchvision.transforms.ToTensor()
         
         ## Initialization
@@ -215,14 +217,11 @@ class DuplexDataset(Dataset):
         ## When there is no second page, create empty tensor arrays to substitiute as second page
         else:
             for feature in features:
-                tmp = self.emptyInputTransform(torch.zeros((1,1)).byte())
-                img.append(tmp)
+                img.append(self.emptyInputTransform(torch.zeros((1,1)).byte()))
             for label in duplex_labels:
-                tmp = self.emptyOutputTransform(torch.zeros((1,1)).byte())
-                output.append(tmp)
+                output.append(self.emptyOutputTransform(torch.zeros((1,1)).byte()))
             for label in labels:
-                tmp = self.emptyOutputTransform(torch.zeros((1,1)).byte())
-                output.append(tmp)
+                output.append(self.emptyOutputTransform(torch.zeros((1,1)).byte()))
         return tuple((torch.cat(img),torch.cat(output)))
 
 class InputSimplexDataset(Dataset):
