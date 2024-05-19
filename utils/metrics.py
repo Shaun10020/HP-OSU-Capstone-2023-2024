@@ -79,7 +79,10 @@ def precision(pred,target):
     """
     intersection = torch.logical_and(pred, target).sum().float()
     false_positive = torch.logical_and(pred.bool(), ~target.bool()).sum().float()
-    return intersection/(intersection + false_positive)
+    if intersection.item():
+        return intersection/(intersection + false_positive)
+    else:
+        return torch.zeros(1)
 
 def recall(pred,target):
     """
@@ -94,7 +97,10 @@ def recall(pred,target):
     """
     intersection = torch.logical_and(pred, target).sum().float()
     false_negative = torch.logical_and(~pred.bool(),target.bool()).sum().float()
-    return intersection/(intersection + false_negative)
+    if intersection.item():
+        return intersection/(intersection + false_negative)
+    else:
+        return torch.zeros(1)
 
 def f1_score(pred,target):
     """
