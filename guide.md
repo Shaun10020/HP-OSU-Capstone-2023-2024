@@ -2,7 +2,7 @@
 The version of python being used is 3.11.7, go to this [link](https://www.python.org/downloads/release/python-3117/) to download the python installer.
 
 > [!NOTE]
-> if you are using Windows, make you `pip` is added to PATH environment variables. 
+> if you are using Windows, make sure the python bin folder is added to PATH environment variables. 
 
 ## 2. Install Packages
 To install the required packages, open up a terminal at the same directory of this file. Run the commands below
