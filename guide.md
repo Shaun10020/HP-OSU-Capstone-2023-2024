@@ -59,17 +59,17 @@ Now the Data prepation is done, you can run the `main.py` by using python.
 #### Example
 For Training:
 ```
-python main.py --mode=train --model=unet --batch=8 --epoch=120 --dataset=duplex --input_folder=INPUT_FOLDER --label_folder=LABEL _FOLDER --save_folder=checkpoints`
+python main.py --mode=train --model=unet --batch=8 --epoch=120 --dataset=duplex --input_folder=INPUT_FOLDER --label_folder=LABEL _FOLDER --save_folder=checkpoints
 ```
 
 For Testing:
 ```
-python main.py --mode=test --model=unet --batch=8 --dataset=duplex --input_folder=INPUT_FOLDER --label_folder=LABEL _FOLDER --save_folder=checkpoints`
+python main.py --mode=test --model=unet --batch=8 --dataset=duplex --input_folder=INPUT_FOLDER --label_folder=LABEL _FOLDER --save_folder=checkpoints
 ```
 
 For Inference (generating output from inputs):
 ```
-python main.py --mode=inference --model=unet --batch=8 --input_folder=INPUT_FOLDER --save_folder=checkpoints`
+python main.py --mode=inference --model=unet --batch=8 --input_folder=INPUT_FOLDER --save_folder=checkpoints
 ```
 
 > [!TIP]
