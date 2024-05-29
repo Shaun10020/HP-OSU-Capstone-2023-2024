@@ -72,6 +72,8 @@ For Inference (generating output from inputs):
 python main.py --mode=inference --model=unet --batch=8 --input_folder=INPUT_FOLDER --save_folder=checkpoints
 ```
 > [!NOTE]
+> Inference is just used for model output visualization, it is not used to measure model performance. It took in all the input from `input folder` and output to `output` folder.
+
 
 > [!TIP]
 > If you want to run the script multiple time, you can modify the shell script `.\run.sh` and run it instead.
