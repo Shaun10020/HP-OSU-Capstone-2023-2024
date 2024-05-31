@@ -47,6 +47,7 @@ class SimplexDataset(Dataset):
             self.transform = torchvision.transforms.v2.Resize((input_height,input_width),interpolation=0,antialias=True)
         else:
             self.transform = transform
+            
         if transform_output == None: 
             self.transform_output = torchvision.transforms.v2.Resize((output_height,output_width),interpolation=0,antialias=True)
         else:
@@ -202,12 +203,18 @@ class DuplexDataset(Dataset):
         for feature in features:
             filenamme = feature+"-"+pn1+"-grayscale"+img_extension
             path = os.path.join(self.input_folder,pdf_name,filenamme)
-            img.append(self.transform(torchvision.io.read_image(path)/255))
-            
+            if self.dataset[index]['transform'] == 0:
+                img.append(self.transform(torchvision.io.read_image(path)/255))
+            else:
+                img.append(self.data_augmentation[self.dataset[index]['transform']-1](self.transform(torchvision.io.read_image(path)/255)))
+                
         ## append the page's label images (simplex characteristics only)
         output = []
         for label in labels:
-            output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label])))))
+            if self.dataset[index]['transform'] == 0:
+                output.append(self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label])))))
+            else:
+                output.append(self.data_augmentation[self.dataset[index]['transform']-1](self.transform_output(self.trans2Tensor(Image.open(os.path.join(self.label_folder,pdf_name,page1[label]))))))
         
         ## append the page's channel and label images (duplex characteristics)
         if 'page2' in self.dataset[index]:
