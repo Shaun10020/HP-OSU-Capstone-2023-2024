@@ -2,14 +2,18 @@
 
 The purpose of this repository is to train a semantic segmentation model to predict characteristic binary mask images. This repository uses pytorch framework. The models being used are UNet, ENet and DeepLabV3+
 
-- [Requirements](#requirements)
-- [Quick Start](#quick-start)
-	- [how to train](#how-to-train)
-	- [how to test](#how-to-test)
-	- [how to inference](#how-to-inference)
-- [Help](#help)
-- [Config.py](#configpy)
-- [Project structure](#project-structure)
+- [HP-OSU-Capstone-2023-2024](#hp-osu-capstone-2023-2024)
+	- [Requirements](#requirements)
+	- [Quick start](#quick-start)
+			- [How to train](#how-to-train)
+			- [How to test](#how-to-test)
+			- [How to inference](#how-to-inference)
+	- [Help](#help)
+	- [Config.py](#configpy)
+	- [Project structure](#project-structure)
+	- [Results](#results)
+	- [Reference](#reference)
+	- [Future Improvements](#future-improvements)
 ---
 ## Requirements
 ```
@@ -173,6 +177,10 @@ ENet Duplex|![ENet Duplex Training Loss](./plots/enet-duplex-loss.png)   | ![ENe
 [PyTorch-ENet](https://github.com/davidtvs/PyTorch-ENet)
 
 [Flops counting tool for neural networks in pytorch framework](https://github.com/sovrasov/flops-counter.pytorch/tree/master)
+
+[DeeplabV3] 
+
+[DeeplabV3+] 
 
 ## Future Improvements
 
