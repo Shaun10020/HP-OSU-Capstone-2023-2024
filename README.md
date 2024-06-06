@@ -178,9 +178,9 @@ ENet Duplex|![ENet Duplex Training Loss](./plots/enet-duplex-loss.png)   | ![ENe
 
 [Flops counting tool for neural networks in pytorch framework](https://github.com/sovrasov/flops-counter.pytorch/tree/master)
 
-[DeeplabV3] 
+[DeeplabV3](https://github.com/pytorch/vision/blob/main/torchvision/models/segmentation/deeplabv3.py) 
 
-[DeeplabV3+] 
+[DeeplabV3+](https://medium.com/@r1j1nghimire/semantic-segmentation-using-deeplabv3-from-scratch-b1ff57a27be) 
 
 ## Future Improvements
 
