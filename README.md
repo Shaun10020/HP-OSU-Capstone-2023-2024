@@ -160,10 +160,12 @@ test_dataloader_name: The filename for test dataloader
 
 ## Results
 
-Model  | Training Loss												  | IoU												 |
--------|-------------------------------------------------------------|--------------------------------------------------|
-UNet Duplex|![UNet Duplex Training Loss](./plots/unet-duplex-loss.png)   | ![UNet Duplex IoU](./plots/unet-duplex-IoU.png)  |
-ENet Duplex|![ENet Duplex Training Loss](./plots/enet-duplex-loss.png)   | ![ENet Duplex IoU](./plots/enet-duplex-IoU.png)  |
+Model  | Training Loss												  |
+-------|-------------------------------------------------------------|
+UNet Duplex|![UNet Duplex Training Loss](./plots/UNet.png)   |
+ENet Duplex|![ENet Duplex Training Loss](./plots/ENet.png)   | 
+DeepLabV3 Duplex|![DeepLabV3 Duplex Training Loss](./plots/DeepLabV3.png)|
+DeepLabV3+ Duplex|![DeepLabV3+ Duplex Training Loss](./plots/DeepLabV3+.png)|
 
 ---
 
