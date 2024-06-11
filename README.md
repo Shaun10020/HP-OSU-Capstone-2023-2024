@@ -186,5 +186,5 @@ DeepLabV3+ Duplex|![DeepLabV3+ Duplex Training Loss](./plots/DeepLabV3+.png)|
 
 ## Future Improvements
 
-1. Implement Vision Transformer (ViT)
-2. Knowledge distillation 
+1. [Implement Vision Transformer (ViT)](https://paperswithcode.com/method/vision-transformer)
+2. [Knowledge distillation](https://arxiv.org/pdf/1503.02531) 
